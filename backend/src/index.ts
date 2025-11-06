@@ -34,7 +34,7 @@ console.log(`🔑 SUPABASE_KEY: ${process.env.SUPABASE_KEY ? 'VAR (' + process.e
 console.log(`🔑 SUPABASE_STORAGE_BUCKET: ${process.env.SUPABASE_STORAGE_BUCKET || 'YOK'}`);
 
 const app = express();
-const PORT = process.env.PORT || 3001;
+const PORT = Number(process.env.PORT) || 3001;
 
 // Railway'de PORT otomatik olarak atanır, $PORT kullanılmalı
 console.log(`🌐 PORT: ${PORT}`);
