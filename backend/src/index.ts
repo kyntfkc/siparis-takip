@@ -14,6 +14,16 @@ import { startIkasSync } from './services/ikasSync.js';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
+// Unhandled promise rejection ve exception handling
+process.on('unhandledRejection', (reason: any, promise: Promise<any>) => {
+  console.error('❌ Unhandled Rejection at:', promise, 'reason:', reason);
+});
+
+process.on('uncaughtException', (error: Error) => {
+  console.error('❌ Uncaught Exception:', error);
+  // Process'i kapatma, sadece logla (Railway otomatik restart eder)
+});
+
 // .env dosyasını backend dizininden yükle (varsa)
 const envPath = path.join(__dirname, '../.env');
 console.log(`📁 .env dosyası yolu: ${envPath}`);
