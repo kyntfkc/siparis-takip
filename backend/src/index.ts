@@ -64,6 +64,27 @@ try {
   console.error(error.stack);
 }
 
+// Frontend static files (production) - routes'tan ÖNCE ekle
+// Railway'de build sonrası dosyalar root dizinde olabilir veya backend dizininde
+let frontendBuildPath: string | null = null;
+const possiblePaths = [
+  path.join(process.cwd(), '../frontend/dist'), // Backend dizininden root'a çık
+  path.join(process.cwd(), 'frontend/dist'),     // Root dizininden
+  path.join(__dirname, '../../frontend/dist'),  // Backend/src'den root'a çık
+];
+
+for (const possiblePath of possiblePaths) {
+  if (existsSync(possiblePath)) {
+    frontendBuildPath = possiblePath;
+    console.log(`✅ Frontend build path bulundu: ${frontendBuildPath}`);
+    break;
+  }
+}
+
+if (process.env.NODE_ENV === 'production' && frontendBuildPath) {
+  app.use(express.static(frontendBuildPath, { index: false })); // index: false çünkü SPA fallback kullanacağız
+}
+
 // Routes
 try {
   setupRoutes(app);
@@ -92,34 +113,22 @@ setTimeout(() => {
   }
 }, 2000); // 2 saniye sonra başlat (Trendyol'dan sonra)
 
-// Frontend static files (production) - routes'tan sonra
-// Railway'de build sonrası dosyalar root dizinde olabilir veya backend dizininde
-let frontendBuildPath: string | null = null;
-const possiblePaths = [
-  path.join(process.cwd(), '../frontend/dist'), // Backend dizininden root'a çık
-  path.join(process.cwd(), 'frontend/dist'),     // Root dizininden
-  path.join(__dirname, '../../frontend/dist'),  // Backend/src'den root'a çık
-];
-
-for (const possiblePath of possiblePaths) {
-  if (existsSync(possiblePath)) {
-    frontendBuildPath = possiblePath;
-    console.log(`✅ Frontend build path bulundu: ${frontendBuildPath}`);
-    break;
-  }
-}
-
+// SPA fallback route - routes'tan SONRA, en sonda
 if (process.env.NODE_ENV === 'production' && frontendBuildPath) {
-  app.use(express.static(frontendBuildPath));
-  // SPA için tüm route'ları index.html'e yönlendir (API route'ları hariç)
   app.get('*', (req, res, next) => {
-    if (!req.path.startsWith('/api') && !req.path.startsWith('/images')) {
-      res.sendFile(path.join(frontendBuildPath!, 'index.html'));
-    } else {
-      next();
+    // API route'ları ve static dosyaları hariç tut
+    if (req.path.startsWith('/api') || req.path.startsWith('/images')) {
+      return next();
     }
+    // Frontend dosyaları için index.html gönder
+    res.sendFile(path.join(frontendBuildPath!, 'index.html'), (err) => {
+      if (err) {
+        console.error('❌ Frontend index.html gönderilemedi:', err);
+        res.status(404).json({ error: 'Frontend dosyası bulunamadı' });
+      }
+    });
   });
-} else {
+} else if (process.env.NODE_ENV === 'production') {
   console.log(`⚠️  Frontend build path bulunamadı. Denenen path'ler:`, possiblePaths);
 }
 
