@@ -16,13 +16,7 @@ export default defineConfig({
   },
   build: {
     target: 'esnext',
-    minify: 'terser',
-    terserOptions: {
-      compress: {
-        drop_console: true,
-        drop_debugger: true,
-      },
-    },
+    minify: 'esbuild', // terser yerine esbuild kullan (varsayılan, daha hızlı)
     rollupOptions: {
       output: {
         manualChunks: {
