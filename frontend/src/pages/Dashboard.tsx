@@ -4,7 +4,7 @@ import { Siparis, SiparisDurum } from '../types';
 import { 
   Package, Wrench, Award, CheckCircle, AlertCircle, TrendingUp, 
   Clock, RefreshCw, ArrowRight, ShoppingCart, BarChart3,
-  Activity, Zap, Calendar, Printer
+  Calendar, Printer
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
@@ -76,25 +76,17 @@ function Dashboard() {
   }, [loadDashboard]);
 
   // useMemo ile hesaplanan değerler
-  const { toplamSiparis, tamamlananSiparis, devamEdenSiparis, yeniSiparis, uretimdeSiparis, sertifikaSiparis, iadeHataliSiparis } = useMemo(() => {
+  const { toplamSiparis, yeniSiparis, uretimdeSiparis, sertifikaSiparis } = useMemo(() => {
     const toplam = raporlar.reduce((toplam, rapor) => toplam + (rapor.sayi || 0), 0);
-    const tamamlanan = raporlar.find(r => r.durum === 'Tamamlandı')?.sayi || 0;
-    const devamEden = raporlar
-      .filter(r => ['Yeni', 'Operasyon Onayı', 'Üretimde', 'Sertifika'].includes(r.durum))
-      .reduce((toplam, rapor) => toplam + (rapor.sayi || 0), 0);
     const yeni = raporlar.find(r => r.durum === 'Yeni')?.sayi || 0;
     const uretimde = raporlar.find(r => r.durum === 'Üretimde')?.sayi || 0;
     const sertifika = raporlar.find(r => r.durum === 'Sertifika')?.sayi || 0;
-    const iadeHatali = raporlar.find(r => r.durum === 'İade/Hatalı')?.sayi || 0;
     
     return { 
       toplamSiparis: toplam, 
-      tamamlananSiparis: tamamlanan, 
-      devamEdenSiparis: devamEden,
       yeniSiparis: yeni,
       uretimdeSiparis: uretimde,
-      sertifikaSiparis: sertifika,
-      iadeHataliSiparis: iadeHatali
+      sertifikaSiparis: sertifika
     };
   }, [raporlar]);
 
@@ -111,12 +103,6 @@ function Dashboard() {
       son7GunlukTamamlanan: filtered.filter(s => s.durum === 'Tamamlandı').length
     };
   }, [sonSiparisler]);
-
-  const { tamamlanmaOrani, devamEdenOrani } = useMemo(() => {
-    const tamamlanma = toplamSiparis > 0 ? Math.round((tamamlananSiparis / toplamSiparis) * 100) : 0;
-    const devamEden = toplamSiparis > 0 ? Math.round((devamEdenSiparis / toplamSiparis) * 100) : 0;
-    return { tamamlanmaOrani: tamamlanma, devamEdenOrani: devamEden };
-  }, [toplamSiparis, tamamlananSiparis, devamEdenSiparis]);
 
   if (loading) {
     return (

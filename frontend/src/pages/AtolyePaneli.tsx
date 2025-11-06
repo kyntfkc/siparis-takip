@@ -1,12 +1,10 @@
 import { useEffect, useState, useMemo } from 'react';
 import { siparisAPI } from '../services/api';
-import { Siparis, SiparisDurum, UretimDurum } from '../types';
-import { RefreshCw, CheckCircle2, XCircle, ArrowRight, Hammer, Sparkles, Wrench, ChevronDown, ChevronUp, Package, Image, User, ShoppingBag } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { Siparis, UretimDurum } from '../types';
+import { RefreshCw, CheckCircle2, ArrowRight, Sparkles, Wrench, ChevronDown, ChevronUp, Package, Image, User, ShoppingBag } from 'lucide-react';
 import ConfirmModal from '../components/ConfirmModal';
 
 function AtolyePaneli() {
-  const navigate = useNavigate();
   const [siparisler, setSiparisler] = useState<Siparis[]>([]);
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState<number | null>(null);
@@ -509,9 +507,7 @@ function AtolyePaneli() {
                           const nextStep = getNextStep(mevcutUretimDurum as UretimDurum);
                           if (!nextStep) return null;
                           
-                          const nextStepIcon = uretimDurumIkonlari[nextStep];
                           const nextStepColor = getConfirmColor(nextStep);
-                          const NextStepIcon = nextStepIcon;
                           
                           return (
                             <button

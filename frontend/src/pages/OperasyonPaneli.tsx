@@ -1,14 +1,13 @@
 import { useEffect, useState, useMemo } from 'react';
-import { siparisAPI, fotoğrafAPI } from '../services/api';
+import { siparisAPI } from '../services/api';
 import { Siparis } from '../types';
-import { CheckCircle2, RefreshCw, Image, Package, User, ShoppingBag, Search, Calendar, Filter, X } from 'lucide-react';
+import { CheckCircle2, RefreshCw, Image, Package, User, ShoppingBag, Search, Filter, X } from 'lucide-react';
 import ConfirmModal from '../components/ConfirmModal';
 
 function OperasyonPaneli() {
   const [siparisler, setSiparisler] = useState<Siparis[]>([]);
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState<number | null>(null);
-  const [fotografGuncelleniyor, setFotografGuncelleniyor] = useState(false);
   const [confirmModal, setConfirmModal] = useState<{
     isOpen: boolean;
     id: number | null;
@@ -145,20 +144,6 @@ function OperasyonPaneli() {
       alert('Durum güncellenirken hata oluştu');
     } finally {
       setUpdating(null);
-    }
-  };
-
-  const handleFotografGuncelle = async () => {
-    setFotografGuncelleniyor(true);
-    try {
-      const result = await fotoğrafAPI.updateFotograflar();
-      alert(`Fotoğraf güncelleme tamamlandı!\nGüncellenen: ${result.guncellenen}\nHatalı: ${result.hatali}\nToplam: ${result.toplam}`);
-      await loadSiparisler(); // Listeyi yenile
-    } catch (error) {
-      console.error('Fotoğraf güncellenemedi:', error);
-      alert('Fotoğraf güncellenirken hata oluştu');
-    } finally {
-      setFotografGuncelleniyor(false);
     }
   };
 
