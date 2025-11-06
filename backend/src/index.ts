@@ -14,14 +14,18 @@ import { startIkasSync } from './services/ikasSync.js';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-// .env dosyasını backend dizininden yükle
+// .env dosyasını backend dizininden yükle (varsa)
 const envPath = path.join(__dirname, '../.env');
 console.log(`📁 .env dosyası yolu: ${envPath}`);
-const result = dotenv.config({ path: envPath });
-if (result.error) {
-  console.error('❌ .env dosyası yüklenemedi:', result.error);
+if (existsSync(envPath)) {
+  const result = dotenv.config({ path: envPath });
+  if (result.error) {
+    console.warn('⚠️  .env dosyası yüklenemedi (Railway\'de environment variables kullanılıyor):', result.error.message);
+  } else {
+    console.log('✅ .env dosyası yüklendi');
+  }
 } else {
-  console.log('✅ .env dosyası yüklendi');
+  console.log('ℹ️  .env dosyası bulunamadı (Railway\'de environment variables kullanılıyor)');
 }
 
 // Supabase credentials kontrolü
@@ -31,6 +35,10 @@ console.log(`🔑 SUPABASE_STORAGE_BUCKET: ${process.env.SUPABASE_STORAGE_BUCKET
 
 const app = express();
 const PORT = process.env.PORT || 3001;
+
+// Railway'de PORT otomatik olarak atanır, $PORT kullanılmalı
+console.log(`🌐 PORT: ${PORT}`);
+console.log(`🌐 NODE_ENV: ${process.env.NODE_ENV || 'development'}`);
 
 app.use(cors());
 app.use(express.json());
@@ -97,6 +105,7 @@ app.use((err: any, req: any, res: any, next: any) => {
   });
 });
 
-app.listen(PORT, () => {
-  console.log(`🚀 Server running on http://localhost:${PORT}`);
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`🚀 Server running on http://0.0.0.0:${PORT}`);
+  console.log(`✅ Backend başarıyla başlatıldı`);
 });
