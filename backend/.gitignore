@@ -1,0 +1,7 @@
+node_modules
+dist
+.env
+database.json
+public/product-images/*.jpg
+public/product-images/*.png
+
