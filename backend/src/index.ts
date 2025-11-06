@@ -44,10 +44,15 @@ console.log(`🔑 SUPABASE_KEY: ${process.env.SUPABASE_KEY ? 'VAR (' + process.e
 console.log(`🔑 SUPABASE_STORAGE_BUCKET: ${process.env.SUPABASE_STORAGE_BUCKET || 'YOK'}`);
 
 const app = express();
-const PORT = Number(process.env.PORT) || 3001;
+// Railway'de PORT otomatik atanır ve zorunludur
+// Development'ta 3001, production'da Railway'in verdiği PORT
+const PORT = process.env.PORT ? Number(process.env.PORT) : 3001;
 
-// Railway'de PORT otomatik olarak atanır, $PORT kullanılmalı
-console.log(`🌐 PORT: ${PORT}`);
+if (!process.env.PORT && process.env.NODE_ENV === 'production') {
+  console.error('⚠️ Railway\'de PORT environment variable tanımlı olmalı!');
+}
+
+console.log(`🌐 PORT: ${PORT} (Railway Auto: ${!!process.env.PORT})`);
 console.log(`🌐 NODE_ENV: ${process.env.NODE_ENV || 'development'}`);
 
 app.use(cors());
