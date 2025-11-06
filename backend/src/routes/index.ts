@@ -3,8 +3,13 @@ import siparisRoutes from './siparis.routes.js';
 import raporRoutes from './rapor.routes.js';
 
 export function setupRoutes(app: Express) {
+  // Health check endpoint - Railway için kritik
   app.get('/api/health', (req, res) => {
-    res.json({ status: 'ok', message: 'Sipariş Takip API çalışıyor' });
+    res.status(200).json({ 
+      status: 'ok', 
+      message: 'Sipariş Takip API çalışıyor',
+      timestamp: new Date().toISOString()
+    });
   });
 
   // Manuel Trendyol sync test endpoint'i
