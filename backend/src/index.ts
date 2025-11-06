@@ -93,17 +93,34 @@ setTimeout(() => {
 }, 2000); // 2 saniye sonra başlat (Trendyol'dan sonra)
 
 // Frontend static files (production) - routes'tan sonra
-const frontendBuildPath = path.join(process.cwd(), '../frontend/dist');
-if (process.env.NODE_ENV === 'production' && existsSync(frontendBuildPath)) {
+// Railway'de build sonrası dosyalar root dizinde olabilir veya backend dizininde
+let frontendBuildPath: string | null = null;
+const possiblePaths = [
+  path.join(process.cwd(), '../frontend/dist'), // Backend dizininden root'a çık
+  path.join(process.cwd(), 'frontend/dist'),     // Root dizininden
+  path.join(__dirname, '../../frontend/dist'),  // Backend/src'den root'a çık
+];
+
+for (const possiblePath of possiblePaths) {
+  if (existsSync(possiblePath)) {
+    frontendBuildPath = possiblePath;
+    console.log(`✅ Frontend build path bulundu: ${frontendBuildPath}`);
+    break;
+  }
+}
+
+if (process.env.NODE_ENV === 'production' && frontendBuildPath) {
   app.use(express.static(frontendBuildPath));
   // SPA için tüm route'ları index.html'e yönlendir (API route'ları hariç)
   app.get('*', (req, res, next) => {
     if (!req.path.startsWith('/api') && !req.path.startsWith('/images')) {
-      res.sendFile(path.join(frontendBuildPath, 'index.html'));
+      res.sendFile(path.join(frontendBuildPath!, 'index.html'));
     } else {
       next();
     }
   });
+} else {
+  console.log(`⚠️  Frontend build path bulunamadı. Denenen path'ler:`, possiblePaths);
 }
 
 // Error handler middleware
