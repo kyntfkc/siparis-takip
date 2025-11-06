@@ -3,6 +3,7 @@ import { siparisAPI } from '../services/api';
 import { Siparis, UretimDurum } from '../types';
 import { RefreshCw, CheckCircle2, ArrowRight, Sparkles, Wrench, ChevronDown, ChevronUp, Package, Image, User, ShoppingBag } from 'lucide-react';
 import ConfirmModal from '../components/ConfirmModal';
+import { getImageUrl } from '../utils/imageHelper';
 
 function AtolyePaneli() {
   const [siparisler, setSiparisler] = useState<Siparis[]>([]);
@@ -421,10 +422,10 @@ function AtolyePaneli() {
                 return (
                   <tr key={siparis.id} className="hover:bg-gradient-to-r hover:from-blue-50/30 hover:to-indigo-50/30 transition-all duration-200 group active:bg-blue-100/50">
                     <td className="px-5 py-4 whitespace-nowrap">
-                      {siparis.urun_resmi && (siparis.urun_resmi.includes('http') || siparis.urun_resmi.includes('https')) ? (
+                      {getImageUrl(siparis.urun_resmi) ? (
                         <div className="relative w-[216px] h-[216px] overflow-hidden rounded-xl border-2 border-slate-200 shadow-md hover:border-blue-300 transition-all duration-200 bg-gradient-to-br from-slate-50 to-slate-100">
                           <img 
-                            src={siparis.urun_resmi} 
+                            src={getImageUrl(siparis.urun_resmi)!} 
                             alt={siparis.urun_adi}
                             loading="lazy"
                             className="w-full h-full"
