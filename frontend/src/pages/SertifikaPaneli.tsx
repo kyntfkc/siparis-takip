@@ -542,6 +542,7 @@ function SertifikaPaneli() {
                           src={getImageUrl(siparis.urun_resmi)!} 
                           alt={siparis.urun_adi}
                           loading="lazy"
+                          crossOrigin="anonymous"
                           className="w-full h-full"
                           style={{ 
                             objectFit: 'cover',

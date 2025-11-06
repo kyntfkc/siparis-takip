@@ -19,3 +19,19 @@ export function getImageUrl(imageUrl: string | null | undefined): string | null 
   return imageUrl;
 }
 
+// CORS sorunlarını önlemek için proxy URL oluştur (gerekirse)
+export function getImageUrlWithProxy(imageUrl: string | null | undefined): string | null {
+  const url = getImageUrl(imageUrl);
+  if (!url) return null;
+  
+  // Eğer Supabase Storage URL'i ise ve CORS sorunu varsa, backend proxy kullan
+  if (url.includes('supabase.co') && url.includes('/storage/')) {
+    // Backend'de bir proxy endpoint'i varsa kullanılabilir
+    // Şimdilik direkt URL'i döndür
+    return url;
+  }
+  
+  return url;
+}
+
+
