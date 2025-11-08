@@ -2,10 +2,15 @@ import axios from 'axios';
 import { createSiparis, getAllSiparisler } from '../database/db.js';
 import { fetchProductImage } from './trendyolSync.js';
 
-// Ikas API credentials
-const IKAS_CLIENT_ID = process.env.IKAS_CLIENT_ID || 'ecae4eb1-4dd2-430d-a6ec-0df8a1697c17';
-const IKAS_CLIENT_SECRET = process.env.IKAS_CLIENT_SECRET || 's_4L2ETEl0F5DoUmFflkOttooY663c340fb13a42adbe647021952657d9';
+// Ikas API credentials - Railway environment variables'dan alınır
+const IKAS_CLIENT_ID = process.env.IKAS_CLIENT_ID;
+const IKAS_CLIENT_SECRET = process.env.IKAS_CLIENT_SECRET;
 const IKAS_API_BASE_URL = process.env.IKAS_API_BASE_URL || 'https://api.myikas.com';
+
+// Credentials kontrolü
+if (!IKAS_CLIENT_ID || !IKAS_CLIENT_SECRET) {
+  console.warn('⚠️  Ikas API credentials tanımlı değil. IKAS_CLIENT_ID ve IKAS_CLIENT_SECRET environment variables ayarlayın.');
+}
 
 // OAuth token cache
 let accessToken: string | null = null;
@@ -14,6 +19,12 @@ let tokenExpiry: number = 0;
 // Ikas API'den OAuth token al
 async function getIkasAccessToken(): Promise<string | null> {
   try {
+    // Credentials kontrolü
+    if (!IKAS_CLIENT_ID || !IKAS_CLIENT_SECRET) {
+      console.error('❌ Ikas credentials tanımlı değil');
+      return null;
+    }
+
     // Token henüz geçerliyse, cache'den döndür
     if (accessToken && Date.now() < tokenExpiry) {
       return accessToken;
@@ -84,7 +95,9 @@ async function fetchIkasSiparisler(): Promise<any[]> {
     const graphqlUrl = `${IKAS_API_BASE_URL}/api/v1/admin/graphql`;
     
     console.log(`🔗 Ikas GraphQL URL: ${graphqlUrl}`);
-    console.log(`🔑 Ikas Client ID: ${IKAS_CLIENT_ID.substring(0, 20)}...`);
+    if (IKAS_CLIENT_ID) {
+      console.log(`🔑 Ikas Client ID: ${IKAS_CLIENT_ID.substring(0, 20)}...`);
+    }
 
     // GraphQL query
     const query = `
