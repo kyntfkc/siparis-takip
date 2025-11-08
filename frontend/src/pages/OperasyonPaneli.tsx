@@ -295,6 +295,7 @@ function OperasyonPaneli() {
                     <span>Ürün</span>
                   </div>
                 </th>
+                <th className="px-4 py-3 text-left text-xs font-bold text-slate-700 uppercase tracking-wider">Ürün Kodu</th>
                 <th className="px-4 py-3 text-left text-xs font-bold text-slate-700 uppercase tracking-wider">İşlem</th>
               </tr>
             </thead>
@@ -385,6 +386,11 @@ function OperasyonPaneli() {
                         ×{siparis.miktar}
                       </span>
                     </div>
+                  </td>
+                  <td className="px-4 py-3 whitespace-nowrap">
+                    <span className="text-sm font-bold text-blue-600 bg-blue-50 px-3 py-1.5 rounded-lg border border-blue-200">
+                      {siparis.urun_kodu || '-'}
+                    </span>
                   </td>
                   <td className="px-4 py-3 whitespace-nowrap">
                     <button

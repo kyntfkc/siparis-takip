@@ -264,6 +264,7 @@ function SiparisTakip() {
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Tarih</th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Müşteri</th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Ürün</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Ürün Kodu</th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Miktar</th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Durum</th>
             </tr>
@@ -287,6 +288,9 @@ function SiparisTakip() {
                 </td>
                 <td className="px-6 py-4 text-sm text-gray-500">
                   {siparis.urun_adi}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-blue-600">
+                  {siparis.urun_kodu || '-'}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                   {siparis.miktar}

@@ -291,6 +291,7 @@ function TamamlandiPaneli() {
                     <span>Ürün</span>
                   </div>
                 </th>
+                <th className="px-4 py-3 text-left text-xs font-bold text-slate-700 uppercase tracking-wider">Ürün Kodu</th>
                 <th className="px-4 py-3 text-left text-xs font-bold text-slate-700 uppercase tracking-wider">Adres</th>
               </tr>
             </thead>
@@ -382,6 +383,11 @@ function TamamlandiPaneli() {
                         ×{siparis.miktar}
                       </span>
                     </div>
+                  </td>
+                  <td className="px-4 py-3 whitespace-nowrap">
+                    <span className="text-sm font-bold text-blue-600 bg-blue-50 px-3 py-1.5 rounded-lg border border-blue-200">
+                      {siparis.urun_kodu || '-'}
+                    </span>
                   </td>
                   <td className="px-5 py-4 text-sm text-slate-600 max-w-xs">
                     <div className="truncate">

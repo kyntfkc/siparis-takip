@@ -409,6 +409,7 @@ function AtolyePaneli() {
                     <span>Ürün</span>
                   </div>
                 </th>
+                <th className="px-5 py-4 text-left text-sm font-bold text-slate-700 uppercase tracking-wider">Ürün Kodu</th>
                 <th className="px-5 py-4 text-left text-sm font-bold text-slate-700 uppercase tracking-wider">Üretim Durumu</th>
                 <th className="px-5 py-4 text-left text-sm font-bold text-slate-700 uppercase tracking-wider">İşlemler</th>
               </tr>
@@ -495,6 +496,11 @@ function AtolyePaneli() {
                           ×{siparis.miktar}
                         </span>
                       </div>
+                    </td>
+                    <td className="px-5 py-4 whitespace-nowrap">
+                      <span className="text-base font-bold text-blue-600 bg-blue-50 px-3 py-2 rounded-lg border border-blue-200">
+                        {siparis.urun_kodu || '-'}
+                      </span>
                     </td>
                     <td className="px-5 py-4 whitespace-nowrap">
                       <span className={`px-3 py-1.5 text-sm font-semibold rounded-lg border-2 flex items-center gap-1.5 w-fit ${durumRenk}`}>
