@@ -6,6 +6,17 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = new URL('.', import.meta.url).pathname.replace(/^\//, '').replace(/\\/g, '/');
 const dbPath = process.env.DATABASE_PATH || join(process.cwd(), 'database.json');
 
+// Railway Volume dizinini otomatik oluştur
+const dbDir = dirname(dbPath);
+if (!existsSync(dbDir)) {
+  try {
+    mkdirSync(dbDir, { recursive: true });
+    console.log(`📁 Database dizini oluşturuldu: ${dbDir}`);
+  } catch (err: any) {
+    console.error(`❌ Database dizini oluşturulamadı: ${err.message}`);
+  }
+}
+
 export interface Siparis {
   id?: number;
   trendyol_siparis_no: string;
