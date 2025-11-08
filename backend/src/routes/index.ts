@@ -58,6 +58,29 @@ export function setupRoutes(app: Express) {
     }
   });
 
+  // Trendyol Webhook endpoint'i
+  app.post('/api/webhook/trendyol', async (req, res) => {
+    try {
+      console.log('📨 Trendyol webhook alındı:', JSON.stringify(req.body).substring(0, 200));
+      
+      // Webhook'u hemen kabul et (Trendyol timeout'u önlemek için)
+      res.status(200).json({ success: true, message: 'Webhook alındı' });
+      
+      // Sipariş işleme (async olarak devam et)
+      setImmediate(async () => {
+        try {
+          const { processTrendyolWebhook } = await import('../services/trendyolSync.js');
+          await processTrendyolWebhook(req.body);
+        } catch (error: any) {
+          console.error('❌ Webhook işleme hatası:', error.message);
+        }
+      });
+    } catch (error: any) {
+      console.error('❌ Webhook hatası:', error.message);
+      res.status(500).json({ success: false, error: error.message });
+    }
+  });
+
   app.use('/api/siparisler', siparisRoutes);
   app.use('/api/raporlar', raporRoutes);
 }

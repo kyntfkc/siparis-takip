@@ -459,18 +459,190 @@ async function syncTrendyolSiparisler() {
   }
 }
 
+// Trendyol Webhook'u işle
+export async function processTrendyolWebhook(webhookData: any) {
+  try {
+    console.log('📨 Trendyol webhook işleniyor...');
+    console.log('📋 Webhook tipi:', webhookData.type || webhookData.eventType);
+    
+    // Sipariş oluşturma webhook'u
+    if (webhookData.type === 'ORDER_CREATED' || webhookData.eventType === 'ORDER_CREATED') {
+      const order = webhookData.order || webhookData;
+      console.log('🆕 Yeni sipariş webhook\'u:', order.orderNumber || order.orderId);
+      
+      // Tek bir sipariş olarak işle
+      await processSingleTrendyolOrder(order);
+      
+      console.log('✅ Webhook siparişi işlendi');
+    } else {
+      console.log('ℹ️  İşlenmeyen webhook tipi:', webhookData.type || webhookData.eventType);
+    }
+  } catch (error: any) {
+    console.error('❌ Webhook işleme hatası:', error.message);
+    console.error(error.stack);
+  }
+}
+
+// Tek bir Trendyol siparişini işle
+async function processSingleTrendyolOrder(trendyolSiparis: TrendyolSiparis) {
+  try {
+    const siparisNo = trendyolSiparis.orderNumber || 
+                      trendyolSiparis.orderId?.toString() || 
+                      `TY-${trendyolSiparis.orderId || Date.now()}`;
+
+    // Mevcut siparişleri kontrol et
+    const mevcutSiparisler = getAllSiparisler();
+    const mevcutSiparisNumaralari = new Set(mevcutSiparisler.map(s => s.trendyol_siparis_no));
+    
+    // Zaten var mı kontrol et
+    if (mevcutSiparisNumaralari.has(siparisNo)) {
+      console.log('ℹ️  Sipariş zaten mevcut:', siparisNo);
+      return;
+    }
+
+    // Sipariş tarihi
+    const siparisTarihi = trendyolSiparis.orderDate || 
+                          trendyolSiparis.orderDateFormatted || 
+                          new Date().toISOString();
+
+    // Müşteri bilgileri
+    const musteriAdi = trendyolSiparis.customerFirstName && trendyolSiparis.customerLastName
+      ? `${trendyolSiparis.customerFirstName} ${trendyolSiparis.customerLastName}`
+      : trendyolSiparis.customerFirstName || 
+        trendyolSiparis.customerLastName || 
+        'Müşteri Bilgisi Yok';
+
+    // Adres bilgisi
+    let adres = '';
+    if (trendyolSiparis.shippingAddress) {
+      const addr = trendyolSiparis.shippingAddress;
+      adres = [
+        addr.address1,
+        addr.address2,
+        addr.district,
+        addr.city,
+        addr.postalCode,
+        addr.country
+      ].filter(Boolean).join(' ');
+    }
+
+    // Sipariş satırları (lines)
+    const lines = trendyolSiparis.lines || [];
+    
+    if (lines.length === 0) {
+      console.log('⚠️  Sipariş satırı yok:', siparisNo);
+      return;
+    }
+
+    // Her sipariş satırı için ayrı kayıt oluştur
+    for (const line of lines) {
+      const urunAdi = line.productName || line.barcode || 'Ürün Adı Yok';
+      
+      // 14 Ayar Altın filtresi
+      const urunAdiLower = urunAdi.toLowerCase();
+      const altin14Ayar = urunAdiLower.includes('14 ayar') || 
+                         urunAdiLower.includes('14k') || 
+                         urunAdiLower.includes('14-k') ||
+                         urunAdiLower.includes('14 karat') ||
+                         urunAdiLower.includes('14kt') ||
+                         urunAdiLower.includes('14/585') ||
+                         urunAdiLower.match(/14\s*ayar/i) !== null ||
+                         urunAdiLower.match(/14\s*k/i) !== null;
+      
+      if (!altin14Ayar) {
+        console.log(`⏭️  Sipariş atlandı (14 Ayar Altın değil): ${urunAdi.substring(0, 50)}`);
+        continue;
+      }
+      
+      // Model kodu çıkar
+      let modelKodu: string | undefined = undefined;
+      
+      // API'den model kodu
+      const apiModelCode = (line as any).modelCode || 
+                          (line as any).product?.modelCode ||
+                          undefined;
+      
+      if (apiModelCode) {
+        modelKodu = String(apiModelCode);
+      }
+      
+      // Ürün adından model kodu
+      if (!modelKodu) {
+        const modelCodeMatch = urunAdi.match(/\b([A-Z]{2,}[0-9]+)\b/i);
+        if (modelCodeMatch) {
+          modelKodu = modelCodeMatch[1].toUpperCase();
+        }
+      }
+      
+      // Diğer alanlardan model kodu
+      if (!modelKodu) {
+        modelKodu = line.productCode || 
+                   (line as any).product?.code ||
+                   line.barcode || 
+                   (line as any).product?.barcode ||
+                   (line as any).sku ||
+                   (line as any).product?.sku ||
+                   undefined;
+        if (modelKodu) {
+          modelKodu = String(modelKodu);
+        }
+      }
+      
+      // Ürün fotoğrafı
+      const lineAny = line as any;
+      let urunResmi = line.productImageUrl || 
+                     line.productImage || 
+                     lineAny.imageUrl ||
+                     lineAny.image ||
+                     lineAny.productMainImage ||
+                     lineAny.productMainImageUrl ||
+                     lineAny.product?.imageUrl ||
+                     lineAny.product?.mainImage ||
+                     undefined;
+      
+      // Supabase'den fotoğraf çek
+      if (!urunResmi && modelKodu) {
+        urunResmi = await fetchProductImage(modelKodu, urunAdi);
+      }
+      
+      createSiparis({
+        trendyol_siparis_no: siparisNo,
+        siparis_tarihi: siparisTarihi,
+        musteri_adi: musteriAdi,
+        musteri_telefon: trendyolSiparis.customerPhoneNumber,
+        musteri_adres: adres || undefined,
+        urun_adi: urunAdi,
+        urun_kodu: modelKodu ? String(modelKodu) : undefined,
+        urun_resmi: urunResmi || undefined,
+        miktar: line.quantity || 1,
+        fiyat: line.salePrice || line.price || 0,
+        durum: 'Yeni',
+        platform: 'Trendyol',
+        trendyol_data: JSON.stringify(trendyolSiparis),
+      });
+      
+      console.log(`✅ Webhook siparişi eklendi: ${siparisNo} - ${urunAdi.substring(0, 50)}`);
+    }
+  } catch (error: any) {
+    console.error('❌ Tek sipariş işleme hatası:', error.message);
+    console.error(error.stack);
+  }
+}
+
 export function startTrendyolSync() {
-  // Tüm siparişleri sil ve baştan çek
-  console.log('🗑️  Tüm siparişler siliniyor...');
-  deleteAllSiparisler();
-  console.log('✅ Veritabanı temizlendi, son 7 günlük siparişler çekiliyor...');
+  // NOT: Webhook kullanıldığı için otomatik sync'i devre dışı bıraktık
+  // Sadece ilk başlangıçta son 7 günlük siparişleri çek
+  console.log('🔄 Trendyol webhook modu aktif - sadece başlangıç sync\'i yapılıyor');
   
-  // Her 30 dakikada bir çalış
-  cron.schedule('*/30 * * * *', syncTrendyolSiparisler);
-  
-  // İlk çalıştırma (tüm siparişler silindikten sonra)
+  // İlk çalıştırma
   setTimeout(() => {
-    console.log('🚀 Trendyol sync başlatıldı (30 dakikada bir)');
+    console.log('🚀 Trendyol başlangıç sync\'i (webhook için)');
     syncTrendyolSiparisler();
-  }, 1000); // 1 saniye bekle (silme işleminin tamamlanması için)
+  }, 2000);
+  
+  // Her 6 saatte bir yedek sync (webhook kaçırma durumu için)
+  cron.schedule('0 */6 * * *', () => {
+    console.log('🔄 Trendyol yedek sync (webhook backup)');
+    syncTrendyolSiparisler();
+  });
 }
