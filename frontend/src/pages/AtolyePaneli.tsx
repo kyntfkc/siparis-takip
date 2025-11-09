@@ -1,7 +1,7 @@
 import { useEffect, useState, useMemo } from 'react';
 import { siparisAPI } from '../services/api';
 import { Siparis, UretimDurum } from '../types';
-import { RefreshCw, CheckCircle2, ArrowRight, Sparkles, Wrench, ChevronDown, ChevronUp, Package, Image, User, ShoppingBag } from 'lucide-react';
+import { RefreshCw, CheckCircle2, ArrowRight, Sparkles, Wrench, ChevronDown, ChevronUp, Package, Image, User, ShoppingBag, FileText, Edit2, X } from 'lucide-react';
 import ConfirmModal from '../components/ConfirmModal';
 import { getImageUrl } from '../utils/imageHelper';
 
@@ -16,6 +16,12 @@ function AtolyePaneli() {
     uretimDurum: UretimDurum | null;
   }>({ isOpen: false, id: null, uretimDurum: null });
   const [openDropdownId, setOpenDropdownId] = useState<number | null>(null);
+  const [notModal, setNotModal] = useState<{
+    isOpen: boolean;
+    siparisId: number | null;
+    not: string;
+  }>({ isOpen: false, siparisId: null, not: '' });
+  const [hoveredNotId, setHoveredNotId] = useState<number | null>(null);
 
   // Ürün adını 2 satıra ayırma fonksiyonu
   const formatUrunAdi = (urunAdi: string): { satir1: string; satir2: string } => {
@@ -158,6 +164,27 @@ function AtolyePaneli() {
     } catch (error) {
       console.error('Durum güncellenemedi:', error);
       alert('Durum güncellenirken hata oluştu');
+    } finally {
+      setUpdating(null);
+    }
+  };
+
+  const handleNotClick = (siparis: Siparis) => {
+    setNotModal({ isOpen: true, siparisId: siparis.id, not: siparis.not || '' });
+  };
+
+  const handleNotSave = async () => {
+    if (!notModal.siparisId) return;
+    
+    setUpdating(notModal.siparisId);
+    
+    try {
+      await siparisAPI.updateNot(notModal.siparisId, notModal.not);
+      await loadSiparisler();
+      setNotModal({ isOpen: false, siparisId: null, not: '' });
+    } catch (error) {
+      console.error('Not güncellenemedi:', error);
+      alert('Not güncellenirken hata oluştu');
     } finally {
       setUpdating(null);
     }
@@ -510,6 +537,45 @@ function AtolyePaneli() {
                     </td>
                     <td className="px-5 py-4 whitespace-nowrap text-sm">
                       <div className="flex items-center gap-2">
+                        {/* Not Butonu */}
+                        <div
+                          className="relative"
+                          onMouseEnter={() => siparis.not && setHoveredNotId(siparis.id)}
+                          onMouseLeave={() => setHoveredNotId(null)}
+                        >
+                          <button
+                            onClick={() => handleNotClick(siparis)}
+                            disabled={updating === siparis.id}
+                            className={`flex items-center justify-center px-3 py-2 min-h-[40px] rounded-lg hover:shadow-md hover:scale-105 active:scale-95 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 text-sm font-semibold shadow-sm touch-manipulation relative ${
+                              siparis.not
+                                ? 'bg-blue-50 text-blue-600 border border-blue-200 hover:bg-blue-100'
+                                : 'bg-slate-50 text-slate-600 border border-slate-200 hover:bg-slate-100'
+                            }`}
+                            title={siparis.not || 'Not ekle'}
+                          >
+                            {siparis.not ? (
+                              <>
+                                <FileText className="w-4 h-4" />
+                                <span className="absolute -top-1 -right-1 w-2 h-2 bg-blue-500 rounded-full border border-white"></span>
+                              </>
+                            ) : (
+                              <Edit2 className="w-4 h-4" />
+                            )}
+                          </button>
+                          {/* Not Tooltip */}
+                          {hoveredNotId === siparis.id && siparis.not && (
+                            <div className="absolute left-0 top-full mt-2 z-50 w-64 bg-slate-800 text-white text-sm rounded-lg shadow-xl p-3 border border-slate-700">
+                              <div className="flex items-start gap-2">
+                                <FileText className="w-4 h-4 text-blue-400 flex-shrink-0 mt-0.5" />
+                                <div className="flex-1">
+                                  <div className="font-semibold text-blue-400 mb-1">Sipariş Notu:</div>
+                                  <div className="text-slate-200 whitespace-pre-wrap break-words">{siparis.not}</div>
+                                </div>
+                              </div>
+                              <div className="absolute -top-1 left-4 w-2 h-2 bg-slate-800 transform rotate-45 border-l border-t border-slate-700"></div>
+                            </div>
+                          )}
+                        </div>
                         {/* Sonraki Adım Butonu */}
                         {(() => {
                           const nextStep = getNextStep(mevcutUretimDurum as UretimDurum);
@@ -611,6 +677,54 @@ function AtolyePaneli() {
           className="fixed inset-0 z-0"
           onClick={() => setOpenDropdownId(null)}
         />
+      )}
+
+      {/* Not Modal */}
+      {notModal.isOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl shadow-2xl max-w-2xl w-full p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-xl font-bold text-slate-800 flex items-center gap-2">
+                <FileText className="w-5 h-5 text-blue-600" />
+                Sipariş Notu
+              </h3>
+              <button
+                onClick={() => setNotModal({ isOpen: false, siparisId: null, not: '' })}
+                className="text-slate-400 hover:text-slate-600 transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            <textarea
+              value={notModal.not}
+              onChange={(e) => setNotModal({ ...notModal, not: e.target.value })}
+              placeholder="Sipariş için not ekleyin..."
+              className="w-full h-32 px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none text-slate-700"
+            />
+            <div className="flex items-center justify-end gap-3 mt-4">
+              <button
+                onClick={() => setNotModal({ isOpen: false, siparisId: null, not: '' })}
+                className="px-4 py-2 text-slate-600 hover:text-slate-800 transition-colors font-medium"
+              >
+                İptal
+              </button>
+              <button
+                onClick={handleNotSave}
+                disabled={updating === notModal.siparisId}
+                className="px-5 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-semibold disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+              >
+                {updating === notModal.siparisId ? (
+                  <>
+                    <RefreshCw className="w-4 h-4 animate-spin" />
+                    <span>Kaydediliyor...</span>
+                  </>
+                ) : (
+                  'Kaydet'
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

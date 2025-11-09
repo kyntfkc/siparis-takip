@@ -18,6 +18,7 @@ function OperasyonPaneli() {
     siparisId: number | null;
     not: string;
   }>({ isOpen: false, siparisId: null, not: '' });
+  const [hoveredNotId, setHoveredNotId] = useState<number | null>(null);
 
   // Ürün adını 2 satıra ayırma fonksiyonu
   const formatUrunAdi = (urunAdi: string): { satir1: string; satir2: string } => {
@@ -419,23 +420,45 @@ function OperasyonPaneli() {
                     </div>
                   </td>
                   <td className="px-4 py-3 whitespace-nowrap">
-                    <div className="flex items-center gap-2">
-                      <button
-                        onClick={() => handleNotClick(siparis)}
-                        disabled={updating === siparis.id}
-                        className={`flex items-center justify-center px-3 py-2 min-h-[40px] rounded-lg hover:shadow-md hover:scale-105 active:scale-95 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 text-sm font-semibold shadow-sm touch-manipulation ${
-                          siparis.not
-                            ? 'bg-blue-50 text-blue-600 border border-blue-200 hover:bg-blue-100'
-                            : 'bg-slate-50 text-slate-600 border border-slate-200 hover:bg-slate-100'
-                        }`}
-                        title={siparis.not || 'Not ekle'}
+                    <div className="flex items-center gap-2 relative">
+                      <div
+                        className="relative"
+                        onMouseEnter={() => siparis.not && setHoveredNotId(siparis.id)}
+                        onMouseLeave={() => setHoveredNotId(null)}
                       >
-                        {siparis.not ? (
-                          <FileText className="w-4 h-4" />
-                        ) : (
-                          <Edit2 className="w-4 h-4" />
+                        <button
+                          onClick={() => handleNotClick(siparis)}
+                          disabled={updating === siparis.id}
+                          className={`flex items-center justify-center px-3 py-2 min-h-[40px] rounded-lg hover:shadow-md hover:scale-105 active:scale-95 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 text-sm font-semibold shadow-sm touch-manipulation relative ${
+                            siparis.not
+                              ? 'bg-blue-50 text-blue-600 border border-blue-200 hover:bg-blue-100'
+                              : 'bg-slate-50 text-slate-600 border border-slate-200 hover:bg-slate-100'
+                          }`}
+                          title={siparis.not || 'Not ekle'}
+                        >
+                          {siparis.not ? (
+                            <>
+                              <FileText className="w-4 h-4" />
+                              <span className="absolute -top-1 -right-1 w-2 h-2 bg-blue-500 rounded-full border border-white"></span>
+                            </>
+                          ) : (
+                            <Edit2 className="w-4 h-4" />
+                          )}
+                        </button>
+                        {/* Not Tooltip */}
+                        {hoveredNotId === siparis.id && siparis.not && (
+                          <div className="absolute left-0 top-full mt-2 z-50 w-64 bg-slate-800 text-white text-sm rounded-lg shadow-xl p-3 border border-slate-700">
+                            <div className="flex items-start gap-2">
+                              <FileText className="w-4 h-4 text-blue-400 flex-shrink-0 mt-0.5" />
+                              <div className="flex-1">
+                                <div className="font-semibold text-blue-400 mb-1">Sipariş Notu:</div>
+                                <div className="text-slate-200 whitespace-pre-wrap break-words">{siparis.not}</div>
+                              </div>
+                            </div>
+                            <div className="absolute -top-1 left-4 w-2 h-2 bg-slate-800 transform rotate-45 border-l border-t border-slate-700"></div>
+                          </div>
                         )}
-                      </button>
+                      </div>
                       <button
                         onClick={() => handleUretimeGonderClick(siparis.id)}
                         disabled={updating === siparis.id}
