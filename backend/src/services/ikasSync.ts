@@ -237,6 +237,21 @@ async function fetchIkasSiparisler(): Promise<any[]> {
     console.log(`📦 Ikas: ${siparisler.length} sipariş bulundu (toplam: ${listOrderData.count}, sayfa: ${listOrderData.page})`);
     
     if (siparisler.length > 0) {
+      // Options olan siparişleri bul ve detaylı log'la
+      for (const siparis of siparisler) {
+        if (siparis.orderLineItems && Array.isArray(siparis.orderLineItems)) {
+          for (const lineItem of siparis.orderLineItems) {
+            if (lineItem.options && Array.isArray(lineItem.options) && lineItem.options.length > 0) {
+              console.log(`🔍 Options olan sipariş bulundu: ${siparis.orderNumber || siparis.id}`);
+              console.log(`📋 Sipariş tam verisi:`, JSON.stringify(siparis, null, 2));
+              console.log(`📋 Line item tam verisi:`, JSON.stringify(lineItem, null, 2));
+              console.log(`📋 Options detaylı:`, JSON.stringify(lineItem.options, null, 2));
+              break; // İlk options olan siparişi bulduk, yeterli
+            }
+          }
+        }
+      }
+      
       console.log(`📝 İlk Ikas sipariş örneği:`, JSON.stringify(siparisler[0], null, 2));
       
       // İlk siparişin orderLineItems'ını detaylı log'la
