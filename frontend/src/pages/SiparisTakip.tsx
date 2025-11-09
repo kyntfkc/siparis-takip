@@ -1,7 +1,7 @@
 import { useEffect, useState, useMemo, useCallback } from 'react';
 import { siparisAPI, raporAPI } from '../services/api';
 import { Siparis, SiparisDurum } from '../types';
-import { RefreshCw, Filter } from 'lucide-react';
+import { RefreshCw, Filter, Package } from 'lucide-react';
 import { format } from 'date-fns';
 
 const durumRenkleri: Record<SiparisDurum, string> = {
@@ -117,43 +117,55 @@ function SiparisTakip() {
   }, [loadData]);
 
   if (loading) {
-    return <div className="text-center py-12">Yükleniyor...</div>;
+    return (
+      <div className="flex items-center justify-center py-20">
+        <div className="text-center">
+          <RefreshCw className="w-12 h-12 mx-auto mb-4 text-blue-600 animate-spin" />
+          <p className="text-slate-600 font-medium">Yükleniyor...</p>
+        </div>
+      </div>
+    );
   }
 
   return (
-    <div className="px-4 py-6 sm:px-0">
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold text-gray-900">Sipariş Takip & Raporlar</h2>
+    <div>
+      <div className="flex justify-between items-center mb-4">
+        <div>
+          <h2 className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-blue-600 bg-clip-text text-transparent bg-[length:200%_auto]">
+            Sipariş Takip & Raporlar
+          </h2>
+          <p className="text-slate-600 mt-0.5 sm:mt-1 font-medium text-xs sm:text-sm">Tüm siparişleri görüntüleyin ve raporları inceleyin</p>
+        </div>
         <button
           onClick={loadData}
-          className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+          className="flex items-center gap-2 px-4 py-2.5 min-h-[40px] bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg hover:shadow-lg hover:scale-105 active:scale-95 transition-all font-semibold text-sm shadow-md touch-manipulation"
         >
-          <RefreshCw className="w-4 h-4 mr-2" />
+          <RefreshCw className="w-4 h-4" />
           Yenile
         </button>
       </div>
 
       {/* Rapor Özeti */}
-      <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-6">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2 sm:gap-3 mb-4">
         {raporlar.map((rapor) => (
           <div
             key={rapor.durum}
-            className={`p-4 rounded-lg border ${durumRenkleri[rapor.durum as SiparisDurum] || 'bg-gray-100'}`}
+            className={`p-3 sm:p-4 rounded-lg border shadow-md ${durumRenkleri[rapor.durum as SiparisDurum] || 'bg-slate-100 text-slate-800 border-slate-200'}`}
           >
-            <div className="text-sm font-medium">{rapor.durum}</div>
-            <div className="text-2xl font-bold mt-1">{rapor.sayi}</div>
-            <div className="text-xs mt-1">
-              {rapor.toplam_fiyat?.toLocaleString('tr-TR', { style: 'currency', currency: 'TRY' })}
+            <div className="text-xs sm:text-sm font-medium mb-1">{rapor.durum}</div>
+            <div className="text-xl sm:text-2xl font-bold">{rapor.sayi || 0}</div>
+            <div className="text-xs mt-1 opacity-80">
+              {rapor.toplam_fiyat?.toLocaleString('tr-TR', { style: 'currency', currency: 'TRY' }) || '₺0'}
             </div>
           </div>
         ))}
       </div>
 
       {/* Filtre ve Sıralama */}
-      <div className="bg-white p-4 rounded-lg shadow-sm mb-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+      <div className="bg-white/80 backdrop-blur-sm rounded-lg shadow-lg border border-slate-200/60 mb-4 p-3 sm:p-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-2 sm:gap-3 mb-3">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-xs sm:text-sm font-medium text-slate-700 mb-1">
               Müşteri Ara
             </label>
             <input
@@ -161,11 +173,11 @@ function SiparisTakip() {
               value={filtreler.musteri}
               onChange={(e) => setFiltreler({ ...filtreler, musteri: e.target.value })}
               placeholder="Müşteri adı..."
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 text-xs sm:text-sm border-2 border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all bg-white text-slate-700 placeholder-slate-400"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-xs sm:text-sm font-medium text-slate-700 mb-1">
               Ürün Ara
             </label>
             <input
@@ -173,17 +185,17 @@ function SiparisTakip() {
               value={filtreler.urun}
               onChange={(e) => setFiltreler({ ...filtreler, urun: e.target.value })}
               placeholder="Ürün adı..."
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 text-xs sm:text-sm border-2 border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all bg-white text-slate-700 placeholder-slate-400"
             />
           </div>
         </div>
-        <div className="flex items-center gap-4 mb-4">
-          <div className="flex items-center gap-2">
-            <label className="text-sm font-medium text-gray-700">Sırala:</label>
+        <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
+          <div className="flex items-center gap-1.5 sm:gap-2">
+            <label className="text-xs sm:text-sm font-medium text-slate-700">Sırala:</label>
             <select
               value={siralama.alan}
               onChange={(e) => setSiralama({ ...siralama, alan: e.target.value as any })}
-              className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="px-2 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-sm border border-slate-300 rounded-lg sm:rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all bg-white/50 text-slate-700 font-medium"
             >
               <option value="siparis_tarihi">Tarih</option>
               <option value="musteri_adi">Müşteri</option>
@@ -193,18 +205,18 @@ function SiparisTakip() {
             </select>
             <button
               onClick={() => setSiralama({ ...siralama, yon: siralama.yon === 'asc' ? 'desc' : 'asc' })}
-              className="px-3 py-2 border border-gray-300 rounded-md hover:bg-gray-50"
+              className="px-2 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-sm border border-slate-300 rounded-lg sm:rounded-xl hover:bg-slate-50 transition-colors font-medium text-slate-700"
             >
               {siralama.yon === 'asc' ? '↑' : '↓'}
             </button>
           </div>
-          <div className="text-sm text-gray-600">
+          <div className="text-xs sm:text-sm text-slate-600 font-medium">
             {filteredSiparisler.length} / {siparisler.length} sipariş
           </div>
           {(filtreler.musteri || filtreler.urun) && (
             <button
               onClick={() => setFiltreler({ musteri: '', urun: '' })}
-              className="px-3 py-2 text-sm text-red-600 hover:text-red-700"
+              className="px-2 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-sm text-red-600 hover:text-red-700 hover:bg-red-50 rounded-lg sm:rounded-xl transition-colors font-medium"
             >
               Filtreleri Temizle
             </button>
@@ -213,16 +225,16 @@ function SiparisTakip() {
       </div>
 
       {/* Durum ve Tarih Filtreleri */}
-      <div className="bg-white p-4 rounded-lg shadow-sm mb-6">
-        <div className="flex items-center gap-4 flex-wrap">
-          <div className="flex items-center gap-2">
-            <Filter className="w-4 h-4 text-gray-500" />
-            <span className="text-sm font-medium">Filtrele:</span>
+      <div className="bg-white/80 backdrop-blur-sm rounded-lg shadow-lg border border-slate-200/60 mb-4 p-3 sm:p-4">
+        <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
+          <div className="flex items-center gap-1.5 sm:gap-2">
+            <Filter className="w-4 h-4 text-blue-600" />
+            <span className="text-xs sm:text-sm font-medium text-slate-700">Filtrele:</span>
           </div>
           <select
             value={durumFiltre}
             onChange={(e) => setDurumFiltre(e.target.value)}
-            className="px-3 py-2 border border-gray-300 rounded-lg text-sm"
+            className="px-2 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-sm border-2 border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all bg-white text-slate-700"
           >
             <option value="Tümü">Tüm Durumlar</option>
             <option value="Yeni">Yeni</option>
@@ -237,18 +249,18 @@ function SiparisTakip() {
             value={baslangicTarih}
             onChange={(e) => setBaslangicTarih(e.target.value)}
             placeholder="Başlangıç Tarihi"
-            className="px-3 py-2 border border-gray-300 rounded-lg text-sm"
+            className="px-2 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-sm border-2 border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all bg-white text-slate-700"
           />
           <input
             type="date"
             value={bitisTarih}
             onChange={(e) => setBitisTarih(e.target.value)}
             placeholder="Bitiş Tarihi"
-            className="px-3 py-2 border border-gray-300 rounded-lg text-sm"
+            className="px-2 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-sm border-2 border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all bg-white text-slate-700"
           />
           <button
             onClick={handleFiltrele}
-            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm"
+            className="px-3 sm:px-4 py-1.5 sm:py-2 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg hover:shadow-lg hover:scale-105 active:scale-95 transition-all font-semibold text-xs sm:text-sm shadow-md touch-manipulation"
           >
             Uygula
           </button>
@@ -256,65 +268,85 @@ function SiparisTakip() {
       </div>
 
       {/* Sipariş Listesi */}
-      <div className="bg-white shadow-sm rounded-lg overflow-hidden">
-        <table className="min-w-full divide-y divide-gray-200">
-          <thead className="bg-gray-50">
-            <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Sipariş No</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Tarih</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Müşteri</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Ürün</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Ürün Kodu</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Miktar</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Durum</th>
-            </tr>
-          </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
-            {filteredSiparisler.map((siparis) => (
-              <tr key={siparis.id} className="hover:bg-gray-50">
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                  {siparis.trendyol_siparis_no}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  {(() => {
-                    const tarih = typeof siparis.siparis_tarihi === 'string' 
-                      ? new Date(parseInt(siparis.siparis_tarihi)) 
-                      : new Date(siparis.siparis_tarihi);
-                    return isNaN(tarih.getTime()) ? 'Geçersiz Tarih' : format(tarih, 'dd.MM.yyyy');
-                  })()}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  {siparis.musteri_adi}
-                </td>
-                <td className="px-6 py-4 text-sm text-gray-500">
-                  {siparis.urun_adi}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-blue-600">
-                  {siparis.urun_kodu || '-'}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  {siparis.miktar}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <span
-                    className={`px-2 py-1 text-xs font-medium rounded border ${
-                      durumRenkleri[siparis.durum]
-                    }`}
-                  >
-                    {siparis.durum}
-                  </span>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-        {siparisler.length === 0 && (
-          <div className="text-center py-12 text-gray-500">Sipariş bulunamadı</div>
-        )}
-        {siparisler.length > 0 && filteredSiparisler.length === 0 && (
-          <div className="text-center py-12 text-gray-500">Filtrelere uygun sipariş bulunamadı</div>
-        )}
-      </div>
+      {siparisler.length === 0 ? (
+        <div className="text-center py-12 bg-white/80 backdrop-blur-sm rounded-xl shadow-lg border border-slate-200/60">
+          <div className="p-4 bg-slate-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+            <Package className="w-8 h-8 text-slate-400" />
+          </div>
+          <p className="text-slate-600 font-medium">Sipariş bulunamadı</p>
+        </div>
+      ) : filteredSiparisler.length === 0 ? (
+        <div className="text-center py-12 bg-white/80 backdrop-blur-sm rounded-xl shadow-lg border border-slate-200/60">
+          <div className="p-4 bg-slate-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+            <Filter className="w-8 h-8 text-slate-400" />
+          </div>
+          <p className="text-slate-600 font-medium">Filtrelere uygun sipariş bulunamadı</p>
+        </div>
+      ) : (
+        <div className="bg-white/90 backdrop-blur-sm rounded-xl shadow-xl border border-slate-200/80 overflow-hidden -mx-2 sm:mx-0">
+          <div className="overflow-x-auto">
+            <table className="min-w-full divide-y divide-slate-200/40" style={{ minWidth: '1000px' }}>
+              <thead className="bg-gradient-to-r from-blue-50 via-indigo-50 to-purple-50 border-b border-slate-200/60">
+                <tr>
+                  <th className="px-4 py-3 text-left text-xs font-bold text-slate-700 uppercase tracking-wider">Sipariş No</th>
+                  <th className="px-4 py-3 text-left text-xs font-bold text-slate-700 uppercase tracking-wider">Tarih</th>
+                  <th className="px-4 py-3 text-left text-xs font-bold text-slate-700 uppercase tracking-wider">Müşteri</th>
+                  <th className="px-4 py-3 text-left text-xs font-bold text-slate-700 uppercase tracking-wider">Ürün</th>
+                  <th className="px-4 py-3 text-left text-xs font-bold text-slate-700 uppercase tracking-wider">Ürün Kodu</th>
+                  <th className="px-4 py-3 text-left text-xs font-bold text-slate-700 uppercase tracking-wider">Miktar</th>
+                  <th className="px-4 py-3 text-left text-xs font-bold text-slate-700 uppercase tracking-wider">Durum</th>
+                </tr>
+              </thead>
+              <tbody className="bg-white divide-y divide-slate-100">
+                {filteredSiparisler.map((siparis) => (
+                  <tr key={siparis.id} className="hover:bg-gradient-to-r hover:from-blue-50/30 hover:to-indigo-50/30 transition-all duration-200 group active:bg-blue-100/50">
+                    <td className="px-4 py-3 whitespace-nowrap text-sm font-semibold text-slate-900">
+                      {siparis.trendyol_siparis_no}
+                    </td>
+                    <td className="px-4 py-3 whitespace-nowrap text-sm text-slate-600">
+                      {(() => {
+                        const tarih = typeof siparis.siparis_tarihi === 'string' 
+                          ? new Date(parseInt(siparis.siparis_tarihi)) 
+                          : new Date(siparis.siparis_tarihi);
+                        return isNaN(tarih.getTime()) ? 'Geçersiz Tarih' : format(tarih, 'dd.MM.yyyy');
+                      })()}
+                    </td>
+                    <td className="px-4 py-3 whitespace-nowrap text-sm text-slate-700 font-medium">
+                      {siparis.musteri_adi}
+                    </td>
+                    <td className="px-4 py-3 text-sm text-slate-600 max-w-xs truncate">
+                      {siparis.urun_adi}
+                    </td>
+                    <td className="px-4 py-3 whitespace-nowrap">
+                      <span className="text-sm font-bold text-blue-600 bg-blue-50 px-2 py-1 rounded-lg border border-blue-200">
+                        {siparis.urun_kodu || '-'}
+                      </span>
+                    </td>
+                    <td className="px-4 py-3 whitespace-nowrap">
+                      <span className={`px-2 py-1 text-white text-xs font-bold rounded-lg whitespace-nowrap shadow-sm min-w-[35px] text-center ${
+                        siparis.miktar > 1 
+                          ? 'bg-gradient-to-br from-red-500 to-rose-600 border border-red-400/30' 
+                          : 'bg-gradient-to-br from-blue-500 to-indigo-600 border border-blue-400/30'
+                      }`}>
+                        ×{siparis.miktar}
+                      </span>
+                    </td>
+                    <td className="px-4 py-3 whitespace-nowrap">
+                      <span
+                        className={`px-2 py-1 text-xs font-semibold rounded border ${
+                          durumRenkleri[siparis.durum]
+                        }`}
+                      >
+                        {siparis.durum}
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
