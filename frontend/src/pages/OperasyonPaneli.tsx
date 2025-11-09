@@ -282,14 +282,14 @@ function OperasyonPaneli() {
 
   return (
     <div>
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-4">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-1.5 sm:gap-3 mb-2 sm:mb-4">
               <div>
-                <h2 className="text-2xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-blue-600 bg-clip-text text-transparent bg-[length:200%_auto]">
+                <h2 className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-blue-600 bg-clip-text text-transparent bg-[length:200%_auto]">
                   Yeni Sipariş
                 </h2>
-                <p className="text-slate-600 mt-1 font-medium text-sm">Yeni gelen siparişleri yönetin</p>
+                <p className="text-slate-600 mt-0.5 sm:mt-1 font-medium text-xs sm:text-sm">Yeni gelen siparişleri yönetin</p>
               </div>
-              <div className="flex gap-2">
+              <div className="flex gap-1.5 sm:gap-2">
                 <button
                   onClick={() => setYeniSiparisModal(true)}
                   className="flex items-center justify-center px-4 py-2.5 min-h-[40px] bg-gradient-to-r from-emerald-500 to-teal-600 text-white rounded-lg hover:shadow-lg hover:scale-105 active:scale-95 transition-all font-semibold text-sm shadow-md touch-manipulation"
@@ -308,10 +308,10 @@ function OperasyonPaneli() {
             </div>
 
       {/* Filtre ve Sıralama */}
-      <div className="bg-white/80 backdrop-blur-sm rounded-lg shadow-lg border border-slate-200/60 mb-4 overflow-hidden">
+      <div className="bg-white/80 backdrop-blur-sm rounded-lg shadow-lg border border-slate-200/60 mb-2 sm:mb-4 overflow-hidden">
         <button
           onClick={() => setFiltreAcik(!filtreAcik)}
-          className="w-full flex items-center justify-between p-3 hover:bg-slate-50/50 transition-colors"
+          className="w-full flex items-center justify-between p-2 sm:p-3 hover:bg-slate-50/50 transition-colors"
         >
           <div className="flex items-center gap-2">
             <Filter className="w-4 h-4 text-blue-600" />
@@ -329,8 +329,8 @@ function OperasyonPaneli() {
           )}
         </button>
         {filtreAcik && (
-          <div className="px-3 pb-3 border-t border-slate-200/60">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-2 mb-3 pt-3">
+          <div className="px-2 sm:px-3 pb-2 sm:pb-3 border-t border-slate-200/60">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-1.5 sm:gap-2 mb-2 sm:mb-3 pt-2 sm:pt-3">
           <div>
             <label className="flex items-center gap-1.5 text-xs font-semibold text-slate-700 mb-1">
               <User className="w-3 h-3 text-blue-600" />
@@ -379,8 +379,8 @@ function OperasyonPaneli() {
             </select>
           </div>
         </div>
-        <div className="flex items-center gap-2 flex-wrap pt-2.5 border-t border-slate-200/60">
-          <div className="flex items-center gap-1.5">
+        <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap pt-2 sm:pt-2.5 border-t border-slate-200/60">
+          <div className="flex items-center gap-1 sm:gap-1.5">
             <label className="text-xs font-semibold text-slate-700 flex items-center gap-1.5">
               <Filter className="w-3 h-3 text-blue-600" />
               Sırala:
@@ -537,7 +537,7 @@ function OperasyonPaneli() {
                     )}
                     </div>
                   </td>
-                  <td className="px-2 sm:px-4 py-1 sm:py-2 whitespace-nowrap">
+                  <td className="px-1.5 sm:px-4 py-1 sm:py-2 whitespace-nowrap">
                     <div className="space-y-0.5 sm:space-y-1">
                       <div className="text-xs sm:text-sm text-slate-800 font-semibold leading-tight group-hover:text-blue-700 transition-colors">
                         {siparis.musteri_adi}
@@ -558,12 +558,12 @@ function OperasyonPaneli() {
                       </div>
                     </div>
                   </td>
-                  <td className="px-2 sm:px-4 py-1 sm:py-2">
+                  <td className="px-1.5 sm:px-4 py-1 sm:py-2">
                     <div className="flex-1 min-w-0">
                       {(() => {
                         const { satir1, satir2 } = formatUrunAdi(siparis.urun_adi);
                         return (
-                          <div className="space-y-1 sm:space-y-2">
+                          <div className="space-y-0.5 sm:space-y-2">
                             <div className="space-y-0.5 sm:space-y-1">
                               <div className="text-xs sm:text-sm text-slate-800 font-semibold leading-tight group-hover:text-blue-700 transition-colors line-clamp-2">
                                 {satir1}
@@ -576,7 +576,7 @@ function OperasyonPaneli() {
                               )}
                             </div>
                             {siparis.not && (
-                              <div className="mt-1 sm:mt-2 p-2 sm:p-3 bg-gradient-to-br from-blue-50 to-indigo-50 border-2 border-blue-300 rounded-lg sm:rounded-xl shadow-sm">
+                              <div className="mt-0.5 sm:mt-2 p-1.5 sm:p-3 bg-gradient-to-br from-blue-50 to-indigo-50 border-2 border-blue-300 rounded-lg sm:rounded-xl shadow-sm">
                                 <div className="text-xs sm:text-sm text-slate-800 whitespace-pre-wrap break-words leading-relaxed font-medium line-clamp-2 sm:line-clamp-none">
                                   {siparis.not}
                                 </div>
@@ -601,8 +601,8 @@ function OperasyonPaneli() {
                       </span>
                     </div>
                   </td>
-                  <td className="px-2 sm:px-4 py-1 sm:py-2 whitespace-nowrap">
-                    <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-1 sm:gap-2">
+                  <td className="px-1.5 sm:px-4 py-1 sm:py-2 whitespace-nowrap">
+                    <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-0.5 sm:gap-2">
                       <button
                         onClick={() => handleNotClick(siparis)}
                         disabled={updating === siparis.id}
