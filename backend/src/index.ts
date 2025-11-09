@@ -161,7 +161,13 @@ app.use((err: any, req: any, res: any, next: any) => {
   });
 });
 
-app.listen(PORT, '0.0.0.0', () => {
-  console.log(`🚀 Server running on http://0.0.0.0:${PORT}`);
-  console.log(`✅ Backend başarıyla başlatıldı`);
-});
+try {
+  app.listen(PORT, '0.0.0.0', () => {
+    console.log(`🚀 Server running on http://0.0.0.0:${PORT}`);
+    console.log(`✅ Backend başarıyla başlatıldı`);
+  });
+} catch (error: any) {
+  console.error('❌ Server başlatılamadı:', error.message);
+  console.error('❌ Error Stack:', error.stack);
+  process.exit(1);
+}
