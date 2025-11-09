@@ -118,79 +118,79 @@ function Dashboard() {
   return (
     <div>
         {/* Header */}
-        <div className="flex justify-between items-center mb-6">
+        <div className="flex justify-between items-center mb-3 sm:mb-4">
           <div>
-            <h1 className="text-2xl font-bold text-slate-900">Dashboard</h1>
-            <p className="text-slate-500 text-sm mt-1">Sipariş takip sistemi genel bakış</p>
+            <h1 className="text-xl sm:text-2xl font-bold text-slate-900">Dashboard</h1>
+            <p className="text-slate-500 text-xs sm:text-sm mt-0.5 sm:mt-1">Sipariş takip sistemi genel bakış</p>
           </div>
           <button
             onClick={loadDashboard}
-            className="flex items-center gap-2 px-4 py-2 bg-white rounded-lg shadow-sm hover:shadow-md transition-all duration-200 text-slate-700 hover:text-blue-600 border border-slate-200 hover:border-blue-300 text-sm font-medium"
+            className="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 bg-white rounded-lg shadow-sm hover:shadow-md transition-all duration-200 text-slate-700 hover:text-blue-600 border border-slate-200 hover:border-blue-300 text-xs sm:text-sm font-medium"
           >
-            <RefreshCw className="w-4 h-4" />
-            <span>Yenile</span>
+            <RefreshCw className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+            <span className="hidden sm:inline">Yenile</span>
           </button>
         </div>
 
         {/* İkinci Satır İstatistikler */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-2 sm:gap-3 mb-3 sm:mb-4">
           {/* Yeni Siparişler */}
           <div 
             onClick={() => navigate('/operasyon')}
-            className="bg-white p-4 rounded-lg shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer border border-slate-200 hover:border-yellow-400 group"
+            className="bg-white p-2.5 sm:p-3 rounded-lg shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer border border-slate-200 hover:border-yellow-400 group"
           >
-            <div className="flex items-center justify-between mb-3">
-              <div className="p-2 bg-yellow-100 rounded-lg group-hover:bg-yellow-200 transition-colors">
-                <Package className="w-5 h-5 text-yellow-600" />
+            <div className="flex items-center justify-between mb-2 sm:mb-2.5">
+              <div className="p-1.5 sm:p-2 bg-yellow-100 rounded-lg group-hover:bg-yellow-200 transition-colors">
+                <Package className="w-4 h-4 sm:w-5 sm:h-5 text-yellow-600" />
               </div>
-              <ArrowRight className="w-4 h-4 text-slate-400 group-hover:text-yellow-600 transition-all" />
+              <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-slate-400 group-hover:text-yellow-600 transition-all" />
             </div>
-            <p className="text-2xl font-bold text-slate-900 mb-1">{yeniSiparis}</p>
+            <p className="text-xl sm:text-2xl font-bold text-slate-900 mb-0.5 sm:mb-1">{yeniSiparis}</p>
             <p className="text-slate-600 text-xs font-medium">Yeni Sipariş</p>
           </div>
 
           {/* Üretimde */}
           <div 
             onClick={() => navigate('/atolye')}
-            className="bg-white p-4 rounded-lg shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer border border-slate-200 hover:border-purple-400 group"
+            className="bg-white p-2.5 sm:p-3 rounded-lg shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer border border-slate-200 hover:border-purple-400 group"
           >
-            <div className="flex items-center justify-between mb-3">
-              <div className="p-2 bg-purple-100 rounded-lg group-hover:bg-purple-200 transition-colors">
-                <Wrench className="w-5 h-5 text-purple-600" />
+            <div className="flex items-center justify-between mb-2 sm:mb-2.5">
+              <div className="p-1.5 sm:p-2 bg-purple-100 rounded-lg group-hover:bg-purple-200 transition-colors">
+                <Wrench className="w-4 h-4 sm:w-5 sm:h-5 text-purple-600" />
               </div>
-              <ArrowRight className="w-4 h-4 text-slate-400 group-hover:text-purple-600 transition-all" />
+              <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-slate-400 group-hover:text-purple-600 transition-all" />
             </div>
-            <p className="text-2xl font-bold text-slate-900 mb-1">{uretimdeSiparis}</p>
+            <p className="text-xl sm:text-2xl font-bold text-slate-900 mb-0.5 sm:mb-1">{uretimdeSiparis}</p>
             <p className="text-slate-600 text-xs font-medium">Üretimde</p>
           </div>
 
           {/* Sertifika */}
           <div 
             onClick={() => navigate('/sertifika')}
-            className="bg-white p-4 rounded-lg shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer border border-slate-200 hover:border-orange-400 group"
+            className="bg-white p-2.5 sm:p-3 rounded-lg shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer border border-slate-200 hover:border-orange-400 group"
           >
-            <div className="flex items-center justify-between mb-3">
-              <div className="p-2 bg-orange-100 rounded-lg group-hover:bg-orange-200 transition-colors">
-                <Award className="w-5 h-5 text-orange-600" />
+            <div className="flex items-center justify-between mb-2 sm:mb-2.5">
+              <div className="p-1.5 sm:p-2 bg-orange-100 rounded-lg group-hover:bg-orange-200 transition-colors">
+                <Award className="w-4 h-4 sm:w-5 sm:h-5 text-orange-600" />
               </div>
-              <ArrowRight className="w-4 h-4 text-slate-400 group-hover:text-orange-600 transition-all" />
+              <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-slate-400 group-hover:text-orange-600 transition-all" />
             </div>
-            <p className="text-2xl font-bold text-slate-900 mb-1">{sertifikaSiparis}</p>
+            <p className="text-xl sm:text-2xl font-bold text-slate-900 mb-0.5 sm:mb-1">{sertifikaSiparis}</p>
             <p className="text-slate-600 text-xs font-medium">Sertifika</p>
           </div>
         </div>
 
         {/* Alt Bölüm */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 mb-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-2 sm:gap-3 mb-3 sm:mb-4">
           {/* Durum Dağılımı */}
-          <div className="bg-white p-3 rounded-lg shadow-sm border border-slate-200">
-            <h3 className="text-base font-bold text-slate-900 mb-3 flex items-center gap-2">
-              <div className="p-1 bg-blue-500 rounded">
-                <BarChart3 className="w-3.5 h-3.5 text-white" />
+          <div className="bg-white p-2 sm:p-3 rounded-lg shadow-sm border border-slate-200">
+            <h3 className="text-sm sm:text-base font-bold text-slate-900 mb-2 sm:mb-3 flex items-center gap-1.5 sm:gap-2">
+              <div className="p-0.5 sm:p-1 bg-blue-500 rounded">
+                <BarChart3 className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-white" />
               </div>
               Durum Dağılımı
             </h3>
-            <div className="space-y-1.5">
+            <div className="space-y-1 sm:space-y-1.5">
               {raporlar.filter(r => r.durum !== 'İade/Hatalı').map((rapor) => {
                 const DurumIkoni = durumIkonlari[rapor.durum as SiparisDurum] || Package;
                 const renk = durumRenkleri[rapor.durum as SiparisDurum] || 'bg-gray-100 text-gray-800 border-gray-200';
@@ -199,7 +199,7 @@ function Dashboard() {
                 return (
                   <div
                     key={rapor.durum}
-                    className={`p-2 rounded border cursor-pointer hover:shadow-sm transition-all duration-200 ${renk}`}
+                    className={`p-1.5 sm:p-2 rounded border cursor-pointer hover:shadow-sm transition-all duration-200 ${renk}`}
                     onClick={() => {
                       if (rapor.durum === 'Yeni') navigate('/operasyon');
                       else if (rapor.durum === 'Üretimde') navigate('/atolye');
@@ -207,16 +207,16 @@ function Dashboard() {
                       else if (rapor.durum === 'Tamamlandı') navigate('/tamamlandi');
                     }}
                   >
-                    <div className="flex items-center justify-between mb-1">
-                      <div className="flex items-center gap-1.5">
-                        <DurumIkoni className="w-3.5 h-3.5" />
+                    <div className="flex items-center justify-between mb-0.5 sm:mb-1">
+                      <div className="flex items-center gap-1 sm:gap-1.5">
+                        <DurumIkoni className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
                         <span className="font-medium text-xs">{rapor.durum}</span>
                       </div>
-                      <span className="text-base font-bold">{rapor.sayi || 0}</span>
+                      <span className="text-sm sm:text-base font-bold">{rapor.sayi || 0}</span>
                     </div>
-                    <div className="w-full bg-gray-200 rounded-full h-1.5 overflow-hidden">
+                    <div className="w-full bg-gray-200 rounded-full h-1 sm:h-1.5 overflow-hidden">
                       <div
-                        className={`h-1.5 rounded-full transition-all duration-1000 ${
+                        className={`h-1 sm:h-1.5 rounded-full transition-all duration-1000 ${
                           rapor.durum === 'Yeni' ? 'bg-yellow-500' :
                           rapor.durum === 'Operasyon Onayı' ? 'bg-blue-500' :
                           rapor.durum === 'Üretimde' ? 'bg-purple-500' :
@@ -236,47 +236,47 @@ function Dashboard() {
           </div>
 
           {/* Son 7 Günlük İstatistikler */}
-          <div className="bg-white p-3 rounded-lg shadow-sm border border-slate-200">
-            <h3 className="text-base font-bold text-gray-900 mb-3 flex items-center gap-2">
-              <Calendar className="w-3.5 h-3.5 text-purple-600" />
+          <div className="bg-white p-2 sm:p-3 rounded-lg shadow-sm border border-slate-200">
+            <h3 className="text-sm sm:text-base font-bold text-gray-900 mb-2 sm:mb-3 flex items-center gap-1.5 sm:gap-2">
+              <Calendar className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-purple-600" />
               Son 7 Günlük Özet
             </h3>
-            <div className="space-y-1.5">
-              <div className="p-2 bg-blue-50 rounded border border-blue-200">
+            <div className="space-y-1 sm:space-y-1.5">
+              <div className="p-1.5 sm:p-2 bg-blue-50 rounded border border-blue-200">
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-1.5">
-                    <Package className="w-3.5 h-3.5 text-blue-600" />
+                  <div className="flex items-center gap-1 sm:gap-1.5">
+                    <Package className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-blue-600" />
                     <span className="font-medium text-xs text-blue-900">Yeni Sipariş</span>
                   </div>
-                  <span className="text-base font-bold text-blue-900">{son7GunlukYeni}</span>
+                  <span className="text-sm sm:text-base font-bold text-blue-900">{son7GunlukYeni}</span>
                 </div>
               </div>
               
-              <div className="p-2 bg-green-50 rounded border border-green-200">
+              <div className="p-1.5 sm:p-2 bg-green-50 rounded border border-green-200">
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-1.5">
-                    <CheckCircle className="w-3.5 h-3.5 text-green-600" />
+                  <div className="flex items-center gap-1 sm:gap-1.5">
+                    <CheckCircle className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-green-600" />
                     <span className="font-medium text-xs text-green-900">Tamamlanan</span>
                   </div>
-                  <span className="text-base font-bold text-green-900">{son7GunlukTamamlanan}</span>
+                  <span className="text-sm sm:text-base font-bold text-green-900">{son7GunlukTamamlanan}</span>
                 </div>
               </div>
               
-              <div className="p-2 bg-purple-50 rounded border border-purple-200">
+              <div className="p-1.5 sm:p-2 bg-purple-50 rounded border border-purple-200">
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-1.5">
-                    <TrendingUp className="w-3.5 h-3.5 text-purple-600" />
+                  <div className="flex items-center gap-1 sm:gap-1.5">
+                    <TrendingUp className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-purple-600" />
                     <span className="font-medium text-xs text-purple-900">Toplam</span>
                   </div>
-                  <span className="text-base font-bold text-purple-900">{son7GunlukSiparisler.length}</span>
+                  <span className="text-sm sm:text-base font-bold text-purple-900">{son7GunlukSiparisler.length}</span>
                 </div>
               </div>
 
               {son7GunlukTamamlanan > 0 && son7GunlukSiparisler.length > 0 && (
-                <div className="p-2 bg-gray-50 rounded border border-gray-200 mt-1.5">
+                <div className="p-1.5 sm:p-2 bg-gray-50 rounded border border-gray-200 mt-1 sm:mt-1.5">
                   <div className="flex justify-between items-center">
                     <span className="text-xs text-gray-700 font-medium">Tamamlanma Oranı</span>
-                    <span className="font-bold text-green-600 text-sm">
+                    <span className="font-bold text-green-600 text-xs sm:text-sm">
                       %{Math.round((son7GunlukTamamlanan / son7GunlukSiparisler.length) * 100)}
                     </span>
                   </div>
@@ -287,11 +287,11 @@ function Dashboard() {
         </div>
 
         {/* Son Siparişler */}
-        <div className="bg-white p-4 rounded-lg shadow-sm border border-slate-200">
-          <div className="flex justify-between items-center mb-4">
-            <h3 className="text-lg font-bold text-slate-900 flex items-center gap-2">
-              <div className="p-1.5 bg-blue-500 rounded-lg">
-                <ShoppingCart className="w-4 h-4 text-white" />
+        <div className="bg-white p-2 sm:p-3 rounded-lg shadow-sm border border-slate-200">
+          <div className="flex justify-between items-center mb-2 sm:mb-3">
+            <h3 className="text-base sm:text-lg font-bold text-slate-900 flex items-center gap-1.5 sm:gap-2">
+              <div className="p-1 sm:p-1.5 bg-blue-500 rounded-lg">
+                <ShoppingCart className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-white" />
               </div>
               Son Siparişler
             </h3>

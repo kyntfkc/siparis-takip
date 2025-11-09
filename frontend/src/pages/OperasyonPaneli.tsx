@@ -1,7 +1,7 @@
 import { useEffect, useState, useMemo } from 'react';
 import { siparisAPI, fotoğrafAPI } from '../services/api';
 import { Siparis } from '../types';
-import { CheckCircle2, RefreshCw, Image, Package, User, ShoppingBag, Search, Filter, X, FileText, Edit2, RotateCw, CheckCircle, AlertCircle, Info, Plus } from 'lucide-react';
+import { CheckCircle2, RefreshCw, Image, Package, User, ShoppingBag, Search, Filter, X, FileText, Edit2, RotateCw, CheckCircle, AlertCircle, Info, Plus, ChevronDown, ChevronUp } from 'lucide-react';
 import ConfirmModal from '../components/ConfirmModal';
 import { getImageUrl } from '../utils/imageHelper';
 
@@ -34,6 +34,7 @@ function OperasyonPaneli() {
     fiyat: 0,
     platform: 'Trendyol' as 'Trendyol' | 'Ikas',
   });
+  const [filtreAcik, setFiltreAcik] = useState(false);
 
   // Ürün adını 2 satıra ayırma fonksiyonu
   const formatUrunAdi = (urunAdi: string): { satir1: string; satir2: string } => {
@@ -307,12 +308,29 @@ function OperasyonPaneli() {
             </div>
 
       {/* Filtre ve Sıralama */}
-      <div className="bg-gradient-to-br from-white via-blue-50/30 to-indigo-50/30 backdrop-blur-sm p-4 rounded-lg shadow-xl border-2 border-blue-100/60 mb-4">
-        <div className="flex items-center gap-2 mb-3">
-          <Filter className="w-3.5 h-3.5 text-blue-600" />
-          <h3 className="text-sm font-bold text-slate-800">Filtre ve Sıralama</h3>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-2 mb-3">
+      <div className="bg-gradient-to-br from-white via-blue-50/30 to-indigo-50/30 backdrop-blur-sm rounded-lg shadow-xl border-2 border-blue-100/60 mb-4 overflow-hidden">
+        <button
+          onClick={() => setFiltreAcik(!filtreAcik)}
+          className="w-full flex items-center justify-between p-3 sm:p-4 hover:bg-blue-50/50 transition-colors"
+        >
+          <div className="flex items-center gap-2">
+            <Filter className="w-4 h-4 text-blue-600" />
+            <h3 className="text-sm font-bold text-slate-800">Filtre ve Sıralama</h3>
+            {(filtreler.musteri || filtreler.urun || filtreler.platform) && (
+              <span className="px-2 py-0.5 bg-blue-600 text-white text-xs font-bold rounded-full">
+                {[filtreler.musteri, filtreler.urun, filtreler.platform].filter(Boolean).length}
+              </span>
+            )}
+          </div>
+          {filtreAcik ? (
+            <ChevronUp className="w-4 h-4 text-slate-600" />
+          ) : (
+            <ChevronDown className="w-4 h-4 text-slate-600" />
+          )}
+        </button>
+        {filtreAcik && (
+          <div className="px-3 sm:px-4 pb-3 sm:pb-4 border-t border-slate-200/60">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-2 mb-3 pt-3">
           <div>
             <label className="flex items-center gap-1.5 text-xs font-semibold text-slate-700 mb-1">
               <User className="w-3 h-3 text-blue-600" />
@@ -390,16 +408,18 @@ function OperasyonPaneli() {
               {filteredSiparisler.length} / {siparisler.length} sipariş
             </span>
           </div>
-          {(filtreler.musteri || filtreler.urun || filtreler.platform) && (
-            <button
-              onClick={() => setFiltreler({ musteri: '', urun: '', platform: '' })}
-              className="flex items-center gap-1.5 px-3 py-2 min-h-[36px] text-xs text-red-600 hover:text-red-700 hover:bg-red-50 rounded-lg transition-all font-semibold border-2 border-red-200 hover:border-red-300 shadow-sm touch-manipulation active:scale-95"
-            >
-              <X className="w-3.5 h-3.5" />
-              Filtreleri Temizle
-            </button>
-          )}
-        </div>
+              {(filtreler.musteri || filtreler.urun || filtreler.platform) && (
+                <button
+                  onClick={() => setFiltreler({ musteri: '', urun: '', platform: '' })}
+                  className="flex items-center gap-1.5 px-3 py-2 min-h-[36px] text-xs text-red-600 hover:text-red-700 hover:bg-red-50 rounded-lg transition-all font-semibold border-2 border-red-200 hover:border-red-300 shadow-sm touch-manipulation active:scale-95"
+                >
+                  <X className="w-3.5 h-3.5" />
+                  Filtreleri Temizle
+                </button>
+              )}
+            </div>
+          </div>
+        )}
       </div>
 
       {siparisler.length === 0 ? (
@@ -427,16 +447,16 @@ function OperasyonPaneli() {
                     <span>Fotoğraf</span>
                   </div>
                 </th>
-                <th className="px-2 sm:px-4 py-3 text-left text-xs font-bold text-slate-700 uppercase tracking-wider">
-                  <div className="flex items-center gap-2">
-                    <User className="w-4 h-4 text-blue-600" />
+                <th className="px-2 sm:px-4 py-2 sm:py-3 text-left text-xs font-bold text-slate-700 uppercase tracking-wider">
+                  <div className="flex items-center gap-1 sm:gap-2">
+                    <User className="w-3 h-3 sm:w-4 sm:h-4 text-blue-600" />
                     <span className="hidden md:inline">Müşteri</span>
                     <span className="md:hidden">Müş.</span>
                   </div>
                 </th>
-                <th className="px-2 sm:px-4 py-3 text-left text-xs font-bold text-slate-700 uppercase tracking-wider">
-                  <div className="flex items-center gap-2">
-                    <ShoppingBag className="w-4 h-4 text-blue-600" />
+                <th className="px-2 sm:px-4 py-2 sm:py-3 text-left text-xs font-bold text-slate-700 uppercase tracking-wider">
+                  <div className="flex items-center gap-1 sm:gap-2">
+                    <ShoppingBag className="w-3 h-3 sm:w-4 sm:h-4 text-blue-600" />
                     <span>Ürün</span>
                   </div>
                 </th>
@@ -490,7 +510,7 @@ function OperasyonPaneli() {
                           </button>
                         </div>
                       ) : (
-                        <div className="relative w-[120px] h-[120px] sm:w-[173px] sm:h-[173px] bg-gradient-to-br from-slate-100 to-slate-200 rounded-lg flex flex-col items-center justify-center text-xs text-slate-400 border-2 border-slate-200 shadow-sm">
+                        <div className="relative w-[100px] h-[100px] sm:w-[173px] sm:h-[173px] bg-gradient-to-br from-slate-100 to-slate-200 rounded-lg flex flex-col items-center justify-center text-xs text-slate-400 border-2 border-slate-200 shadow-sm">
                           <div className="mb-2">{siparis.urun_resmi ? 'Geçersiz URL' : 'Resim Yok'}</div>
                           {siparis.urun_kodu && (
                             <button
@@ -516,15 +536,15 @@ function OperasyonPaneli() {
                       )}
                     </div>
                   </td>
-                  <td className="px-2 sm:px-4 py-3 whitespace-nowrap">
-                    <div className="space-y-1.5">
+                  <td className="px-2 sm:px-4 py-2 sm:py-3 whitespace-nowrap">
+                    <div className="space-y-1">
                       <div className="text-xs sm:text-sm text-slate-800 font-semibold leading-tight group-hover:text-blue-700 transition-colors">
                         {siparis.musteri_adi}
                       </div>
-                      <div className="text-xs text-slate-500 mt-1 font-mono leading-tight bg-slate-50 px-2.5 py-1 rounded-md inline-block border border-slate-200">
+                      <div className="text-xs text-slate-500 font-mono leading-tight bg-slate-50 px-1.5 sm:px-2.5 py-0.5 sm:py-1 rounded-md inline-block border border-slate-200">
                         {siparis.trendyol_siparis_no}
                       </div>
-                      <div className="flex items-center gap-1.5 text-xs text-slate-400 mt-1 leading-tight">
+                      <div className="hidden sm:flex items-center gap-1.5 text-xs text-slate-400 mt-1 leading-tight">
                         <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                         </svg>
@@ -537,26 +557,26 @@ function OperasyonPaneli() {
                       </div>
                     </div>
                   </td>
-                  <td className="px-2 sm:px-4 py-3">
+                  <td className="px-2 sm:px-4 py-2 sm:py-3">
                     <div className="flex-1 min-w-0">
                       {(() => {
                         const { satir1, satir2 } = formatUrunAdi(siparis.urun_adi);
                         return (
-                          <div className="space-y-2">
-                            <div className="space-y-1">
-                              <div className="text-xs sm:text-sm text-slate-800 font-semibold leading-tight group-hover:text-blue-700 transition-colors">
+                          <div className="space-y-1.5 sm:space-y-2">
+                            <div className="space-y-0.5 sm:space-y-1">
+                              <div className="text-xs sm:text-sm text-slate-800 font-semibold leading-tight group-hover:text-blue-700 transition-colors line-clamp-2">
                                 {satir1}
                               </div>
                               {satir2 && (
-                                <div className="text-xs text-slate-600 leading-tight flex items-center gap-1.5">
+                                <div className="text-xs text-slate-600 leading-tight flex items-center gap-1.5 line-clamp-1">
                                   <span className="text-blue-600 font-bold">•</span>
                                   {satir2}
                                 </div>
                               )}
                             </div>
                             {siparis.not && (
-                              <div className="mt-2 p-3 bg-gradient-to-br from-blue-50 to-indigo-50 border-2 border-blue-300 rounded-xl shadow-sm">
-                                <div className="text-sm text-slate-800 whitespace-pre-wrap break-words leading-relaxed font-medium">
+                              <div className="mt-1 sm:mt-2 p-2 sm:p-3 bg-gradient-to-br from-blue-50 to-indigo-50 border-2 border-blue-300 rounded-lg sm:rounded-xl shadow-sm">
+                                <div className="text-xs sm:text-sm text-slate-800 whitespace-pre-wrap break-words leading-relaxed font-medium line-clamp-2 sm:line-clamp-none">
                                   {siparis.not}
                                 </div>
                               </div>
@@ -566,8 +586,8 @@ function OperasyonPaneli() {
                       })()}
                     </div>
                   </td>
-                  <td className="px-2 sm:px-4 py-3 whitespace-nowrap">
-                    <div className="flex flex-col sm:flex-row items-start sm:items-center gap-1.5 sm:gap-2">
+                  <td className="px-2 sm:px-4 py-2 sm:py-3 whitespace-nowrap hidden sm:table-cell">
+                    <div className="flex items-center gap-1.5 sm:gap-2">
                       <span className="text-xs sm:text-sm font-bold text-blue-600 bg-blue-50 px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg border border-blue-200">
                         {siparis.urun_kodu || '-'}
                       </span>
@@ -580,7 +600,7 @@ function OperasyonPaneli() {
                       </span>
                     </div>
                   </td>
-                  <td className="px-2 sm:px-4 py-3 whitespace-nowrap">
+                  <td className="px-2 sm:px-4 py-2 sm:py-3 whitespace-nowrap">
                     <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-1.5 sm:gap-2">
                       <button
                         onClick={() => handleNotClick(siparis)}
