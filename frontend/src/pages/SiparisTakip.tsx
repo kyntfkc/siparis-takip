@@ -290,9 +290,9 @@ function SiparisTakip() {
                 <tr>
                   <th className="px-2 sm:px-3 py-2 sm:py-3 text-left text-xs font-bold text-slate-700 uppercase tracking-wider">Sipariş No</th>
                   <th className="px-2 sm:px-3 py-2 sm:py-3 text-left text-xs font-bold text-slate-700 uppercase tracking-wider">Tarih</th>
-                  <th className="px-2 sm:px-3 py-2 sm:py-3 text-left text-xs font-bold text-slate-700 uppercase tracking-wider">Müşteri</th>
+                  <th className="px-2 sm:px-3 py-2 sm:py-3 text-left text-xs font-bold text-slate-700 uppercase tracking-wider hidden sm:table-cell">Müşteri</th>
                   <th className="px-2 sm:px-3 py-2 sm:py-3 text-left text-xs font-bold text-slate-700 uppercase tracking-wider">Ürün</th>
-                  <th className="px-2 sm:px-3 py-2 sm:py-3 text-left text-xs font-bold text-slate-700 uppercase tracking-wider">Ürün Kodu</th>
+                  <th className="px-2 sm:px-3 py-2 sm:py-3 text-left text-xs font-bold text-slate-700 uppercase tracking-wider hidden sm:table-cell">Ürün Kodu</th>
                   <th className="px-2 sm:px-3 py-2 sm:py-3 text-left text-xs font-bold text-slate-700 uppercase tracking-wider">Miktar</th>
                   <th className="px-2 sm:px-3 py-2 sm:py-3 text-left text-xs font-bold text-slate-700 uppercase tracking-wider">Durum</th>
                 </tr>
@@ -311,13 +311,13 @@ function SiparisTakip() {
                         return isNaN(tarih.getTime()) ? 'Geçersiz Tarih' : format(tarih, 'dd.MM.yyyy');
                       })()}
                     </td>
-                    <td className="px-2 sm:px-3 py-1.5 sm:py-2 whitespace-nowrap text-sm text-slate-700 font-medium">
+                    <td className="px-2 sm:px-3 py-1.5 sm:py-2 whitespace-nowrap text-sm text-slate-700 font-medium hidden sm:table-cell">
                       {siparis.musteri_adi}
                     </td>
                     <td className="px-2 sm:px-3 py-1.5 sm:py-2 text-sm text-slate-600 max-w-xs truncate">
                       {siparis.urun_adi}
                     </td>
-                    <td className="px-2 sm:px-3 py-1.5 sm:py-2 whitespace-nowrap">
+                    <td className="px-2 sm:px-3 py-1.5 sm:py-2 whitespace-nowrap hidden sm:table-cell">
                       <span className="text-sm font-bold text-blue-600 bg-blue-50 px-2 py-1 rounded-lg border border-blue-200">
                         {siparis.urun_kodu || '-'}
                       </span>

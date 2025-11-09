@@ -310,7 +310,7 @@ function Dashboard() {
                   <thead className="bg-gradient-to-r from-blue-50 via-indigo-50 to-purple-50 border-b border-slate-200/60">
                     <tr>
                       <th className="px-2 sm:px-3 py-2 sm:py-3 text-left text-xs font-bold text-slate-700 uppercase tracking-wider">Sipariş No</th>
-                      <th className="px-2 sm:px-3 py-2 sm:py-3 text-left text-xs font-bold text-slate-700 uppercase tracking-wider">Tarih</th>
+                      <th className="px-2 sm:px-3 py-2 sm:py-3 text-left text-xs font-bold text-slate-700 uppercase tracking-wider hidden sm:table-cell">Tarih</th>
                       <th className="px-2 sm:px-3 py-2 sm:py-3 text-left text-xs font-bold text-slate-700 uppercase tracking-wider">Müşteri</th>
                       <th className="px-2 sm:px-3 py-2 sm:py-3 text-left text-xs font-bold text-slate-700 uppercase tracking-wider">Ürün</th>
                       <th className="px-2 sm:px-3 py-2 sm:py-3 text-left text-xs font-bold text-slate-700 uppercase tracking-wider">Durum</th>
@@ -330,7 +330,7 @@ function Dashboard() {
                           <td className="px-2 sm:px-3 py-1.5 sm:py-2 whitespace-nowrap text-sm font-semibold text-slate-900">
                             {siparis.trendyol_siparis_no}
                           </td>
-                          <td className="px-2 sm:px-3 py-1.5 sm:py-2 whitespace-nowrap text-sm text-slate-600">
+                          <td className="px-2 sm:px-3 py-1.5 sm:py-2 whitespace-nowrap text-sm text-slate-600 hidden sm:table-cell">
                             {tarih.toLocaleDateString('tr-TR', { day: '2-digit', month: 'short', year: 'numeric' })}
                           </td>
                           <td className="px-2 sm:px-3 py-1.5 sm:py-2 whitespace-nowrap text-sm text-slate-700 font-medium">
