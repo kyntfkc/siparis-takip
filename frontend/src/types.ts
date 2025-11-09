@@ -15,6 +15,7 @@ export interface Siparis {
   fiyat: number;
   durum: SiparisDurum;
   uretim_durumu?: UretimDurum;
+  not?: string;
   platform?: 'Trendyol' | 'Ikas';
   created_at?: string;
   updated_at?: string;

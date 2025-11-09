@@ -36,6 +36,12 @@ export const siparisAPI = {
     return data;
   },
 
+  updateNot: async (id: number, not: string): Promise<Siparis> => {
+    const { data } = await api.patch(`/siparisler/${id}/not`, { not });
+    invalidateCache('siparisler'); // Clear cache after update
+    return data;
+  },
+
   create: async (siparis: Partial<Siparis>): Promise<Siparis> => {
     const { data } = await api.post('/siparisler', siparis);
     invalidateCache('siparisler'); // Clear cache after create

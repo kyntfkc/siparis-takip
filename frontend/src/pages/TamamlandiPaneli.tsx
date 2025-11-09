@@ -356,26 +356,31 @@ function TamamlandiPaneli() {
                     </div>
                   </td>
                   <td className="px-5 py-4">
-                    <div className="flex items-start gap-3">
-                      <div className="flex-1 min-w-0">
-                        {(() => {
-                          const { satir1, satir2 } = formatUrunAdi(siparis.urun_adi);
-                          return (
-                            <div className="space-y-1">
-                              <div className="text-sm text-slate-800 font-semibold leading-tight group-hover:text-blue-700 transition-colors">
-                                {satir1}
-                              </div>
-                              {satir2 && (
-                                <div className="text-sm text-slate-600 leading-tight flex items-center gap-1.5">
-                                  <span className="text-blue-600 font-bold">•</span>
-                                  {satir2}
-                                </div>
-                              )}
+                    <div className="flex-1 min-w-0">
+                      {(() => {
+                        const { satir1, satir2 } = formatUrunAdi(siparis.urun_adi);
+                        return (
+                          <div className="space-y-1">
+                            <div className="text-sm text-slate-800 font-semibold leading-tight group-hover:text-blue-700 transition-colors">
+                              {satir1}
                             </div>
-                          );
-                        })()}
-                      </div>
-                      <span className={`px-3 py-1.5 text-white text-sm font-bold rounded-lg whitespace-nowrap shadow-sm flex-shrink-0 border min-w-[50px] text-center ${
+                            {satir2 && (
+                              <div className="text-sm text-slate-600 leading-tight flex items-center gap-1.5">
+                                <span className="text-blue-600 font-bold">•</span>
+                                {satir2}
+                              </div>
+                            )}
+                          </div>
+                        );
+                      })()}
+                    </div>
+                  </td>
+                  <td className="px-4 py-3 whitespace-nowrap">
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm font-bold text-blue-600 bg-blue-50 px-3 py-1.5 rounded-lg border border-blue-200">
+                        {siparis.urun_kodu || '-'}
+                      </span>
+                      <span className={`px-3 py-1.5 text-white text-sm font-bold rounded-lg whitespace-nowrap shadow-sm border min-w-[50px] text-center ${
                         siparis.miktar > 1 
                           ? 'bg-gradient-to-br from-red-500 to-rose-600 border-red-400/30' 
                           : 'bg-gradient-to-br from-blue-500 to-indigo-600 border-blue-400/30'
@@ -383,11 +388,6 @@ function TamamlandiPaneli() {
                         ×{siparis.miktar}
                       </span>
                     </div>
-                  </td>
-                  <td className="px-4 py-3 whitespace-nowrap">
-                    <span className="text-sm font-bold text-blue-600 bg-blue-50 px-3 py-1.5 rounded-lg border border-blue-200">
-                      {siparis.urun_kodu || '-'}
-                    </span>
                   </td>
                   <td className="px-5 py-4 text-sm text-slate-600 max-w-xs">
                     <div className="truncate">

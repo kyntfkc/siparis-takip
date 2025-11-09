@@ -4,6 +4,7 @@ import {
   getSiparisById,
   updateSiparisDurum,
   updateSiparisUretimDurum,
+  updateSiparisNot,
   deleteSiparis,
   createSiparis,
   updateSiparisFotoğraf,
@@ -76,6 +77,7 @@ router.get('/', (req, res) => {
               fiyat: s?.fiyat ?? 0,
               durum: s?.durum ?? 'Yeni',
               uretim_durumu: s?.uretim_durumu ?? null,
+              not: s?.not ?? null,
               platform: s?.platform ?? null,
               created_at: s?.created_at ?? null,
               updated_at: s?.updated_at ?? null,
@@ -159,6 +161,28 @@ router.patch('/:id/uretim-durum', (req, res) => {
     }
 
     const siparis = updateSiparisUretimDurum(id, uretimDurum);
+    
+    if (!siparis) {
+      return res.status(404).json({ error: 'Sipariş bulunamadı' });
+    }
+
+    res.json(siparis);
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Sipariş notunu güncelle
+router.patch('/:id/not', (req, res) => {
+  try {
+    const id = parseInt(req.params.id);
+    const { not } = req.body;
+
+    if (typeof not !== 'string' && not !== null && not !== undefined) {
+      return res.status(400).json({ error: 'Not string olmalı' });
+    }
+
+    const siparis = updateSiparisNot(id, not || '');
     
     if (!siparis) {
       return res.status(404).json({ error: 'Sipariş bulunamadı' });

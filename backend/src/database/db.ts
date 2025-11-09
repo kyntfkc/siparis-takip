@@ -31,6 +31,7 @@ export interface Siparis {
   fiyat: number;
   durum: 'Yeni' | 'Operasyon Onayı' | 'Üretimde' | 'Sertifika' | 'Yazdırıldı' | 'Tamamlandı' | 'İade/Hatalı';
   uretim_durumu?: 'Döküme Gönderilecek' | 'Dökümde' | 'Atölye' | 'Tamamlandı';
+  not?: string;
   created_at?: string;
   updated_at?: string;
   trendyol_data?: string;
@@ -323,6 +324,21 @@ export function updateSiparisUretimDurum(id: number, uretimDurum: 'Döküme Gön
   if (!siparis) return undefined;
   
   (siparis as any).uretim_durumu = uretimDurum;
+  siparis.updated_at = new Date().toISOString();
+  
+  saveDatabase();
+  
+  return siparis;
+}
+
+// Sipariş notunu güncelle
+export function updateSiparisNot(id: number, not: string): Siparis | undefined {
+  loadDatabase();
+  
+  const siparis = db.siparisler.find(s => s.id === id);
+  if (!siparis) return undefined;
+  
+  siparis.not = not || undefined;
   siparis.updated_at = new Date().toISOString();
   
   saveDatabase();

@@ -1,7 +1,7 @@
 import { useEffect, useState, useMemo } from 'react';
 import { siparisAPI } from '../services/api';
 import { Siparis } from '../types';
-import { CheckCircle2, RefreshCw, Image, Package, User, ShoppingBag, Search, Filter, X } from 'lucide-react';
+import { CheckCircle2, RefreshCw, Image, Package, User, ShoppingBag, Search, Filter, X, FileText, Edit2 } from 'lucide-react';
 import ConfirmModal from '../components/ConfirmModal';
 import { getImageUrl } from '../utils/imageHelper';
 
@@ -13,6 +13,11 @@ function OperasyonPaneli() {
     isOpen: boolean;
     id: number | null;
   }>({ isOpen: false, id: null });
+  const [notModal, setNotModal] = useState<{
+    isOpen: boolean;
+    siparisId: number | null;
+    not: string;
+  }>({ isOpen: false, siparisId: null, not: '' });
 
   // Ürün adını 2 satıra ayırma fonksiyonu
   const formatUrunAdi = (urunAdi: string): { satir1: string; satir2: string } => {
@@ -143,6 +148,27 @@ function OperasyonPaneli() {
     } catch (error) {
       console.error('Durum güncellenemedi:', error);
       alert('Durum güncellenirken hata oluştu');
+    } finally {
+      setUpdating(null);
+    }
+  };
+
+  const handleNotClick = (siparis: Siparis) => {
+    setNotModal({ isOpen: true, siparisId: siparis.id, not: siparis.not || '' });
+  };
+
+  const handleNotSave = async () => {
+    if (!notModal.siparisId) return;
+    
+    setUpdating(notModal.siparisId);
+    
+    try {
+      await siparisAPI.updateNot(notModal.siparisId, notModal.not);
+      await loadSiparisler();
+      setNotModal({ isOpen: false, siparisId: null, not: '' });
+    } catch (error) {
+      console.error('Not güncellenemedi:', error);
+      alert('Not güncellenirken hata oluştu');
     } finally {
       setUpdating(null);
     }
@@ -359,26 +385,31 @@ function OperasyonPaneli() {
                     </div>
                   </td>
                   <td className="px-4 py-3">
-                    <div className="flex items-start gap-2.5">
-                      <div className="flex-1 min-w-0">
-                        {(() => {
-                          const { satir1, satir2 } = formatUrunAdi(siparis.urun_adi);
-                          return (
-                            <div className="space-y-1">
-                              <div className="text-sm text-slate-800 font-semibold leading-tight group-hover:text-blue-700 transition-colors">
-                                {satir1}
-                              </div>
-                              {satir2 && (
-                                <div className="text-xs text-slate-600 leading-tight flex items-center gap-1.5">
-                                  <span className="text-blue-600 font-bold">•</span>
-                                  {satir2}
-                                </div>
-                              )}
+                    <div className="flex-1 min-w-0">
+                      {(() => {
+                        const { satir1, satir2 } = formatUrunAdi(siparis.urun_adi);
+                        return (
+                          <div className="space-y-1">
+                            <div className="text-sm text-slate-800 font-semibold leading-tight group-hover:text-blue-700 transition-colors">
+                              {satir1}
                             </div>
-                          );
-                        })()}
-                      </div>
-                      <span className={`px-2.5 py-1 text-white text-xs font-bold rounded-lg whitespace-nowrap shadow-sm flex-shrink-0 min-w-[40px] text-center ${
+                            {satir2 && (
+                              <div className="text-xs text-slate-600 leading-tight flex items-center gap-1.5">
+                                <span className="text-blue-600 font-bold">•</span>
+                                {satir2}
+                              </div>
+                            )}
+                          </div>
+                        );
+                      })()}
+                    </div>
+                  </td>
+                  <td className="px-4 py-3 whitespace-nowrap">
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm font-bold text-blue-600 bg-blue-50 px-3 py-1.5 rounded-lg border border-blue-200">
+                        {siparis.urun_kodu || '-'}
+                      </span>
+                      <span className={`px-2.5 py-1.5 text-white text-xs font-bold rounded-lg whitespace-nowrap shadow-sm min-w-[40px] text-center ${
                         siparis.miktar > 1 
                           ? 'bg-gradient-to-br from-red-500 to-rose-600 border border-red-400/30' 
                           : 'bg-gradient-to-br from-blue-500 to-indigo-600 border border-blue-400/30'
@@ -388,28 +419,41 @@ function OperasyonPaneli() {
                     </div>
                   </td>
                   <td className="px-4 py-3 whitespace-nowrap">
-                    <span className="text-sm font-bold text-blue-600 bg-blue-50 px-3 py-1.5 rounded-lg border border-blue-200">
-                      {siparis.urun_kodu || '-'}
-                    </span>
-                  </td>
-                  <td className="px-4 py-3 whitespace-nowrap">
-                    <button
-                      onClick={() => handleUretimeGonderClick(siparis.id)}
-                      disabled={updating === siparis.id}
-                      className="flex items-center justify-center px-5 py-3 min-h-[40px] bg-gradient-to-r from-emerald-500 via-green-500 to-teal-500 text-white rounded-lg hover:shadow-lg hover:scale-105 active:scale-95 hover:from-emerald-600 hover:via-green-600 hover:to-teal-600 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 text-sm font-bold shadow-md touch-manipulation"
-                    >
-                      {updating === siparis.id ? (
-                        <>
-                          <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
-                          <span>Gönderiliyor...</span>
-                        </>
-                      ) : (
-                        <>
-                          <CheckCircle2 className="w-4 h-4 mr-2" />
-                          <span>Üretime Gönder</span>
-                        </>
-                      )}
-                    </button>
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={() => handleNotClick(siparis)}
+                        disabled={updating === siparis.id}
+                        className={`flex items-center justify-center px-3 py-2 min-h-[40px] rounded-lg hover:shadow-md hover:scale-105 active:scale-95 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 text-sm font-semibold shadow-sm touch-manipulation ${
+                          siparis.not
+                            ? 'bg-blue-50 text-blue-600 border border-blue-200 hover:bg-blue-100'
+                            : 'bg-slate-50 text-slate-600 border border-slate-200 hover:bg-slate-100'
+                        }`}
+                        title={siparis.not || 'Not ekle'}
+                      >
+                        {siparis.not ? (
+                          <FileText className="w-4 h-4" />
+                        ) : (
+                          <Edit2 className="w-4 h-4" />
+                        )}
+                      </button>
+                      <button
+                        onClick={() => handleUretimeGonderClick(siparis.id)}
+                        disabled={updating === siparis.id}
+                        className="flex items-center justify-center px-5 py-3 min-h-[40px] bg-gradient-to-r from-emerald-500 via-green-500 to-teal-500 text-white rounded-lg hover:shadow-lg hover:scale-105 active:scale-95 hover:from-emerald-600 hover:via-green-600 hover:to-teal-600 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 text-sm font-bold shadow-md touch-manipulation"
+                      >
+                        {updating === siparis.id ? (
+                          <>
+                            <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
+                            <span>Gönderiliyor...</span>
+                          </>
+                        ) : (
+                          <>
+                            <CheckCircle2 className="w-4 h-4 mr-2" />
+                            <span>Üretime Gönder</span>
+                          </>
+                        )}
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))}
@@ -429,6 +473,54 @@ function OperasyonPaneli() {
         cancelText="İptal"
         confirmColor="green"
       />
+
+      {/* Not Modal */}
+      {notModal.isOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl shadow-2xl max-w-2xl w-full p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-xl font-bold text-slate-800 flex items-center gap-2">
+                <FileText className="w-5 h-5 text-blue-600" />
+                Sipariş Notu
+              </h3>
+              <button
+                onClick={() => setNotModal({ isOpen: false, siparisId: null, not: '' })}
+                className="text-slate-400 hover:text-slate-600 transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            <textarea
+              value={notModal.not}
+              onChange={(e) => setNotModal({ ...notModal, not: e.target.value })}
+              placeholder="Sipariş için not ekleyin..."
+              className="w-full h-32 px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none text-slate-700"
+            />
+            <div className="flex items-center justify-end gap-3 mt-4">
+              <button
+                onClick={() => setNotModal({ isOpen: false, siparisId: null, not: '' })}
+                className="px-4 py-2 text-slate-600 hover:text-slate-800 transition-colors font-medium"
+              >
+                İptal
+              </button>
+              <button
+                onClick={handleNotSave}
+                disabled={updating === notModal.siparisId}
+                className="px-5 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-semibold disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+              >
+                {updating === notModal.siparisId ? (
+                  <>
+                    <RefreshCw className="w-4 h-4 animate-spin" />
+                    <span>Kaydediliyor...</span>
+                  </>
+                ) : (
+                  'Kaydet'
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
