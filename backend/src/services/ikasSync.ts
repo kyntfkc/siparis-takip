@@ -380,8 +380,85 @@ async function syncIkasSiparisler() {
           ? JSON.stringify(kisisellestirmeBilgileri)
           : undefined;
         
+        // Kişiselleştirme bilgilerini okunabilir formata çevir
+        let kisisellestirmeNotu = '';
+        if (kisisellestirmeStr) {
+          try {
+            const kisisellestirmeObj = JSON.parse(kisisellestirmeStr);
+            const notSatirlari: string[] = [];
+            
+            // Attributes varsa
+            if (kisisellestirmeObj.attributes) {
+              if (Array.isArray(kisisellestirmeObj.attributes)) {
+                kisisellestirmeObj.attributes.forEach((attr: any) => {
+                  if (attr.name && attr.value) {
+                    notSatirlari.push(`${attr.name}: ${attr.value}`);
+                  } else if (typeof attr === 'string') {
+                    notSatirlari.push(attr);
+                  } else if (attr.key && attr.value) {
+                    notSatirlari.push(`${attr.key}: ${attr.value}`);
+                  }
+                });
+              } else if (typeof kisisellestirmeObj.attributes === 'object') {
+                Object.entries(kisisellestirmeObj.attributes).forEach(([key, value]) => {
+                  notSatirlari.push(`${key}: ${value}`);
+                });
+              }
+            }
+            
+            // Customizations varsa
+            if (kisisellestirmeObj.customizations) {
+              if (Array.isArray(kisisellestirmeObj.customizations)) {
+                kisisellestirmeObj.customizations.forEach((custom: any) => {
+                  if (custom.name && custom.value) {
+                    notSatirlari.push(`🎨 ${custom.name}: ${custom.value}`);
+                  } else if (typeof custom === 'string') {
+                    notSatirlari.push(`🎨 ${custom}`);
+                  } else if (custom.key && custom.value) {
+                    notSatirlari.push(`🎨 ${custom.key}: ${custom.value}`);
+                  }
+                });
+              } else if (typeof kisisellestirmeObj.customizations === 'object') {
+                Object.entries(kisisellestirmeObj.customizations).forEach(([key, value]) => {
+                  notSatirlari.push(`🎨 ${key}: ${value}`);
+                });
+              }
+            }
+            
+            // Options varsa
+            if (kisisellestirmeObj.options) {
+              if (Array.isArray(kisisellestirmeObj.options)) {
+                kisisellestirmeObj.options.forEach((opt: any) => {
+                  if (opt.name && opt.value) {
+                    notSatirlari.push(`⚙️ ${opt.name}: ${opt.value}`);
+                  } else if (typeof opt === 'string') {
+                    notSatirlari.push(`⚙️ ${opt}`);
+                  } else if (opt.key && opt.value) {
+                    notSatirlari.push(`⚙️ ${opt.key}: ${opt.value}`);
+                  }
+                });
+              } else if (typeof kisisellestirmeObj.options === 'object') {
+                Object.entries(kisisellestirmeObj.options).forEach(([key, value]) => {
+                  notSatirlari.push(`⚙️ ${key}: ${value}`);
+                });
+              }
+            }
+            
+            if (notSatirlari.length > 0) {
+              kisisellestirmeNotu = '🎯 Kişiselleştirme:\n' + notSatirlari.join('\n');
+            }
+          } catch (parseError: any) {
+            console.error(`❌ Kişiselleştirme parse hatası (${siparisNo}):`, parseError.message);
+            // Parse hatası olsa bile JSON'u direkt ekle
+            kisisellestirmeNotu = '🎯 Kişiselleştirme:\n' + kisisellestirmeStr;
+          }
+        }
+        
         if (kisisellestirmeStr) {
           console.log(`✅ Ikas kişiselleştirme bilgisi kaydedildi (${siparisNo}):`, kisisellestirmeStr.substring(0, 200));
+          if (kisisellestirmeNotu) {
+            console.log(`📝 Kişiselleştirme notu oluşturuldu (${siparisNo}):`, kisisellestirmeNotu.substring(0, 200));
+          }
         } else {
           console.log(`ℹ️  Ikas siparişinde kişiselleştirme bilgisi yok (${siparisNo})`);
         }
@@ -409,6 +486,7 @@ async function syncIkasSiparisler() {
             platform: 'Ikas',
             ikas_data: JSON.stringify(ikasSiparis),
             kisisellestirme: kisisellestirmeStr,
+            not: kisisellestirmeNotu || undefined,
           });
 
           yeniSiparisSayisi++;
