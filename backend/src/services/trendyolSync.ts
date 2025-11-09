@@ -135,48 +135,58 @@ interface TrendyolSiparis {
 }
 
 export async function fetchTrendyolSiparisler(): Promise<TrendyolSiparis[]> {
-  try {
-    const supplierId = process.env.TRENDYOL_SUPPLIER_ID;
-    const apiKey = process.env.TRENDYOL_API_KEY;
-    const apiSecret = process.env.TRENDYOL_API_SECRET;
-    const apiUrl = process.env.TRENDYOL_API_URL;
+  const MAX_RETRIES = 3;
+  const RETRY_DELAY = 2000; // 2 saniye
 
-    if (!supplierId || !apiKey || !apiSecret) {
-      console.log('⚠️  Trendyol API credentials eksik. Lütfen .env dosyasını kontrol edin.');
-      return [];
-    }
+  for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
+    try {
+      const supplierId = process.env.TRENDYOL_SUPPLIER_ID;
+      const apiKey = process.env.TRENDYOL_API_KEY;
+      const apiSecret = process.env.TRENDYOL_API_SECRET;
+      const apiUrl = process.env.TRENDYOL_API_URL;
 
-    // Son 7 günlük siparişler
-    const endDate = new Date();
-    const startDate = new Date();
-    startDate.setDate(startDate.getDate() - 7);
+      if (!supplierId || !apiKey || !apiSecret) {
+        console.log('⚠️  Trendyol API credentials eksik. Lütfen .env dosyasını kontrol edin.');
+        return [];
+      }
 
-    // Trendyol API timestamp formatı (epoch milliseconds)
-    const startDateTimestamp = startDate.getTime();
-    const endDateTimestamp = endDate.getTime();
+      // Son 7 günlük siparişler
+      const endDate = new Date();
+      const startDate = new Date();
+      startDate.setDate(startDate.getDate() - 7);
 
-    console.log(`📅 Siparişler çekiliyor: ${startDate.toISOString()} - ${endDate.toISOString()}`);
+      // Trendyol API timestamp formatı (epoch milliseconds)
+      const startDateTimestamp = startDate.getTime();
+      const endDateTimestamp = endDate.getTime();
 
-    // Trendyol API endpoint
-    const url = `${apiUrl}/${supplierId}/orders`;
-    
-    const auth = Buffer.from(`${apiKey}:${apiSecret}`).toString('base64');
+      if (attempt === 1) {
+        console.log(`📅 Siparişler çekiliyor: ${startDate.toISOString()} - ${endDate.toISOString()}`);
+      } else {
+        console.log(`🔄 Trendyol API yeniden deneniyor (${attempt}/${MAX_RETRIES})...`);
+      }
 
-    console.log(`🔗 API URL: ${url}`);
-    console.log(`📋 Parametreler:`, { startDate: startDateTimestamp, endDate: endDateTimestamp, page: 0, size: 200 });
+      // Trendyol API endpoint
+      const url = `${apiUrl}/${supplierId}/orders`;
+      
+      const auth = Buffer.from(`${apiKey}:${apiSecret}`).toString('base64');
 
-    const response = await axios.get(url, {
-      headers: {
-        'Authorization': `Basic ${auth}`,
-        'Content-Type': 'application/json',
-      },
-      params: {
-        startDate: startDateTimestamp,
-        endDate: endDateTimestamp,
-        page: 0,
-        size: 200, // Maksimum sayfa boyutu
-      },
-    });
+      if (attempt === 1) {
+        console.log(`🔗 API URL: ${url}`);
+        console.log(`📋 Parametreler:`, { startDate: startDateTimestamp, endDate: endDateTimestamp, page: 0, size: 200 });
+      }
+
+      const response = await axios.get(url, {
+        headers: {
+          'Authorization': `Basic ${auth}`,
+          'Content-Type': 'application/json',
+        },
+        params: {
+          startDate: startDateTimestamp,
+          endDate: endDateTimestamp,
+          page: 0,
+          size: 200, // Maksimum sayfa boyutu
+        },
+      });
 
     console.log(`📥 API Response Status: ${response.status}`);
     console.log(`📥 API Response Data Type:`, typeof response.data);
@@ -225,21 +235,49 @@ export async function fetchTrendyolSiparisler(): Promise<TrendyolSiparis[]> {
       }
     }
     
-    return siparisler;
-  } catch (error: any) {
-    if (error.response) {
-      console.error('❌ Trendyol API hatası:', error.response.status);
-      console.error('❌ Response Data:', JSON.stringify(error.response.data).substring(0, 500));
-      console.error('❌ Response Headers:', error.response.headers);
-    } else if (error.request) {
-      console.error('❌ Request yapılamadı:', error.message);
-      console.error('❌ Request URL:', error.config?.url);
-    } else {
-      console.error('❌ Trendyol API hatası:', error.message);
-      console.error('❌ Error Stack:', error.stack);
+      return siparisler;
+    } catch (error: any) {
+      const isRetryable = error.response?.status === 556 || // Service Unavailable
+                         error.response?.status === 503 || // Service Unavailable
+                         error.response?.status === 429 || // Too Many Requests
+                         error.response?.status >= 500; // Server errors
+
+      if (error.response) {
+        console.error(`❌ Trendyol API hatası (Deneme ${attempt}/${MAX_RETRIES}):`, error.response.status);
+        console.error('❌ Response Data:', JSON.stringify(error.response.data).substring(0, 500));
+        
+        if (isRetryable && attempt < MAX_RETRIES) {
+          console.log(`⏳ ${RETRY_DELAY / 1000} saniye bekleniyor ve tekrar deneniyor...`);
+          await new Promise(resolve => setTimeout(resolve, RETRY_DELAY));
+          continue; // Retry
+        } else if (!isRetryable) {
+          // Retry edilemeyen hatalar (4xx gibi)
+          console.error('❌ Response Headers:', error.response.headers);
+          return [];
+        }
+      } else if (error.request) {
+        console.error('❌ Request yapılamadı:', error.message);
+        console.error('❌ Request URL:', error.config?.url);
+        
+        if (attempt < MAX_RETRIES) {
+          console.log(`⏳ ${RETRY_DELAY / 1000} saniye bekleniyor ve tekrar deneniyor...`);
+          await new Promise(resolve => setTimeout(resolve, RETRY_DELAY));
+          continue; // Retry
+        }
+      } else {
+        console.error('❌ Trendyol API hatası:', error.message);
+        console.error('❌ Error Stack:', error.stack);
+      }
+
+      // Son denemede başarısız olursa boş array döndür
+      if (attempt === MAX_RETRIES) {
+        console.error('❌ Trendyol API tüm denemeler başarısız oldu. Boş array döndürülüyor.');
+        return [];
+      }
     }
-    return [];
   }
+
+  return [];
 }
 
 async function syncTrendyolSiparisler() {
