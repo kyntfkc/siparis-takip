@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "tsx watch src/index.ts",
     "build": "npx tsc",
-    "start": "node dist/index.js"
+    "start": "node dist/index.js",
+    "test:graphql": "tsx scripts/test-graphql-query.ts"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.79.0",

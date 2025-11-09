@@ -209,7 +209,20 @@ async function fetchIkasSiparisler(): Promise<any[]> {
     
     // GraphQL response formatını kontrol et
     if (response.data?.errors) {
-      console.error('❌ Ikas GraphQL hataları:', response.data.errors);
+      console.error('❌ Ikas GraphQL hataları:', JSON.stringify(response.data.errors, null, 2));
+      
+      // GraphQL validation hatalarını detaylı logla
+      response.data.errors.forEach((error: any) => {
+        console.error(`❌ GraphQL Error: ${error.message}`);
+        if (error.locations) {
+          console.error(`   Locations:`, JSON.stringify(error.locations));
+        }
+        if (error.extensions) {
+          console.error(`   Extensions:`, JSON.stringify(error.extensions));
+        }
+      });
+      
+      // GraphQL hatası varsa crash'i önlemek için boş array döndür
       return [];
     }
     
