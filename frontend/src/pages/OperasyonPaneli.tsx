@@ -468,10 +468,10 @@ function OperasyonPaneli() {
             <tbody className="bg-white divide-y divide-slate-100">
               {filteredSiparisler.map((siparis) => (
                 <tr key={siparis.id} className="hover:bg-gradient-to-r hover:from-blue-50/30 hover:to-indigo-50/30 transition-all duration-200 group active:bg-blue-100/50">
-                  <td className="px-2 sm:px-3 py-1.5 sm:py-2 whitespace-nowrap">
+                  <td className="px-1 sm:px-3 py-1.5 sm:py-2 whitespace-nowrap">
                     <div className="relative">
                     {getImageUrl(siparis.urun_resmi) ? (
-                        <div className="relative w-[100px] h-[100px] sm:w-[173px] sm:h-[173px] overflow-hidden rounded-lg border-2 border-slate-200 shadow-md hover:border-blue-300 transition-all duration-200 bg-gradient-to-br from-slate-50 to-slate-100 group">
+                        <div className="relative w-[80px] h-[80px] sm:w-[173px] sm:h-[173px] overflow-hidden rounded-lg border-2 border-slate-200 shadow-md hover:border-blue-300 transition-all duration-200 bg-gradient-to-br from-slate-50 to-slate-100 group">
                         <img 
                           src={getImageUrl(siparis.urun_resmi)!} 
                           alt={siparis.urun_adi}
@@ -511,7 +511,7 @@ function OperasyonPaneli() {
                           </button>
                       </div>
                     ) : (
-                        <div className="relative w-[100px] h-[100px] sm:w-[173px] sm:h-[173px] bg-gradient-to-br from-slate-100 to-slate-200 rounded-lg flex flex-col items-center justify-center text-xs text-slate-400 border-2 border-slate-200 shadow-sm">
+                        <div className="relative w-[80px] h-[80px] sm:w-[173px] sm:h-[173px] bg-gradient-to-br from-slate-100 to-slate-200 rounded-lg flex flex-col items-center justify-center text-xs text-slate-400 border-2 border-slate-200 shadow-sm">
                           <div className="mb-2">{siparis.urun_resmi ? 'Geçersiz URL' : 'Resim Yok'}</div>
                           {siparis.urun_kodu && (
                             <button
