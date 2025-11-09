@@ -166,6 +166,10 @@ async function fetchIkasSiparisler(): Promise<any[]> {
               options {
                 name
                 type
+                values {
+                  value
+                  name
+                }
               }
               variant {
                 id
