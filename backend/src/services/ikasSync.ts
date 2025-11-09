@@ -224,6 +224,11 @@ async function fetchIkasSiparisler(): Promise<any[]> {
     
     if (siparisler.length > 0) {
       console.log(`📝 İlk Ikas sipariş örneği:`, JSON.stringify(siparisler[0], null, 2));
+      
+      // İlk siparişin orderLineItems'ını detaylı log'la
+      if (siparisler[0].orderLineItems && siparisler[0].orderLineItems.length > 0) {
+        console.log(`📋 İlk Ikas siparişinin orderLineItems:`, JSON.stringify(siparisler[0].orderLineItems[0], null, 2));
+      }
     }
     
     return siparisler;
@@ -355,16 +360,31 @@ async function syncIkasSiparisler() {
         const kisisellestirmeBilgileri: any = {};
         if (line.attributes) {
           kisisellestirmeBilgileri.attributes = line.attributes;
+          console.log(`📝 Ikas attributes bulundu (${siparisNo}):`, JSON.stringify(line.attributes).substring(0, 200));
         }
         if (line.customizations) {
           kisisellestirmeBilgileri.customizations = line.customizations;
+          console.log(`📝 Ikas customizations bulundu (${siparisNo}):`, JSON.stringify(line.customizations).substring(0, 200));
         }
         if (line.options) {
           kisisellestirmeBilgileri.options = line.options;
+          console.log(`📝 Ikas options bulundu (${siparisNo}):`, JSON.stringify(line.options).substring(0, 200));
         }
+        
+        // Tüm line item'ı log'la (kişiselleştirme bilgilerini görmek için)
+        if (line.attributes || line.customizations || line.options) {
+          console.log(`📋 Ikas line item tam verisi (${siparisNo}):`, JSON.stringify(line).substring(0, 500));
+        }
+        
         const kisisellestirmeStr = Object.keys(kisisellestirmeBilgileri).length > 0
           ? JSON.stringify(kisisellestirmeBilgileri)
           : undefined;
+        
+        if (kisisellestirmeStr) {
+          console.log(`✅ Ikas kişiselleştirme bilgisi kaydedildi (${siparisNo}):`, kisisellestirmeStr.substring(0, 200));
+        } else {
+          console.log(`ℹ️  Ikas siparişinde kişiselleştirme bilgisi yok (${siparisNo})`);
+        }
 
         // Sipariş oluştur
         try {
