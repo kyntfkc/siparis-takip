@@ -1,9 +1,10 @@
 import { useEffect, useState, useMemo } from 'react';
 import { siparisAPI } from '../services/api';
 import { Siparis, UretimDurum } from '../types';
-import { RefreshCw, CheckCircle2, ArrowRight, Sparkles, Wrench, ChevronDown, ChevronUp, Package, Image, User, ShoppingBag, FileText, X, Filter } from 'lucide-react';
+import { RefreshCw, CheckCircle2, ArrowRight, Sparkles, Wrench, ChevronDown, ChevronUp, Package, Image, User, ShoppingBag, FileText, X, Filter, Download } from 'lucide-react';
 import ConfirmModal from '../components/ConfirmModal';
 import { getImageUrl } from '../utils/imageHelper';
+import * as XLSX from 'xlsx';
 
 function AtolyePaneli() {
   const [siparisler, setSiparisler] = useState<Siparis[]>([]);
@@ -272,6 +273,125 @@ function AtolyePaneli() {
     'Tamamlandı': CheckCircle2,
   };
 
+  // Kişiselleştirme bilgisini formatla
+  const formatKisisellestirme = (kisisellestirmeStr?: string): string => {
+    if (!kisisellestirmeStr) return '';
+    
+    try {
+      const kisisellestirmeObj = JSON.parse(kisisellestirmeStr);
+      const notSatirlari: string[] = [];
+      
+      // Options varsa
+      if (kisisellestirmeObj.options) {
+        if (Array.isArray(kisisellestirmeObj.options)) {
+          kisisellestirmeObj.options.forEach((opt: any) => {
+            if (opt.name) {
+              let degerStr = '';
+              
+              // Tüm alanları kontrol et (value, values, data, text, vb.)
+              if (opt.value !== undefined && opt.value !== null && opt.value !== '') {
+                degerStr = `: ${opt.value}`;
+              } else if (opt.values && Array.isArray(opt.values) && opt.values.length > 0) {
+                const degerler = opt.values.map((v: any) => {
+                  if (typeof v === 'object' && v !== null) {
+                    return v.value || v.name || v.text || JSON.stringify(v);
+                  }
+                  return v;
+                }).filter((v: any) => v != null && v !== '');
+                if (degerler.length > 0) {
+                  degerStr = `: ${degerler.join(', ')}`;
+                }
+              } else if (opt.data !== undefined && opt.data !== null && opt.data !== '') {
+                degerStr = `: ${opt.data}`;
+              } else if (opt.text !== undefined && opt.text !== null && opt.text !== '') {
+                degerStr = `: ${opt.text}`;
+              }
+              
+              // Eğer name içinde zaten değer varsa (örn: "Yüzük Ölçüsü: 10")
+              if (!degerStr && opt.name.includes(':')) {
+                notSatirlari.push(opt.name);
+              } else {
+                notSatirlari.push(`${opt.name}${degerStr}`);
+              }
+            } else if (typeof opt === 'string') {
+              notSatirlari.push(opt);
+            } else {
+              notSatirlari.push(JSON.stringify(opt));
+            }
+          });
+        } else if (typeof kisisellestirmeObj.options === 'object') {
+          Object.entries(kisisellestirmeObj.options).forEach(([key, value]) => {
+            notSatirlari.push(`${key}: ${value}`);
+          });
+        }
+      }
+      
+      return notSatirlari.join('\n');
+    } catch (parseError: any) {
+      // Parse hatası olsa bile JSON'u direkt ekle
+      return kisisellestirmeStr;
+    }
+  };
+
+  // Excel export fonksiyonu
+  const handleExcelExport = () => {
+    const data = filteredSiparisler.map((siparis, index) => {
+      const tarih = typeof siparis.siparis_tarihi === 'string' 
+        ? new Date(parseInt(siparis.siparis_tarihi)) 
+        : new Date(siparis.siparis_tarihi as number);
+      
+      const tarihStr = isNaN(tarih.getTime()) 
+        ? 'Geçersiz Tarih' 
+        : tarih.toLocaleDateString('tr-TR', { day: '2-digit', month: '2-digit', year: 'numeric' }) + ' ' + 
+          tarih.toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' });
+      
+      return {
+        'Seç': siparis.trendyol_siparis_no,
+        'Sn.': index + 1,
+        'Tarih': tarihStr,
+        'Sipariş No': siparis.trendyol_siparis_no,
+        'Sipariş Durumu': siparis.durum,
+        'Ürün Resmi': getImageUrl(siparis.urun_resmi) || '',
+        'Ürün Adı': siparis.urun_adi,
+        'Adet': siparis.miktar,
+        'Kişiselleştirme': formatKisisellestirme(siparis.kisisellestirme),
+        'Teslimat İsim Soyisim': siparis.musteri_adi,
+      };
+    });
+
+    const ws = XLSX.utils.json_to_sheet(data);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Siparişler');
+    
+    // Sütun genişliklerini ayarla
+    const colWidths = [
+      { wch: 15 }, // Seç
+      { wch: 5 },  // Sn.
+      { wch: 18 }, // Tarih
+      { wch: 15 }, // Sipariş No
+      { wch: 15 }, // Sipariş Durumu
+      { wch: 20 }, // Ürün Resmi
+      { wch: 40 }, // Ürün Adı
+      { wch: 8 },  // Adet
+      { wch: 50 }, // Kişiselleştirme
+      { wch: 25 }, // Teslimat İsim Soyisim
+    ];
+    ws['!cols'] = colWidths;
+    
+    // Kişiselleştirme sütununu wrap text yap
+    const range = XLSX.utils.decode_range(ws['!ref'] || 'A1');
+    for (let row = 1; row <= range.e.r; row++) {
+      const cellAddress = XLSX.utils.encode_cell({ r: row, c: 8 }); // I sütunu (0-indexed: 8)
+      if (!ws[cellAddress]) continue;
+      ws[cellAddress].s = {
+        alignment: { wrapText: true, vertical: 'top' },
+      };
+    }
+    
+    const fileName = `Atolye_Siparisler_${new Date().toISOString().split('T')[0]}.xlsx`;
+    XLSX.writeFile(wb, fileName);
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center py-20">
@@ -292,13 +412,22 @@ function AtolyePaneli() {
           </h2>
           <p className="text-slate-600 mt-0.5 sm:mt-1 font-medium text-xs sm:text-sm">Üretim süreçlerini yönetin</p>
         </div>
-        <button
-          onClick={loadSiparisler}
-          className="flex items-center gap-2 px-4 py-2.5 min-h-[40px] bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg hover:shadow-lg hover:scale-105 active:scale-95 transition-all font-semibold text-sm shadow-md touch-manipulation"
-        >
-          <RefreshCw className="w-4 h-4" />
-          Yenile
-        </button>
+        <div className="flex gap-2">
+          <button
+            onClick={handleExcelExport}
+            className="flex items-center gap-2 px-4 py-2.5 min-h-[40px] bg-gradient-to-r from-emerald-600 to-green-600 text-white rounded-lg hover:shadow-lg hover:scale-105 active:scale-95 transition-all font-semibold text-sm shadow-md touch-manipulation"
+          >
+            <Download className="w-4 h-4" />
+            Excel İndir
+          </button>
+          <button
+            onClick={loadSiparisler}
+            className="flex items-center gap-2 px-4 py-2.5 min-h-[40px] bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg hover:shadow-lg hover:scale-105 active:scale-95 transition-all font-semibold text-sm shadow-md touch-manipulation"
+          >
+            <RefreshCw className="w-4 h-4" />
+            Yenile
+          </button>
+        </div>
       </div>
 
       {/* Üretim Durumu Filtreleri */}
