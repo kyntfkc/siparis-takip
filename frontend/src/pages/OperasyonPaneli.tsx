@@ -1,7 +1,7 @@
 import { useEffect, useState, useMemo } from 'react';
-import { siparisAPI } from '../services/api';
+import { siparisAPI, fotoğrafAPI } from '../services/api';
 import { Siparis } from '../types';
-import { CheckCircle2, RefreshCw, Image, Package, User, ShoppingBag, Search, Filter, X, FileText, Edit2 } from 'lucide-react';
+import { CheckCircle2, RefreshCw, Image, Package, User, ShoppingBag, Search, Filter, X, FileText, Edit2, RotateCw } from 'lucide-react';
 import ConfirmModal from '../components/ConfirmModal';
 import { getImageUrl } from '../utils/imageHelper';
 
@@ -174,6 +174,30 @@ function OperasyonPaneli() {
     }
   };
 
+  const handleRefreshFoto = async (siparis: Siparis) => {
+    if (!siparis.urun_kodu) {
+      alert('Ürün kodu bulunamadı');
+      return;
+    }
+    
+    setUpdating(siparis.id);
+    
+    try {
+      const result = await fotoğrafAPI.refreshFotograf(siparis.id);
+      if (result.success) {
+        await loadSiparisler();
+        alert('Fotoğraf güncellendi!');
+      } else {
+        alert(`Fotoğraf bulunamadı: ${result.message || 'Supabase\'de fotoğraf yok'}`);
+      }
+    } catch (error: any) {
+      console.error('Fotoğraf yenileme hatası:', error);
+      alert('Fotoğraf yenilenirken hata oluştu: ' + (error.message || 'Bilinmeyen hata'));
+    } finally {
+      setUpdating(null);
+    }
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center py-16">
@@ -329,39 +353,73 @@ function OperasyonPaneli() {
               {filteredSiparisler.map((siparis) => (
                 <tr key={siparis.id} className="hover:bg-gradient-to-r hover:from-blue-50/30 hover:to-indigo-50/30 transition-all duration-200 group active:bg-blue-100/50">
                   <td className="px-4 py-3 whitespace-nowrap">
-                    {getImageUrl(siparis.urun_resmi) ? (
-                      <div className="relative w-[173px] h-[173px] overflow-hidden rounded-lg border-2 border-slate-200 shadow-md hover:border-blue-300 transition-all duration-200 bg-gradient-to-br from-slate-50 to-slate-100">
-                        <img 
-                          src={getImageUrl(siparis.urun_resmi)!} 
-                          alt={siparis.urun_adi}
-                          loading="lazy"
-                          crossOrigin="anonymous"
-                          className="w-full h-full"
-                          style={{ 
-                            objectFit: 'cover',
-                            imageRendering: '-webkit-optimize-contrast',
-                            backfaceVisibility: 'hidden',
-                            transform: 'translateZ(0) scale(1.2)',
-                            willChange: 'transform',
-                            WebkitBackfaceVisibility: 'hidden',
-                            WebkitTransform: 'translateZ(0) scale(1.2)'
-                          }}
-                          onError={(e) => {
-                            console.error(`❌ Fotoğraf yüklenemedi: ${siparis.urun_resmi}`, e);
-                            e.currentTarget.style.display = 'none';
-                            const placeholder = e.currentTarget.nextElementSibling as HTMLElement;
-                            if (placeholder) placeholder.style.display = 'flex';
-                          }}
-                          onLoad={() => {
-                            console.log(`✅ Fotoğraf yüklendi: ${siparis.urun_resmi}`);
-                          }}
-                        />
-                      </div>
-                    ) : (
-                      <div className="w-[173px] h-[173px] bg-gradient-to-br from-slate-100 to-slate-200 rounded-lg flex items-center justify-center text-xs text-slate-400 border-2 border-slate-200 shadow-sm">
-                        {siparis.urun_resmi ? 'Geçersiz URL' : 'Resim Yok'}
-                      </div>
-                    )}
+                    <div className="relative">
+                      {getImageUrl(siparis.urun_resmi) ? (
+                        <div className="relative w-[173px] h-[173px] overflow-hidden rounded-lg border-2 border-slate-200 shadow-md hover:border-blue-300 transition-all duration-200 bg-gradient-to-br from-slate-50 to-slate-100 group">
+                          <img 
+                            src={getImageUrl(siparis.urun_resmi)!} 
+                            alt={siparis.urun_adi}
+                            loading="lazy"
+                            crossOrigin="anonymous"
+                            className="w-full h-full"
+                            style={{ 
+                              objectFit: 'cover',
+                              imageRendering: '-webkit-optimize-contrast',
+                              backfaceVisibility: 'hidden',
+                              transform: 'translateZ(0) scale(1.2)',
+                              willChange: 'transform',
+                              WebkitBackfaceVisibility: 'hidden',
+                              WebkitTransform: 'translateZ(0) scale(1.2)'
+                            }}
+                            onError={(e) => {
+                              console.error(`❌ Fotoğraf yüklenemedi: ${siparis.urun_resmi}`, e);
+                              e.currentTarget.style.display = 'none';
+                              const placeholder = e.currentTarget.nextElementSibling as HTMLElement;
+                              if (placeholder) placeholder.style.display = 'flex';
+                            }}
+                            onLoad={() => {
+                              console.log(`✅ Fotoğraf yüklendi: ${siparis.urun_resmi}`);
+                            }}
+                          />
+                          <button
+                            onClick={() => handleRefreshFoto(siparis)}
+                            disabled={updating === siparis.id || !siparis.urun_kodu}
+                            className="absolute top-2 right-2 p-1.5 bg-white/90 hover:bg-white rounded-lg shadow-md opacity-0 group-hover:opacity-100 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
+                            title="Fotoğrafı yenile"
+                          >
+                            {updating === siparis.id ? (
+                              <RotateCw className="w-4 h-4 text-blue-600 animate-spin" />
+                            ) : (
+                              <RotateCw className="w-4 h-4 text-blue-600" />
+                            )}
+                          </button>
+                        </div>
+                      ) : (
+                        <div className="relative w-[173px] h-[173px] bg-gradient-to-br from-slate-100 to-slate-200 rounded-lg flex flex-col items-center justify-center text-xs text-slate-400 border-2 border-slate-200 shadow-sm">
+                          <div className="mb-2">{siparis.urun_resmi ? 'Geçersiz URL' : 'Resim Yok'}</div>
+                          {siparis.urun_kodu && (
+                            <button
+                              onClick={() => handleRefreshFoto(siparis)}
+                              disabled={updating === siparis.id}
+                              className="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold rounded-lg shadow-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1.5"
+                              title="Supabase'den fotoğraf çek"
+                            >
+                              {updating === siparis.id ? (
+                                <>
+                                  <RotateCw className="w-3 h-3 animate-spin" />
+                                  <span>Yükleniyor...</span>
+                                </>
+                              ) : (
+                                <>
+                                  <RotateCw className="w-3 h-3" />
+                                  <span>Fotoğraf Çek</span>
+                                </>
+                              )}
+                            </button>
+                          )}
+                        </div>
+                      )}
+                    </div>
                   </td>
                   <td className="px-4 py-3 whitespace-nowrap">
                     <div className="space-y-1.5">

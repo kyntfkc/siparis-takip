@@ -215,6 +215,48 @@ router.delete('/:id', (req, res) => {
   }
 });
 
+// Belirli bir siparişin fotoğrafını yeniden çek (Supabase'den)
+router.post('/:id/refresh-fotograf', async (req, res) => {
+  try {
+    const id = parseInt(req.params.id);
+    const siparis = getSiparisById(id);
+    
+    if (!siparis) {
+      return res.status(404).json({ error: 'Sipariş bulunamadı' });
+    }
+    
+    if (!siparis.urun_kodu) {
+      return res.status(400).json({ error: 'Siparişte ürün kodu yok' });
+    }
+    
+    const { fetchProductImage, clearProductImageCache } = await import('../services/trendyolSync.js');
+    
+    // Cache'i temizle (bu ürün kodu için)
+    clearProductImageCache();
+    
+    // Fotoğrafı yeniden çek (force refresh)
+    const imageUrl = await fetchProductImage(siparis.urun_kodu, siparis.urun_adi, true);
+    
+    if (imageUrl) {
+      updateSiparisFotoğrafById(id, imageUrl);
+      res.json({ 
+        success: true, 
+        message: 'Fotoğraf güncellendi',
+        imageUrl 
+      });
+    } else {
+      res.json({ 
+        success: false, 
+        message: 'Supabase\'de fotoğraf bulunamadı',
+        urun_kodu: siparis.urun_kodu
+      });
+    }
+  } catch (error: any) {
+    console.error('❌ Fotoğraf yenileme hatası:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // Mevcut siparişlerin fotoğraflarını güncelle (Supabase'den)
 router.post('/update-fotograflar', async (req, res) => {
   try {

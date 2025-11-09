@@ -73,4 +73,9 @@ export const fotoğrafAPI = {
     const { data } = await api.post('/siparisler/update-fotograflar');
     return data;
   },
+  refreshFotograf: async (id: number) => {
+    const { data } = await api.post(`/siparisler/${id}/refresh-fotograf`);
+    invalidateCache('siparisler'); // Clear cache after refresh
+    return data;
+  },
 };
