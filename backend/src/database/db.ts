@@ -35,6 +35,8 @@ export interface Siparis {
   created_at?: string;
   updated_at?: string;
   trendyol_data?: string;
+  ikas_data?: string;
+  kisisellestirme?: string;
   platform?: 'Trendyol' | 'Ikas';
 }
 

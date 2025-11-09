@@ -163,6 +163,9 @@ async function fetchIkasSiparisler(): Promise<any[]> {
               quantity
               price
               finalPrice
+              attributes
+              customizations
+              options
               variant {
                 id
                 name
@@ -348,6 +351,21 @@ async function syncIkasSiparisler() {
           urunAdi
         );
 
+        // Kişiselleştirme bilgileri
+        const kisisellestirmeBilgileri: any = {};
+        if (line.attributes) {
+          kisisellestirmeBilgileri.attributes = line.attributes;
+        }
+        if (line.customizations) {
+          kisisellestirmeBilgileri.customizations = line.customizations;
+        }
+        if (line.options) {
+          kisisellestirmeBilgileri.options = line.options;
+        }
+        const kisisellestirmeStr = Object.keys(kisisellestirmeBilgileri).length > 0
+          ? JSON.stringify(kisisellestirmeBilgileri)
+          : undefined;
+
         // Sipariş oluştur
         try {
           // Sipariş tarihini string'e çevir (epoch milliseconds)
@@ -369,6 +387,8 @@ async function syncIkasSiparisler() {
             durum: 'Yeni',
             fiyat: fiyat,
             platform: 'Ikas',
+            ikas_data: JSON.stringify(ikasSiparis),
+            kisisellestirme: kisisellestirmeStr,
           });
 
           yeniSiparisSayisi++;

@@ -81,6 +81,8 @@ router.get('/', (req, res) => {
               platform: s?.platform ?? null,
               created_at: s?.created_at ?? null,
               updated_at: s?.updated_at ?? null,
+              ikas_data: s?.ikas_data ?? null,
+              kisisellestirme: s?.kisisellestirme ?? null,
             };
             return serialized;
           } catch (e: any) {

@@ -19,4 +19,6 @@ export interface Siparis {
   platform?: 'Trendyol' | 'Ikas';
   created_at?: string;
   updated_at?: string;
+  ikas_data?: string;
+  kisisellestirme?: string;
 }
