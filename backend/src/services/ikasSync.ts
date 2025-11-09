@@ -374,12 +374,20 @@ async function syncIkasSiparisler() {
         const kisisellestirmeBilgileri: any = {};
         if (line.options && Array.isArray(line.options) && line.options.length > 0) {
           kisisellestirmeBilgileri.options = line.options;
-          console.log(`📝 Ikas options bulundu (${siparisNo}):`, JSON.stringify(line.options).substring(0, 200));
+          console.log(`📝 Ikas options bulundu (${siparisNo}):`, JSON.stringify(line.options, null, 2));
+          
+          // Her option'ı detaylı log'la
+          line.options.forEach((opt: any, index: number) => {
+            console.log(`📋 Option ${index + 1} (${siparisNo}):`, JSON.stringify(opt, null, 2));
+            console.log(`   - name: ${opt.name}`);
+            console.log(`   - type: ${opt.type}`);
+            console.log(`   - Tüm keys: ${Object.keys(opt).join(', ')}`);
+          });
         }
         
         // Tüm line item'ı log'la (kişiselleştirme bilgilerini görmek için)
         if (line.options && Array.isArray(line.options) && line.options.length > 0) {
-          console.log(`📋 Ikas line item tam verisi (${siparisNo}):`, JSON.stringify(line).substring(0, 500));
+          console.log(`📋 Ikas line item tam verisi (${siparisNo}):`, JSON.stringify(line, null, 2));
         }
         
         const kisisellestirmeStr = Object.keys(kisisellestirmeBilgileri).length > 0
@@ -399,11 +407,41 @@ async function syncIkasSiparisler() {
                 kisisellestirmeObj.options.forEach((opt: any) => {
                   if (opt.name) {
                     // Name alanında değer olabilir (örn: "Yazı: Ahmet", "Renk: Kırmızı")
-                    // Type bilgisini de ekle
-                    const typeStr = opt.type ? ` (${opt.type})` : '';
-                    notSatirlari.push(`⚙️ ${opt.name}${typeStr}`);
+                    // Veya name sadece etiket, değer başka bir alanda olabilir
+                    let degerStr = '';
+                    
+                    // Tüm alanları kontrol et (value, values, data, text, vb.)
+                    if (opt.value !== undefined && opt.value !== null && opt.value !== '') {
+                      degerStr = `: ${opt.value}`;
+                    } else if (opt.values && Array.isArray(opt.values) && opt.values.length > 0) {
+                      const degerler = opt.values.map((v: any) => {
+                        if (typeof v === 'object' && v !== null) {
+                          return v.value || v.name || v.text || JSON.stringify(v);
+                        }
+                        return v;
+                      }).filter((v: any) => v != null && v !== '');
+                      if (degerler.length > 0) {
+                        degerStr = `: ${degerler.join(', ')}`;
+                      }
+                    } else if (opt.data !== undefined && opt.data !== null && opt.data !== '') {
+                      degerStr = `: ${opt.data}`;
+                    } else if (opt.text !== undefined && opt.text !== null && opt.text !== '') {
+                      degerStr = `: ${opt.text}`;
+                    }
+                    
+                    // Eğer name içinde zaten değer varsa (örn: "Yüzük Ölçüsü: 10")
+                    if (!degerStr && opt.name.includes(':')) {
+                      // Name zaten değer içeriyor, direkt kullan
+                      notSatirlari.push(`⚙️ ${opt.name}`);
+                    } else {
+                      const typeStr = opt.type ? ` (${opt.type})` : '';
+                      notSatirlari.push(`⚙️ ${opt.name}${degerStr}${typeStr}`);
+                    }
                   } else if (typeof opt === 'string') {
                     notSatirlari.push(`⚙️ ${opt}`);
+                  } else {
+                    // Bilinmeyen format, tüm objeyi string'e çevir
+                    notSatirlari.push(`⚙️ ${JSON.stringify(opt)}`);
                   }
                 });
               } else if (typeof kisisellestirmeObj.options === 'object') {
