@@ -96,7 +96,7 @@ async function fetchIkasSiparisler(): Promise<any[]> {
     
     console.log(`🔗 Ikas GraphQL URL: ${graphqlUrl}`);
     if (IKAS_CLIENT_ID) {
-      console.log(`🔑 Ikas Client ID: ${IKAS_CLIENT_ID.substring(0, 20)}...`);
+    console.log(`🔑 Ikas Client ID: ${IKAS_CLIENT_ID.substring(0, 20)}...`);
     }
 
     // GraphQL query

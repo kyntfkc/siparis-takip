@@ -115,13 +115,19 @@ function App() {
               <div className="sm:hidden flex items-center">
                 <button
                   onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                  className="inline-flex items-center justify-center p-2 rounded-md text-slate-600 hover:text-slate-900 hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500"
+                  className="inline-flex items-center justify-center gap-2 px-3 py-2 rounded-md text-slate-600 hover:text-slate-900 hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500"
                   aria-expanded="false"
                 >
                   {mobileMenuOpen ? (
-                    <X className="block h-6 w-6" />
+                    <>
+                      <X className="block h-5 w-5" />
+                      <span className="text-sm font-medium">Kapat</span>
+                    </>
                   ) : (
-                    <Menu className="block h-6 w-6" />
+                    <>
+                      <Menu className="block h-5 w-5" />
+                      <span className="text-sm font-medium">Menü</span>
+                    </>
                   )}
                 </button>
               </div>

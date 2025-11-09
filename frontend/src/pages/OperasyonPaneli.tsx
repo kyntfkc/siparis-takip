@@ -297,13 +297,13 @@ function OperasyonPaneli() {
                   <Plus className="w-4 h-4 mr-2" />
                   Yeni Sipariş
                 </button>
-                <button
-                  onClick={loadSiparisler}
-                  className="flex items-center justify-center px-4 py-2.5 min-h-[40px] bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg hover:shadow-lg hover:scale-105 active:scale-95 transition-all font-semibold text-sm shadow-md touch-manipulation"
-                >
-                  <RefreshCw className="w-4 h-4 mr-2" />
-                  Yenile
-                </button>
+              <button
+                onClick={loadSiparisler}
+                className="flex items-center justify-center px-4 py-2.5 min-h-[40px] bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg hover:shadow-lg hover:scale-105 active:scale-95 transition-all font-semibold text-sm shadow-md touch-manipulation"
+              >
+                <RefreshCw className="w-4 h-4 mr-2" />
+                Yenile
+              </button>
               </div>
             </div>
 
@@ -315,13 +315,13 @@ function OperasyonPaneli() {
         >
           <div className="flex items-center gap-2">
             <Filter className="w-4 h-4 text-blue-600" />
-            <h3 className="text-sm font-bold text-slate-800">Filtre ve Sıralama</h3>
+          <h3 className="text-sm font-bold text-slate-800">Filtre ve Sıralama</h3>
             {(filtreler.musteri || filtreler.urun || filtreler.platform) && (
               <span className="px-2 py-0.5 bg-blue-600 text-white text-xs font-bold rounded-full">
                 {[filtreler.musteri, filtreler.urun, filtreler.platform].filter(Boolean).length}
               </span>
             )}
-          </div>
+        </div>
           {filtreAcik ? (
             <ChevronUp className="w-4 h-4 text-slate-600" />
           ) : (
@@ -409,15 +409,15 @@ function OperasyonPaneli() {
             </span>
           </div>
               {(filtreler.musteri || filtreler.urun || filtreler.platform) && (
-                <button
+            <button
                   onClick={() => setFiltreler({ musteri: '', urun: '', platform: '' })}
-                  className="flex items-center gap-1.5 px-3 py-2 min-h-[36px] text-xs text-red-600 hover:text-red-700 hover:bg-red-50 rounded-lg transition-all font-semibold border-2 border-red-200 hover:border-red-300 shadow-sm touch-manipulation active:scale-95"
-                >
-                  <X className="w-3.5 h-3.5" />
-                  Filtreleri Temizle
-                </button>
-              )}
-            </div>
+              className="flex items-center gap-1.5 px-3 py-2 min-h-[36px] text-xs text-red-600 hover:text-red-700 hover:bg-red-50 rounded-lg transition-all font-semibold border-2 border-red-200 hover:border-red-300 shadow-sm touch-manipulation active:scale-95"
+            >
+              <X className="w-3.5 h-3.5" />
+              Filtreleri Temizle
+            </button>
+          )}
+        </div>
           </div>
         )}
       </div>
@@ -470,33 +470,33 @@ function OperasyonPaneli() {
                 <tr key={siparis.id} className="hover:bg-gradient-to-r hover:from-blue-50/30 hover:to-indigo-50/30 transition-all duration-200 group active:bg-blue-100/50">
                   <td className="px-4 py-3 whitespace-nowrap">
                     <div className="relative">
-                      {getImageUrl(siparis.urun_resmi) ? (
+                    {getImageUrl(siparis.urun_resmi) ? (
                         <div className="relative w-[173px] h-[173px] overflow-hidden rounded-lg border-2 border-slate-200 shadow-md hover:border-blue-300 transition-all duration-200 bg-gradient-to-br from-slate-50 to-slate-100 group">
-                          <img 
-                            src={getImageUrl(siparis.urun_resmi)!} 
-                            alt={siparis.urun_adi}
-                            loading="lazy"
-                            crossOrigin="anonymous"
-                            className="w-full h-full"
-                            style={{ 
-                              objectFit: 'cover',
-                              imageRendering: '-webkit-optimize-contrast',
-                              backfaceVisibility: 'hidden',
-                              transform: 'translateZ(0) scale(1.2)',
-                              willChange: 'transform',
-                              WebkitBackfaceVisibility: 'hidden',
-                              WebkitTransform: 'translateZ(0) scale(1.2)'
-                            }}
-                            onError={(e) => {
-                              console.error(`❌ Fotoğraf yüklenemedi: ${siparis.urun_resmi}`, e);
-                              e.currentTarget.style.display = 'none';
-                              const placeholder = e.currentTarget.nextElementSibling as HTMLElement;
-                              if (placeholder) placeholder.style.display = 'flex';
-                            }}
-                            onLoad={() => {
-                              console.log(`✅ Fotoğraf yüklendi: ${siparis.urun_resmi}`);
-                            }}
-                          />
+                        <img 
+                          src={getImageUrl(siparis.urun_resmi)!} 
+                          alt={siparis.urun_adi}
+                          loading="lazy"
+                          crossOrigin="anonymous"
+                          className="w-full h-full"
+                          style={{ 
+                            objectFit: 'cover',
+                            imageRendering: '-webkit-optimize-contrast',
+                            backfaceVisibility: 'hidden',
+                            transform: 'translateZ(0) scale(1.2)',
+                            willChange: 'transform',
+                            WebkitBackfaceVisibility: 'hidden',
+                            WebkitTransform: 'translateZ(0) scale(1.2)'
+                          }}
+                          onError={(e) => {
+                            console.error(`❌ Fotoğraf yüklenemedi: ${siparis.urun_resmi}`, e);
+                            e.currentTarget.style.display = 'none';
+                            const placeholder = e.currentTarget.nextElementSibling as HTMLElement;
+                            if (placeholder) placeholder.style.display = 'flex';
+                          }}
+                          onLoad={() => {
+                            console.log(`✅ Fotoğraf yüklendi: ${siparis.urun_resmi}`);
+                          }}
+                        />
                           <button
                             onClick={() => handleRefreshFoto(siparis)}
                             disabled={updating === siparis.id || !siparis.urun_kodu}
@@ -509,8 +509,8 @@ function OperasyonPaneli() {
                               <RotateCw className="w-4 h-4 text-blue-600" />
                             )}
                           </button>
-                        </div>
-                      ) : (
+                      </div>
+                    ) : (
                         <div className="relative w-[100px] h-[100px] sm:w-[173px] sm:h-[173px] bg-gradient-to-br from-slate-100 to-slate-200 rounded-lg flex flex-col items-center justify-center text-xs text-slate-400 border-2 border-slate-200 shadow-sm">
                           <div className="mb-2">{siparis.urun_resmi ? 'Geçersiz URL' : 'Resim Yok'}</div>
                           {siparis.urun_kodu && (
@@ -533,12 +533,12 @@ function OperasyonPaneli() {
                               )}
                             </button>
                           )}
-                        </div>
-                      )}
+                      </div>
+                    )}
                     </div>
                   </td>
-                  <td className="px-2 sm:px-4 py-2 sm:py-3 whitespace-nowrap">
-                    <div className="space-y-1">
+                  <td className="px-2 sm:px-4 py-1 sm:py-2 whitespace-nowrap">
+                    <div className="space-y-0.5 sm:space-y-1">
                       <div className="text-xs sm:text-sm text-slate-800 font-semibold leading-tight group-hover:text-blue-700 transition-colors">
                         {siparis.musteri_adi}
                       </div>
@@ -558,12 +558,12 @@ function OperasyonPaneli() {
                       </div>
                     </div>
                   </td>
-                  <td className="px-2 sm:px-4 py-2 sm:py-3">
+                  <td className="px-2 sm:px-4 py-1 sm:py-2">
                     <div className="flex-1 min-w-0">
                       {(() => {
                         const { satir1, satir2 } = formatUrunAdi(siparis.urun_adi);
                         return (
-                          <div className="space-y-1.5 sm:space-y-2">
+                          <div className="space-y-1 sm:space-y-2">
                             <div className="space-y-0.5 sm:space-y-1">
                               <div className="text-xs sm:text-sm text-slate-800 font-semibold leading-tight group-hover:text-blue-700 transition-colors line-clamp-2">
                                 {satir1}
@@ -580,14 +580,14 @@ function OperasyonPaneli() {
                                 <div className="text-xs sm:text-sm text-slate-800 whitespace-pre-wrap break-words leading-relaxed font-medium line-clamp-2 sm:line-clamp-none">
                                   {siparis.not}
                                 </div>
-                              </div>
-                            )}
-                          </div>
-                        );
-                      })()}
-                    </div>
+                                </div>
+                              )}
+                            </div>
+                          );
+                        })()}
+                      </div>
                   </td>
-                  <td className="px-2 sm:px-4 py-2 sm:py-3 whitespace-nowrap hidden sm:table-cell">
+                  <td className="px-2 sm:px-4 py-1 sm:py-2 whitespace-nowrap hidden sm:table-cell">
                     <div className="flex items-center gap-1.5 sm:gap-2">
                       <span className="text-xs sm:text-sm font-bold text-blue-600 bg-blue-50 px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg border border-blue-200">
                         {siparis.urun_kodu || '-'}
@@ -601,8 +601,8 @@ function OperasyonPaneli() {
                       </span>
                     </div>
                   </td>
-                  <td className="px-2 sm:px-4 py-2 sm:py-3 whitespace-nowrap">
-                    <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-1.5 sm:gap-2">
+                  <td className="px-2 sm:px-4 py-1 sm:py-2 whitespace-nowrap">
+                    <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-1 sm:gap-2">
                       <button
                         onClick={() => handleNotClick(siparis)}
                         disabled={updating === siparis.id}
@@ -619,25 +619,25 @@ function OperasyonPaneli() {
                           <Edit2 className="w-4 h-4" />
                         )}
                       </button>
-                      <button
-                        onClick={() => handleUretimeGonderClick(siparis.id)}
-                        disabled={updating === siparis.id}
+                    <button
+                      onClick={() => handleUretimeGonderClick(siparis.id)}
+                      disabled={updating === siparis.id}
                         className="flex items-center justify-center px-3 sm:px-5 py-2 sm:py-3 min-h-[36px] sm:min-h-[40px] bg-gradient-to-r from-emerald-500 via-green-500 to-teal-500 text-white rounded-lg hover:shadow-lg hover:scale-105 active:scale-95 hover:from-emerald-600 hover:via-green-600 hover:to-teal-600 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 text-xs sm:text-sm font-bold shadow-md touch-manipulation"
-                      >
-                        {updating === siparis.id ? (
-                          <>
+                    >
+                      {updating === siparis.id ? (
+                        <>
                             <RefreshCw className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2 animate-spin" />
                             <span className="hidden sm:inline">Gönderiliyor...</span>
                             <span className="sm:hidden">...</span>
-                          </>
-                        ) : (
-                          <>
+                        </>
+                      ) : (
+                        <>
                             <CheckCircle2 className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
                             <span className="hidden sm:inline">Üretime Gönder</span>
                             <span className="sm:hidden">Gönder</span>
-                          </>
-                        )}
-                      </button>
+                        </>
+                      )}
+                    </button>
                     </div>
                   </td>
                 </tr>

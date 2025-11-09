@@ -133,7 +133,7 @@ function Dashboard() {
         </div>
 
         {/* İkinci Satır İstatistikler */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-2 mb-2 sm:mb-3">
+        <div className="grid grid-cols-3 gap-1 sm:gap-2 mb-2 sm:mb-3">
           {/* Yeni Siparişler */}
           <div 
             onClick={() => navigate('/operasyon')}

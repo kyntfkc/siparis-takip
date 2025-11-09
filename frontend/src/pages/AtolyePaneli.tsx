@@ -1,7 +1,7 @@
 import { useEffect, useState, useMemo } from 'react';
 import { siparisAPI } from '../services/api';
 import { Siparis, UretimDurum } from '../types';
-import { RefreshCw, CheckCircle2, ArrowRight, Sparkles, Wrench, ChevronDown, ChevronUp, Package, Image, User, ShoppingBag } from 'lucide-react';
+import { RefreshCw, CheckCircle2, ArrowRight, Sparkles, Wrench, ChevronDown, ChevronUp, Package, Image, User, ShoppingBag, FileText, X, Filter } from 'lucide-react';
 import ConfirmModal from '../components/ConfirmModal';
 import { getImageUrl } from '../utils/imageHelper';
 
@@ -16,6 +16,12 @@ function AtolyePaneli() {
     uretimDurum: UretimDurum | null;
   }>({ isOpen: false, id: null, uretimDurum: null });
   const [openDropdownId, setOpenDropdownId] = useState<number | null>(null);
+  const [notModal, setNotModal] = useState<{
+    isOpen: boolean;
+    siparisId: number | null;
+    not: string;
+  }>({ isOpen: false, siparisId: null, not: '' });
+  const [filtreAcik, setFiltreAcik] = useState(false);
 
   // Ürün adını 2 satıra ayırma fonksiyonu
   const formatUrunAdi = (urunAdi: string): { satir1: string; satir2: string } => {
@@ -231,6 +237,27 @@ function AtolyePaneli() {
     return allSteps.slice(0, currentIndex);
   };
 
+  const handleNotClick = (siparis: Siparis) => {
+    setNotModal({ isOpen: true, siparisId: siparis.id, not: siparis.not || '' });
+  };
+
+  const handleNotSave = async () => {
+    if (!notModal.siparisId) return;
+    
+    setUpdating(notModal.siparisId);
+    
+    try {
+      await siparisAPI.updateNot(notModal.siparisId, notModal.not);
+      await loadSiparisler();
+      setNotModal({ isOpen: false, siparisId: null, not: '' });
+    } catch (error) {
+      console.error('Not güncellenemedi:', error);
+      alert('Not güncellenirken hata oluştu');
+    } finally {
+      setUpdating(null);
+    }
+  };
+
   const uretimDurumRenkleri: Record<UretimDurum, string> = {
     'Döküme Gönderilecek': 'bg-blue-100 text-blue-800 border-blue-200',
     'Dökümde': 'bg-purple-100 text-purple-800 border-purple-200',
@@ -310,9 +337,30 @@ function AtolyePaneli() {
       </div>
 
       {/* Filtre ve Sıralama */}
-      <div className="bg-white/80 backdrop-blur-sm p-2 sm:p-3 rounded-lg sm:rounded-xl shadow-lg border border-slate-200/60 mb-3 sm:mb-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-2 sm:gap-3 mb-2 sm:mb-3">
-          <div>
+      <div className="bg-white/80 backdrop-blur-sm rounded-lg sm:rounded-xl shadow-lg border border-slate-200/60 mb-3 sm:mb-4 overflow-hidden">
+        <button
+          onClick={() => setFiltreAcik(!filtreAcik)}
+          className="w-full flex items-center justify-between p-2 sm:p-3 hover:bg-slate-50/50 transition-colors"
+        >
+          <div className="flex items-center gap-2">
+            <Filter className="w-4 h-4 text-blue-600" />
+            <h3 className="text-xs sm:text-sm font-bold text-slate-800">Filtre ve Sıralama</h3>
+            {(filtreler.musteri || filtreler.urun || selectedUretimDurum !== 'Tümü') && (
+              <span className="px-2 py-0.5 bg-blue-600 text-white text-xs font-bold rounded-full">
+                {[filtreler.musteri, filtreler.urun, selectedUretimDurum !== 'Tümü' ? selectedUretimDurum : ''].filter(Boolean).length}
+              </span>
+            )}
+          </div>
+          {filtreAcik ? (
+            <ChevronUp className="w-4 h-4 text-slate-600" />
+          ) : (
+            <ChevronDown className="w-4 h-4 text-slate-600" />
+          )}
+        </button>
+        {filtreAcik && (
+          <div className="px-2 sm:px-3 pb-2 sm:pb-3 border-t border-slate-200/60">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-2 sm:gap-3 mb-2 sm:mb-3 pt-2 sm:pt-3">
+              <div>
             <label className="block text-xs sm:text-sm font-medium text-slate-700 mb-1">
               Müşteri Ara
             </label>
@@ -335,9 +383,9 @@ function AtolyePaneli() {
               placeholder="Ürün adı..."
               className="w-full px-2 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-sm border border-slate-300 rounded-lg sm:rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all bg-white/50 text-slate-700 placeholder-slate-400"
             />
-          </div>
-        </div>
-        <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
+              </div>
+            </div>
+            <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
           <div className="flex items-center gap-1.5 sm:gap-2">
             <label className="text-xs sm:text-sm font-medium text-slate-700">Sırala:</label>
             <select
@@ -370,7 +418,9 @@ function AtolyePaneli() {
               Filtreleri Temizle
             </button>
           )}
-        </div>
+            </div>
+          </div>
+        )}
       </div>
 
       {siparisler.length === 0 ? (
@@ -450,7 +500,7 @@ function AtolyePaneli() {
                           />
                         </div>
                       ) : (
-                        <div className="w-[216px] h-[216px] bg-gradient-to-br from-slate-100 to-slate-200 rounded-xl flex items-center justify-center text-sm text-slate-400 border-2 border-slate-200 shadow-sm">
+                        <div className="w-[100px] h-[100px] sm:w-[216px] sm:h-[216px] bg-gradient-to-br from-slate-100 to-slate-200 rounded-xl flex items-center justify-center text-xs sm:text-sm text-slate-400 border-2 border-slate-200 shadow-sm">
                           Resim Yok
                         </div>
                       )}
@@ -471,10 +521,10 @@ function AtolyePaneli() {
                       </div>
                     </td>
                     <td className="px-5 py-4">
-                      <div className="flex-1 min-w-0">
-                        {(() => {
-                          const { satir1, satir2 } = formatUrunAdi(siparis.urun_adi);
-                          return (
+                        <div className="flex-1 min-w-0">
+                          {(() => {
+                            const { satir1, satir2 } = formatUrunAdi(siparis.urun_adi);
+                            return (
                             <div className="space-y-2">
                               <div className="space-y-1">
                                 <div className="text-base text-slate-800 font-semibold leading-tight group-hover:text-blue-700 transition-colors">
@@ -492,12 +542,12 @@ function AtolyePaneli() {
                                   <div className="text-sm text-slate-800 whitespace-pre-wrap break-words leading-relaxed font-medium">
                                     {siparis.not}
                                   </div>
-                                </div>
-                              )}
-                            </div>
-                          );
-                        })()}
-                      </div>
+                                  </div>
+                                )}
+                              </div>
+                            );
+                          })()}
+                        </div>
                     </td>
                     <td className="px-5 py-4 whitespace-nowrap">
                       <div className="flex items-center gap-2.5">
@@ -513,14 +563,28 @@ function AtolyePaneli() {
                         </span>
                       </div>
                     </td>
-                    <td className="px-5 py-4 whitespace-nowrap">
-                      <span className={`px-3 py-1.5 text-sm font-semibold rounded-lg border-2 flex items-center gap-1.5 w-fit ${durumRenk}`}>
-                        <DurumIkoni className="w-4 h-4" />
-                        {mevcutUretimDurum}
+                    <td className="px-5 py-2 sm:py-3 whitespace-nowrap">
+                      <span className={`px-2 sm:px-3 py-1 sm:py-1.5 text-xs sm:text-sm font-semibold rounded-lg border-2 flex items-center gap-1 sm:gap-1.5 w-fit ${durumRenk}`}>
+                        <DurumIkoni className="w-3 h-3 sm:w-4 sm:h-4" />
+                        <span className="hidden sm:inline">{mevcutUretimDurum}</span>
+                        <span className="sm:hidden">{mevcutUretimDurum === 'Döküme Gönderilecek' ? 'Döküm' : mevcutUretimDurum === 'Dökümde' ? 'Döküm' : mevcutUretimDurum === 'Atölye' ? 'Atölye' : 'Tamam'}</span>
                       </span>
                     </td>
-                    <td className="px-5 py-4 whitespace-nowrap text-sm">
+                    <td className="px-5 py-2 sm:py-3 whitespace-nowrap text-xs sm:text-sm">
                       <div className="flex items-center gap-2">
+                        {/* Not Butonu */}
+                        <button
+                          onClick={() => handleNotClick(siparis)}
+                          disabled={updating === siparis.id}
+                          className={`flex items-center justify-center px-2 sm:px-3 py-1.5 sm:py-2 min-h-[36px] sm:min-h-[40px] rounded-lg hover:shadow-md hover:scale-105 active:scale-95 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 text-xs sm:text-sm font-semibold shadow-sm touch-manipulation ${
+                            siparis.not
+                              ? 'bg-gradient-to-r from-blue-500 to-indigo-600 text-white border-2 border-blue-400/30'
+                              : 'bg-slate-100 text-slate-700 hover:bg-slate-200 border-2 border-slate-200'
+                          }`}
+                        >
+                          <FileText className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
+                          <span className="hidden sm:inline">{siparis.not ? 'Not Düzenle' : 'Not Ekle'}</span>
+                        </button>
                         {/* Sonraki Adım Butonu */}
                         {(() => {
                           const nextStep = getNextStep(mevcutUretimDurum as UretimDurum);
@@ -599,6 +663,54 @@ function AtolyePaneli() {
               })}
             </tbody>
           </table>
+          </div>
+        </div>
+      )}
+
+      {/* Not Modal */}
+      {notModal.isOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl shadow-2xl max-w-2xl w-full p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-xl font-bold text-slate-800 flex items-center gap-2">
+                <FileText className="w-5 h-5 text-blue-600" />
+                Sipariş Notu
+              </h3>
+              <button
+                onClick={() => setNotModal({ isOpen: false, siparisId: null, not: '' })}
+                className="text-slate-400 hover:text-slate-600 transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            <textarea
+              value={notModal.not}
+              onChange={(e) => setNotModal({ ...notModal, not: e.target.value })}
+              placeholder="Sipariş için not ekleyin..."
+              className="w-full h-32 px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none text-slate-700"
+            />
+            <div className="flex items-center justify-end gap-3 mt-4">
+              <button
+                onClick={() => setNotModal({ isOpen: false, siparisId: null, not: '' })}
+                className="px-4 py-2 text-slate-600 hover:text-slate-800 transition-colors font-medium"
+              >
+                İptal
+              </button>
+              <button
+                onClick={handleNotSave}
+                disabled={updating === notModal.siparisId}
+                className="px-5 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-semibold disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+              >
+                {updating === notModal.siparisId ? (
+                  <>
+                    <RefreshCw className="w-4 h-4 animate-spin" />
+                    <span>Kaydediliyor...</span>
+                  </>
+                ) : (
+                  'Kaydet'
+                )}
+              </button>
+            </div>
           </div>
         </div>
       )}
