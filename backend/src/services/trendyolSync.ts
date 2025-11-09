@@ -188,53 +188,53 @@ export async function fetchTrendyolSiparisler(): Promise<TrendyolSiparis[]> {
         },
       });
 
-    console.log(`📥 API Response Status: ${response.status}`);
-    console.log(`📥 API Response Data Type:`, typeof response.data);
-    console.log(`📥 API Response Keys:`, Object.keys(response.data || {}));
-    
-    // Trendyol API response formatı: { content: [...] } veya direkt array
-    let siparisler: any[] = [];
-    
-    if (Array.isArray(response.data)) {
-      siparisler = response.data;
-    } else if (response.data?.content && Array.isArray(response.data.content)) {
-      siparisler = response.data.content;
-    } else if (response.data?.data && Array.isArray(response.data.data)) {
-      siparisler = response.data.data;
-    } else if (response.data?.orders && Array.isArray(response.data.orders)) {
-      siparisler = response.data.orders;
-    } else {
-      console.log('⚠️  Beklenmeyen response formatı:', JSON.stringify(response.data).substring(0, 500));
-    }
-    
-    console.log(`📦 ${siparisler.length} sipariş bulundu`);
-    
-    if (siparisler.length > 0) {
-      console.log(`📝 İlk sipariş örneği (tam):`, JSON.stringify(siparisler[0], null, 2));
-      // Lines içindeki fotoğraf ve model kod alanlarını kontrol et
-      if (siparisler[0].lines && siparisler[0].lines.length > 0) {
-        console.log(`📸 İlk satır örneği (tam):`, JSON.stringify(siparisler[0].lines[0], null, 2));
-        // Fotoğraf alanlarını tek tek kontrol et
-        const firstLine = siparisler[0].lines[0];
-        console.log(`📸 Fotoğraf alanları:`);
-        console.log(`  - productImageUrl: ${firstLine.productImageUrl}`);
-        console.log(`  - productImage: ${firstLine.productImage}`);
-        console.log(`  - imageUrl: ${(firstLine as any).imageUrl}`);
-        console.log(`  - image: ${(firstLine as any).image}`);
-        console.log(`  - product: ${JSON.stringify((firstLine as any).product)}`);
-        // Model kod alanlarını kontrol et
-        console.log(`🔢 Model Kod Alanları:`);
-        console.log(`  - productCode: ${firstLine.productCode}`);
-        console.log(`  - barcode: ${firstLine.barcode}`);
-        console.log(`  - sku: ${(firstLine as any).sku}`);
-        console.log(`  - modelCode: ${(firstLine as any).modelCode}`);
-        console.log(`  - product.code: ${(firstLine as any).product?.code}`);
-        console.log(`  - product.barcode: ${(firstLine as any).product?.barcode}`);
-        console.log(`  - product.sku: ${(firstLine as any).product?.sku}`);
-        console.log(`  - product.modelCode: ${(firstLine as any).product?.modelCode}`);
+      console.log(`📥 API Response Status: ${response.status}`);
+      console.log(`📥 API Response Data Type:`, typeof response.data);
+      console.log(`📥 API Response Keys:`, Object.keys(response.data || {}));
+      
+      // Trendyol API response formatı: { content: [...] } veya direkt array
+      let siparisler: any[] = [];
+      
+      if (Array.isArray(response.data)) {
+        siparisler = response.data;
+      } else if (response.data?.content && Array.isArray(response.data.content)) {
+        siparisler = response.data.content;
+      } else if (response.data?.data && Array.isArray(response.data.data)) {
+        siparisler = response.data.data;
+      } else if (response.data?.orders && Array.isArray(response.data.orders)) {
+        siparisler = response.data.orders;
+      } else {
+        console.log('⚠️  Beklenmeyen response formatı:', JSON.stringify(response.data).substring(0, 500));
       }
-    }
-    
+      
+      console.log(`📦 ${siparisler.length} sipariş bulundu`);
+      
+      if (siparisler.length > 0) {
+        console.log(`📝 İlk sipariş örneği (tam):`, JSON.stringify(siparisler[0], null, 2));
+        // Lines içindeki fotoğraf ve model kod alanlarını kontrol et
+        if (siparisler[0].lines && siparisler[0].lines.length > 0) {
+          console.log(`📸 İlk satır örneği (tam):`, JSON.stringify(siparisler[0].lines[0], null, 2));
+          // Fotoğraf alanlarını tek tek kontrol et
+          const firstLine = siparisler[0].lines[0];
+          console.log(`📸 Fotoğraf alanları:`);
+          console.log(`  - productImageUrl: ${firstLine.productImageUrl}`);
+          console.log(`  - productImage: ${firstLine.productImage}`);
+          console.log(`  - imageUrl: ${(firstLine as any).imageUrl}`);
+          console.log(`  - image: ${(firstLine as any).image}`);
+          console.log(`  - product: ${JSON.stringify((firstLine as any).product)}`);
+          // Model kod alanlarını kontrol et
+          console.log(`🔢 Model Kod Alanları:`);
+          console.log(`  - productCode: ${firstLine.productCode}`);
+          console.log(`  - barcode: ${firstLine.barcode}`);
+          console.log(`  - sku: ${(firstLine as any).sku}`);
+          console.log(`  - modelCode: ${(firstLine as any).modelCode}`);
+          console.log(`  - product.code: ${(firstLine as any).product?.code}`);
+          console.log(`  - product.barcode: ${(firstLine as any).product?.barcode}`);
+          console.log(`  - product.sku: ${(firstLine as any).product?.sku}`);
+          console.log(`  - product.modelCode: ${(firstLine as any).product?.modelCode}`);
+        }
+      }
+      
       return siparisler;
     } catch (error: any) {
       const isRetryable = error.response?.status === 556 || // Service Unavailable
