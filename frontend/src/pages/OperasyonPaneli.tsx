@@ -282,7 +282,7 @@ function OperasyonPaneli() {
 
   return (
     <div>
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-5">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-4">
               <div>
                 <h2 className="text-2xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-blue-600 bg-clip-text text-transparent bg-[length:200%_auto]">
                   Yeni Sipariş
@@ -308,10 +308,10 @@ function OperasyonPaneli() {
             </div>
 
       {/* Filtre ve Sıralama */}
-      <div className="bg-gradient-to-br from-white via-blue-50/30 to-indigo-50/30 backdrop-blur-sm rounded-lg shadow-xl border-2 border-blue-100/60 mb-4 overflow-hidden">
+      <div className="bg-white/80 backdrop-blur-sm rounded-lg shadow-lg border border-slate-200/60 mb-4 overflow-hidden">
         <button
           onClick={() => setFiltreAcik(!filtreAcik)}
-          className="w-full flex items-center justify-between p-3 sm:p-4 hover:bg-blue-50/50 transition-colors"
+          className="w-full flex items-center justify-between p-3 hover:bg-slate-50/50 transition-colors"
         >
           <div className="flex items-center gap-2">
             <Filter className="w-4 h-4 text-blue-600" />
@@ -329,7 +329,7 @@ function OperasyonPaneli() {
           )}
         </button>
         {filtreAcik && (
-          <div className="px-3 sm:px-4 pb-3 sm:pb-4 border-t border-slate-200/60">
+          <div className="px-3 pb-3 border-t border-slate-200/60">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-2 mb-3 pt-3">
           <div>
             <label className="flex items-center gap-1.5 text-xs font-semibold text-slate-700 mb-1">

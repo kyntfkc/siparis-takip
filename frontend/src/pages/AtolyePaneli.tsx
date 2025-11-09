@@ -285,25 +285,25 @@ function AtolyePaneli() {
 
   return (
     <div>
-      <div className="flex justify-between items-center mb-5">
+      <div className="flex justify-between items-center mb-4">
         <div>
           <h2 className="text-2xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-blue-600 bg-clip-text text-transparent bg-[length:200%_auto]">
             Atölye
           </h2>
-          <p className="text-slate-600 mt-1 font-medium">Üretim süreçlerini yönetin</p>
+          <p className="text-slate-600 mt-1 font-medium text-sm">Üretim süreçlerini yönetin</p>
         </div>
         <button
           onClick={loadSiparisler}
-          className="flex items-center px-4 py-2 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-xl hover:shadow-lg transition-all font-medium"
+          className="flex items-center gap-2 px-4 py-2.5 min-h-[40px] bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg hover:shadow-lg hover:scale-105 active:scale-95 transition-all font-semibold text-sm shadow-md touch-manipulation"
         >
-          <RefreshCw className="w-4 h-4 mr-2" />
+          <RefreshCw className="w-4 h-4" />
           Yenile
         </button>
       </div>
 
       {/* Üretim Durumu Filtreleri */}
-      <div className="bg-white/80 backdrop-blur-sm p-2 sm:p-3 rounded-lg sm:rounded-xl shadow-lg border border-slate-200/60 mb-3 sm:mb-4">
-        <div className="flex flex-wrap gap-1.5 sm:gap-2 mb-2 sm:mb-3">
+      <div className="bg-white/80 backdrop-blur-sm p-3 rounded-lg shadow-lg border border-slate-200/60 mb-4">
+        <div className="flex flex-wrap gap-2 mb-3">
           <button
             onClick={() => setSelectedUretimDurum('Tümü')}
             className={`px-2 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-sm rounded-lg sm:rounded-xl font-medium transition-all duration-200 ${
@@ -337,10 +337,10 @@ function AtolyePaneli() {
       </div>
 
       {/* Filtre ve Sıralama */}
-      <div className="bg-white/80 backdrop-blur-sm rounded-lg sm:rounded-xl shadow-lg border border-slate-200/60 mb-3 sm:mb-4 overflow-hidden">
+      <div className="bg-white/80 backdrop-blur-sm rounded-lg shadow-lg border border-slate-200/60 mb-4 overflow-hidden">
         <button
           onClick={() => setFiltreAcik(!filtreAcik)}
-          className="w-full flex items-center justify-between p-2 sm:p-3 hover:bg-slate-50/50 transition-colors"
+          className="w-full flex items-center justify-between p-3 hover:bg-slate-50/50 transition-colors"
         >
           <div className="flex items-center gap-2">
             <Filter className="w-4 h-4 text-blue-600" />
@@ -358,8 +358,8 @@ function AtolyePaneli() {
           )}
         </button>
         {filtreAcik && (
-          <div className="px-2 sm:px-3 pb-2 sm:pb-3 border-t border-slate-200/60">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-2 sm:gap-3 mb-2 sm:mb-3 pt-2 sm:pt-3">
+          <div className="px-3 pb-3 border-t border-slate-200/60">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mb-3 pt-3">
               <div>
             <label className="block text-xs sm:text-sm font-medium text-slate-700 mb-1">
               Müşteri Ara

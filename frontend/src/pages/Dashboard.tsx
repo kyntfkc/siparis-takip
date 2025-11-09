@@ -118,79 +118,79 @@ function Dashboard() {
   return (
     <div>
         {/* Header */}
-        <div className="flex justify-between items-center mb-3 sm:mb-4">
+        <div className="flex justify-between items-center mb-4">
           <div>
-            <h1 className="text-xl sm:text-2xl font-bold text-slate-900">Dashboard</h1>
-            <p className="text-slate-500 text-xs sm:text-sm mt-0.5 sm:mt-1">Sipariş takip sistemi genel bakış</p>
+            <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-blue-600 bg-clip-text text-transparent bg-[length:200%_auto]">Dashboard</h1>
+            <p className="text-slate-600 text-sm mt-1 font-medium">Sipariş takip sistemi genel bakış</p>
           </div>
           <button
             onClick={loadDashboard}
-            className="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 bg-white rounded-lg shadow-sm hover:shadow-md transition-all duration-200 text-slate-700 hover:text-blue-600 border border-slate-200 hover:border-blue-300 text-xs sm:text-sm font-medium"
+            className="flex items-center gap-2 px-4 py-2.5 min-h-[40px] bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg hover:shadow-lg hover:scale-105 active:scale-95 transition-all font-semibold text-sm shadow-md touch-manipulation"
           >
-            <RefreshCw className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+            <RefreshCw className="w-4 h-4" />
             <span className="hidden sm:inline">Yenile</span>
           </button>
         </div>
 
         {/* İkinci Satır İstatistikler */}
-        <div className="grid grid-cols-3 gap-1 sm:gap-2 mb-2 sm:mb-3">
+        <div className="grid grid-cols-3 gap-2 mb-4">
           {/* Yeni Siparişler */}
           <div 
             onClick={() => navigate('/operasyon')}
-            className="bg-white p-2.5 sm:p-3 rounded-lg shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer border border-slate-200 hover:border-yellow-400 group"
+            className="bg-white/90 backdrop-blur-sm p-3 rounded-lg shadow-md hover:shadow-lg transition-all duration-200 cursor-pointer border border-slate-200/60 hover:border-yellow-400 group"
           >
-            <div className="flex items-center justify-between mb-2 sm:mb-2.5">
-              <div className="p-1.5 sm:p-2 bg-yellow-100 rounded-lg group-hover:bg-yellow-200 transition-colors">
-                <Package className="w-4 h-4 sm:w-5 sm:h-5 text-yellow-600" />
+            <div className="flex items-center justify-between mb-2.5">
+              <div className="p-2 bg-yellow-100 rounded-lg group-hover:bg-yellow-200 transition-colors">
+                <Package className="w-5 h-5 text-yellow-600" />
               </div>
-              <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-slate-400 group-hover:text-yellow-600 transition-all" />
+              <ArrowRight className="w-4 h-4 text-slate-400 group-hover:text-yellow-600 transition-all" />
             </div>
-            <p className="text-xl sm:text-2xl font-bold text-slate-900 mb-0.5 sm:mb-1">{yeniSiparis}</p>
+            <p className="text-2xl font-bold text-slate-900 mb-1">{yeniSiparis}</p>
             <p className="text-slate-600 text-xs font-medium">Yeni Sipariş</p>
           </div>
 
           {/* Üretimde */}
           <div 
             onClick={() => navigate('/atolye')}
-            className="bg-white p-2.5 sm:p-3 rounded-lg shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer border border-slate-200 hover:border-purple-400 group"
+            className="bg-white/90 backdrop-blur-sm p-3 rounded-lg shadow-md hover:shadow-lg transition-all duration-200 cursor-pointer border border-slate-200/60 hover:border-purple-400 group"
           >
-            <div className="flex items-center justify-between mb-2 sm:mb-2.5">
-              <div className="p-1.5 sm:p-2 bg-purple-100 rounded-lg group-hover:bg-purple-200 transition-colors">
-                <Wrench className="w-4 h-4 sm:w-5 sm:h-5 text-purple-600" />
+            <div className="flex items-center justify-between mb-2.5">
+              <div className="p-2 bg-purple-100 rounded-lg group-hover:bg-purple-200 transition-colors">
+                <Wrench className="w-5 h-5 text-purple-600" />
               </div>
-              <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-slate-400 group-hover:text-purple-600 transition-all" />
+              <ArrowRight className="w-4 h-4 text-slate-400 group-hover:text-purple-600 transition-all" />
             </div>
-            <p className="text-xl sm:text-2xl font-bold text-slate-900 mb-0.5 sm:mb-1">{uretimdeSiparis}</p>
+            <p className="text-2xl font-bold text-slate-900 mb-1">{uretimdeSiparis}</p>
             <p className="text-slate-600 text-xs font-medium">Üretimde</p>
           </div>
 
           {/* Sertifika */}
           <div 
             onClick={() => navigate('/sertifika')}
-            className="bg-white p-2.5 sm:p-3 rounded-lg shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer border border-slate-200 hover:border-orange-400 group"
+            className="bg-white/90 backdrop-blur-sm p-3 rounded-lg shadow-md hover:shadow-lg transition-all duration-200 cursor-pointer border border-slate-200/60 hover:border-orange-400 group"
           >
-            <div className="flex items-center justify-between mb-2 sm:mb-2.5">
-              <div className="p-1.5 sm:p-2 bg-orange-100 rounded-lg group-hover:bg-orange-200 transition-colors">
-                <Award className="w-4 h-4 sm:w-5 sm:h-5 text-orange-600" />
+            <div className="flex items-center justify-between mb-2.5">
+              <div className="p-2 bg-orange-100 rounded-lg group-hover:bg-orange-200 transition-colors">
+                <Award className="w-5 h-5 text-orange-600" />
               </div>
-              <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-slate-400 group-hover:text-orange-600 transition-all" />
+              <ArrowRight className="w-4 h-4 text-slate-400 group-hover:text-orange-600 transition-all" />
             </div>
-            <p className="text-xl sm:text-2xl font-bold text-slate-900 mb-0.5 sm:mb-1">{sertifikaSiparis}</p>
+            <p className="text-2xl font-bold text-slate-900 mb-1">{sertifikaSiparis}</p>
             <p className="text-slate-600 text-xs font-medium">Sertifika</p>
           </div>
         </div>
 
         {/* Alt Bölüm */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-2 mb-2 sm:mb-3">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 mb-4">
           {/* Durum Dağılımı */}
-          <div className="bg-white p-2 sm:p-3 rounded-lg shadow-sm border border-slate-200">
-            <h3 className="text-sm sm:text-base font-bold text-slate-900 mb-2 sm:mb-3 flex items-center gap-1.5 sm:gap-2">
-              <div className="p-0.5 sm:p-1 bg-blue-500 rounded">
-                <BarChart3 className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-white" />
+          <div className="bg-white/90 backdrop-blur-sm p-3 rounded-lg shadow-md border border-slate-200/60">
+            <h3 className="text-base font-bold text-slate-900 mb-3 flex items-center gap-2">
+              <div className="p-1 bg-blue-500 rounded">
+                <BarChart3 className="w-3.5 h-3.5 text-white" />
               </div>
               Durum Dağılımı
             </h3>
-            <div className="space-y-1 sm:space-y-1.5">
+            <div className="space-y-1.5">
               {raporlar.filter(r => r.durum !== 'İade/Hatalı').map((rapor) => {
                 const DurumIkoni = durumIkonlari[rapor.durum as SiparisDurum] || Package;
                 const renk = durumRenkleri[rapor.durum as SiparisDurum] || 'bg-gray-100 text-gray-800 border-gray-200';
@@ -236,12 +236,12 @@ function Dashboard() {
           </div>
 
           {/* Son 7 Günlük İstatistikler */}
-          <div className="bg-white p-2 sm:p-3 rounded-lg shadow-sm border border-slate-200">
-            <h3 className="text-sm sm:text-base font-bold text-gray-900 mb-2 sm:mb-3 flex items-center gap-1.5 sm:gap-2">
-              <Calendar className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-purple-600" />
+          <div className="bg-white/90 backdrop-blur-sm p-3 rounded-lg shadow-md border border-slate-200/60">
+            <h3 className="text-base font-bold text-slate-900 mb-3 flex items-center gap-2">
+              <Calendar className="w-3.5 h-3.5 text-purple-600" />
               Son 7 Günlük Özet
             </h3>
-            <div className="space-y-1 sm:space-y-1.5">
+            <div className="space-y-1.5">
               <div className="p-1.5 sm:p-2 bg-blue-50 rounded border border-blue-200">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-1 sm:gap-1.5">
@@ -287,71 +287,73 @@ function Dashboard() {
         </div>
 
         {/* Son Siparişler */}
-        <div className="bg-white p-2 sm:p-3 rounded-lg shadow-sm border border-slate-200">
-          <div className="flex justify-between items-center mb-2 sm:mb-3">
-            <h3 className="text-base sm:text-lg font-bold text-slate-900 flex items-center gap-1.5 sm:gap-2">
-              <div className="p-1 sm:p-1.5 bg-blue-500 rounded-lg">
-                <ShoppingCart className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-white" />
+        <div className="bg-white/90 backdrop-blur-sm p-3 rounded-lg shadow-md border border-slate-200/60">
+          <div className="flex justify-between items-center mb-3">
+            <h3 className="text-lg font-bold text-slate-900 flex items-center gap-2">
+              <div className="p-1.5 bg-blue-500 rounded-lg">
+                <ShoppingCart className="w-4 h-4 text-white" />
               </div>
               Son Siparişler
             </h3>
           </div>
           {sonSiparisler.length === 0 ? (
-            <div className="text-center py-12">
+            <div className="text-center py-12 bg-white/80 backdrop-blur-sm rounded-xl shadow-lg border border-slate-200/60">
               <div className="p-3 bg-slate-100 rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-3">
                 <Package className="w-6 h-6 text-slate-400" />
               </div>
-              <p className="text-slate-600 text-sm">Sipariş bulunamadı</p>
+              <p className="text-slate-600 text-sm font-medium">Sipariş bulunamadı</p>
             </div>
           ) : (
-            <div className="overflow-x-auto rounded-lg border border-slate-200 -mx-2 sm:mx-0">
-              <table className="min-w-full divide-y divide-slate-200" style={{ minWidth: '800px' }}>
-                <thead className="bg-slate-50">
-                  <tr>
-                    <th className="px-4 py-2 text-left text-xs font-semibold text-slate-700 uppercase">Sipariş No</th>
-                    <th className="px-4 py-2 text-left text-xs font-semibold text-slate-700 uppercase">Tarih</th>
-                    <th className="px-4 py-2 text-left text-xs font-semibold text-slate-700 uppercase">Müşteri</th>
-                    <th className="px-4 py-2 text-left text-xs font-semibold text-slate-700 uppercase">Ürün</th>
-                    <th className="px-4 py-2 text-left text-xs font-semibold text-slate-700 uppercase">Durum</th>
-                  </tr>
-                </thead>
-                <tbody className="bg-white divide-y divide-slate-200">
-                  {sonSiparisler.map((siparis) => {
-                    const tarih = typeof siparis.siparis_tarihi === 'string' 
-                      ? new Date(parseInt(siparis.siparis_tarihi)) 
-                      : new Date(siparis.siparis_tarihi as number);
-                    
-                    return (
-                      <tr
-                        key={siparis.id}
-                        className="hover:bg-slate-50 transition-colors"
-                      >
-                        <td className="px-4 py-2 whitespace-nowrap text-sm font-semibold text-slate-900">
-                          {siparis.trendyol_siparis_no}
-                        </td>
-                        <td className="px-4 py-2 whitespace-nowrap text-sm text-slate-600">
-                          {tarih.toLocaleDateString('tr-TR', { day: '2-digit', month: 'short', year: 'numeric' })}
-                        </td>
-                        <td className="px-4 py-2 whitespace-nowrap text-sm text-slate-700 font-medium">
-                          {siparis.musteri_adi}
-                        </td>
-                        <td className="px-4 py-2 text-sm text-slate-600 max-w-xs truncate">
-                          {siparis.urun_adi}
-                        </td>
-                        <td className="px-4 py-2 whitespace-nowrap">
-                          <span
-                            className={`px-2 py-1 text-xs font-semibold rounded border ${
-                              durumRenkleri[siparis.durum]
-                            }`}
-                          >
-                            {siparis.durum}
-                          </span>
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
+            <div className="bg-white/90 backdrop-blur-sm rounded-xl shadow-xl border border-slate-200/80 overflow-hidden -mx-2 sm:mx-0">
+              <div className="overflow-x-auto">
+                <table className="min-w-full divide-y divide-slate-200/40" style={{ minWidth: '800px' }}>
+                  <thead className="bg-gradient-to-r from-blue-50 via-indigo-50 to-purple-50 border-b border-slate-200/60">
+                    <tr>
+                      <th className="px-4 py-3 text-left text-xs font-bold text-slate-700 uppercase tracking-wider">Sipariş No</th>
+                      <th className="px-4 py-3 text-left text-xs font-bold text-slate-700 uppercase tracking-wider">Tarih</th>
+                      <th className="px-4 py-3 text-left text-xs font-bold text-slate-700 uppercase tracking-wider">Müşteri</th>
+                      <th className="px-4 py-3 text-left text-xs font-bold text-slate-700 uppercase tracking-wider">Ürün</th>
+                      <th className="px-4 py-3 text-left text-xs font-bold text-slate-700 uppercase tracking-wider">Durum</th>
+                    </tr>
+                  </thead>
+                  <tbody className="bg-white divide-y divide-slate-100">
+                    {sonSiparisler.map((siparis) => {
+                      const tarih = typeof siparis.siparis_tarihi === 'string' 
+                        ? new Date(parseInt(siparis.siparis_tarihi)) 
+                        : new Date(siparis.siparis_tarihi as number);
+                      
+                      return (
+                        <tr
+                          key={siparis.id}
+                          className="hover:bg-gradient-to-r hover:from-blue-50/30 hover:to-indigo-50/30 transition-all duration-200 group active:bg-blue-100/50"
+                        >
+                          <td className="px-4 py-3 whitespace-nowrap text-sm font-semibold text-slate-900">
+                            {siparis.trendyol_siparis_no}
+                          </td>
+                          <td className="px-4 py-3 whitespace-nowrap text-sm text-slate-600">
+                            {tarih.toLocaleDateString('tr-TR', { day: '2-digit', month: 'short', year: 'numeric' })}
+                          </td>
+                          <td className="px-4 py-3 whitespace-nowrap text-sm text-slate-700 font-medium">
+                            {siparis.musteri_adi}
+                          </td>
+                          <td className="px-4 py-3 text-sm text-slate-600 max-w-xs truncate">
+                            {siparis.urun_adi}
+                          </td>
+                          <td className="px-4 py-3 whitespace-nowrap">
+                            <span
+                              className={`px-2 py-1 text-xs font-semibold rounded border ${
+                                durumRenkleri[siparis.durum]
+                              }`}
+                            >
+                              {siparis.durum}
+                            </span>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
             </div>
           )}
         </div>

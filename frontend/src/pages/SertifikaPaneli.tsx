@@ -459,10 +459,10 @@ function SertifikaPaneli() {
       </div>
 
       {/* Filtre ve Sıralama */}
-      <div className="bg-white/80 backdrop-blur-sm rounded-lg sm:rounded-xl shadow-lg border border-slate-200/60 mb-3 sm:mb-4 overflow-hidden">
+      <div className="bg-white/80 backdrop-blur-sm rounded-lg shadow-lg border border-slate-200/60 mb-4 overflow-hidden">
         <button
           onClick={() => setFiltreAcik(!filtreAcik)}
-          className="w-full flex items-center justify-between p-2 sm:p-3 hover:bg-slate-50/50 transition-colors"
+          className="w-full flex items-center justify-between p-3 hover:bg-slate-50/50 transition-colors"
         >
           <div className="flex items-center gap-2">
             <Filter className="w-4 h-4 text-blue-600" />
@@ -480,8 +480,8 @@ function SertifikaPaneli() {
           )}
         </button>
         {filtreAcik && (
-          <div className="px-2 sm:px-3 pb-2 sm:pb-3 border-t border-slate-200/60">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-2 sm:gap-3 mb-2 sm:mb-3 pt-2 sm:pt-3">
+          <div className="px-3 pb-3 border-t border-slate-200/60">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mb-3 pt-3">
           <div>
             <label className="block text-xs sm:text-sm font-medium text-slate-700 mb-1">
               Müşteri Ara
