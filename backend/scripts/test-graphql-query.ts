@@ -96,6 +96,9 @@ const testQuery = `
           options {
             name
             type
+            values {
+              value
+            }
           }
         }
       }

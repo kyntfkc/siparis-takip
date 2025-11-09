@@ -166,6 +166,9 @@ async function fetchIkasSiparisler(): Promise<any[]> {
               options {
                 name
                 type
+                values {
+                  value
+                }
               }
               variant {
                 id
@@ -397,10 +400,17 @@ async function syncIkasSiparisler() {
             if (kisisellestirmeObj.options) {
               if (Array.isArray(kisisellestirmeObj.options)) {
                 kisisellestirmeObj.options.forEach((opt: any) => {
-                  // Sadece name ve type alanları var (values GraphQL'den gelmiyor)
                   if (opt.name) {
+                    // Values array'inden değerleri çıkar
+                    let degerStr = '';
+                    if (opt.values && Array.isArray(opt.values) && opt.values.length > 0) {
+                      const degerler = opt.values.map((v: any) => v.value || v).filter((v: any) => v != null && v !== '');
+                      if (degerler.length > 0) {
+                        degerStr = `: ${degerler.join(', ')}`;
+                      }
+                    }
                     const typeStr = opt.type ? ` (${opt.type})` : '';
-                    notSatirlari.push(`⚙️ ${opt.name}${typeStr}`);
+                    notSatirlari.push(`⚙️ ${opt.name}${degerStr}${typeStr}`);
                   } else if (typeof opt === 'string') {
                     notSatirlari.push(`⚙️ ${opt}`);
                   }
