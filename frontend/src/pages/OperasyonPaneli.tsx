@@ -382,19 +382,6 @@ function OperasyonPaneli() {
                           return isNaN(tarih.getTime()) ? 'Geçersiz Tarih' : tarih.toLocaleDateString('tr-TR');
                         })()}
                       </div>
-                      {siparis.not && (
-                        <div className="mt-2 p-2.5 bg-blue-50 border border-blue-200 rounded-lg">
-                          <div className="flex items-start gap-1.5">
-                            <FileText className="w-3.5 h-3.5 text-blue-600 flex-shrink-0 mt-0.5" />
-                            <div className="flex-1">
-                              <div className="text-xs font-semibold text-blue-700 mb-1">Not:</div>
-                              <div className="text-xs text-slate-700 whitespace-pre-wrap break-words leading-relaxed">
-                                {siparis.not}
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      )}
                     </div>
                   </td>
                   <td className="px-4 py-3">
@@ -402,14 +389,31 @@ function OperasyonPaneli() {
                       {(() => {
                         const { satir1, satir2 } = formatUrunAdi(siparis.urun_adi);
                         return (
-                          <div className="space-y-1">
-                            <div className="text-sm text-slate-800 font-semibold leading-tight group-hover:text-blue-700 transition-colors">
-                              {satir1}
+                          <div className="space-y-2">
+                            <div className="space-y-1">
+                              <div className="text-sm text-slate-800 font-semibold leading-tight group-hover:text-blue-700 transition-colors">
+                                {satir1}
+                              </div>
+                              {satir2 && (
+                                <div className="text-xs text-slate-600 leading-tight flex items-center gap-1.5">
+                                  <span className="text-blue-600 font-bold">•</span>
+                                  {satir2}
+                                </div>
+                              )}
                             </div>
-                            {satir2 && (
-                              <div className="text-xs text-slate-600 leading-tight flex items-center gap-1.5">
-                                <span className="text-blue-600 font-bold">•</span>
-                                {satir2}
+                            {siparis.not && (
+                              <div className="mt-2 p-3 bg-gradient-to-br from-blue-50 to-indigo-50 border-2 border-blue-300 rounded-xl shadow-sm">
+                                <div className="flex items-start gap-2">
+                                  <div className="p-1.5 bg-blue-100 rounded-lg">
+                                    <FileText className="w-4 h-4 text-blue-600 flex-shrink-0" />
+                                  </div>
+                                  <div className="flex-1 min-w-0">
+                                    <div className="text-xs font-bold text-blue-700 mb-1.5 uppercase tracking-wide">Sipariş Notu</div>
+                                    <div className="text-sm text-slate-800 whitespace-pre-wrap break-words leading-relaxed font-medium">
+                                      {siparis.not}
+                                    </div>
+                                  </div>
+                                </div>
                               </div>
                             )}
                           </div>
