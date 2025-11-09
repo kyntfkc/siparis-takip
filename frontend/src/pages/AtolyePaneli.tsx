@@ -4,7 +4,6 @@ import { Siparis, UretimDurum } from '../types';
 import { RefreshCw, CheckCircle2, ArrowRight, Sparkles, Wrench, ChevronDown, ChevronUp, Package, Image, User, ShoppingBag, FileText, X, Filter, Download } from 'lucide-react';
 import ConfirmModal from '../components/ConfirmModal';
 import { getImageUrl } from '../utils/imageHelper';
-import * as XLSX from 'xlsx';
 
 function AtolyePaneli() {
   const [siparisler, setSiparisler] = useState<Siparis[]>([]);
@@ -334,62 +333,70 @@ function AtolyePaneli() {
   };
 
   // Excel export fonksiyonu
-  const handleExcelExport = () => {
-    const data = filteredSiparisler.map((siparis, index) => {
-      const tarih = typeof siparis.siparis_tarihi === 'string' 
-        ? new Date(parseInt(siparis.siparis_tarihi)) 
-        : new Date(siparis.siparis_tarihi as number);
+  const handleExcelExport = async () => {
+    try {
+      // Dynamic import ile xlsx kütüphanesini yükle
+      const XLSX = await import('xlsx');
       
-      const tarihStr = isNaN(tarih.getTime()) 
-        ? 'Geçersiz Tarih' 
-        : tarih.toLocaleDateString('tr-TR', { day: '2-digit', month: '2-digit', year: 'numeric' }) + ' ' + 
-          tarih.toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' });
-      
-      return {
-        'Seç': siparis.trendyol_siparis_no,
-        'Sn.': index + 1,
-        'Tarih': tarihStr,
-        'Sipariş No': siparis.trendyol_siparis_no,
-        'Sipariş Durumu': siparis.durum,
-        'Ürün Resmi': getImageUrl(siparis.urun_resmi) || '',
-        'Ürün Adı': siparis.urun_adi,
-        'Adet': siparis.miktar,
-        'Kişiselleştirme': formatKisisellestirme(siparis.kisisellestirme),
-        'Teslimat İsim Soyisim': siparis.musteri_adi,
-      };
-    });
+      const data = filteredSiparisler.map((siparis, index) => {
+        const tarih = typeof siparis.siparis_tarihi === 'string' 
+          ? new Date(parseInt(siparis.siparis_tarihi)) 
+          : new Date(siparis.siparis_tarihi as number);
+        
+        const tarihStr = isNaN(tarih.getTime()) 
+          ? 'Geçersiz Tarih' 
+          : tarih.toLocaleDateString('tr-TR', { day: '2-digit', month: '2-digit', year: 'numeric' }) + ' ' + 
+            tarih.toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' });
+        
+        return {
+          'Seç': siparis.trendyol_siparis_no,
+          'Sn.': index + 1,
+          'Tarih': tarihStr,
+          'Sipariş No': siparis.trendyol_siparis_no,
+          'Sipariş Durumu': siparis.durum,
+          'Ürün Resmi': getImageUrl(siparis.urun_resmi) || '',
+          'Ürün Adı': siparis.urun_adi,
+          'Adet': siparis.miktar,
+          'Kişiselleştirme': formatKisisellestirme(siparis.kisisellestirme),
+          'Teslimat İsim Soyisim': siparis.musteri_adi,
+        };
+      });
 
-    const ws = XLSX.utils.json_to_sheet(data);
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, 'Siparişler');
-    
-    // Sütun genişliklerini ayarla
-    const colWidths = [
-      { wch: 15 }, // Seç
-      { wch: 5 },  // Sn.
-      { wch: 18 }, // Tarih
-      { wch: 15 }, // Sipariş No
-      { wch: 15 }, // Sipariş Durumu
-      { wch: 20 }, // Ürün Resmi
-      { wch: 40 }, // Ürün Adı
-      { wch: 8 },  // Adet
-      { wch: 50 }, // Kişiselleştirme
-      { wch: 25 }, // Teslimat İsim Soyisim
-    ];
-    ws['!cols'] = colWidths;
-    
-    // Kişiselleştirme sütununu wrap text yap
-    const range = XLSX.utils.decode_range(ws['!ref'] || 'A1');
-    for (let row = 1; row <= range.e.r; row++) {
-      const cellAddress = XLSX.utils.encode_cell({ r: row, c: 8 }); // I sütunu (0-indexed: 8)
-      if (!ws[cellAddress]) continue;
-      ws[cellAddress].s = {
-        alignment: { wrapText: true, vertical: 'top' },
-      };
+      const ws = XLSX.utils.json_to_sheet(data);
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, 'Siparişler');
+      
+      // Sütun genişliklerini ayarla
+      const colWidths = [
+        { wch: 15 }, // Seç
+        { wch: 5 },  // Sn.
+        { wch: 18 }, // Tarih
+        { wch: 15 }, // Sipariş No
+        { wch: 15 }, // Sipariş Durumu
+        { wch: 20 }, // Ürün Resmi
+        { wch: 40 }, // Ürün Adı
+        { wch: 8 },  // Adet
+        { wch: 50 }, // Kişiselleştirme
+        { wch: 25 }, // Teslimat İsim Soyisim
+      ];
+      ws['!cols'] = colWidths;
+      
+      // Kişiselleştirme sütununu wrap text yap
+      const range = XLSX.utils.decode_range(ws['!ref'] || 'A1');
+      for (let row = 1; row <= range.e.r; row++) {
+        const cellAddress = XLSX.utils.encode_cell({ r: row, c: 8 }); // I sütunu (0-indexed: 8)
+        if (!ws[cellAddress]) continue;
+        ws[cellAddress].s = {
+          alignment: { wrapText: true, vertical: 'top' },
+        };
+      }
+      
+      const fileName = `Atolye_Siparisler_${new Date().toISOString().split('T')[0]}.xlsx`;
+      XLSX.writeFile(wb, fileName);
+    } catch (error) {
+      console.error('Excel export hatası:', error);
+      alert('Excel dosyası oluşturulurken hata oluştu. Lütfen tekrar deneyin.');
     }
-    
-    const fileName = `Atolye_Siparisler_${new Date().toISOString().split('T')[0]}.xlsx`;
-    XLSX.writeFile(wb, fileName);
   };
 
   if (loading) {
