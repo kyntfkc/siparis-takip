@@ -360,14 +360,23 @@ function TamamlandiPaneli() {
                       {(() => {
                         const { satir1, satir2 } = formatUrunAdi(siparis.urun_adi);
                         return (
-                          <div className="space-y-1">
-                            <div className="text-sm text-slate-800 font-semibold leading-tight group-hover:text-blue-700 transition-colors">
-                              {satir1}
+                          <div className="space-y-2">
+                            <div className="space-y-1">
+                              <div className="text-sm text-slate-800 font-semibold leading-tight group-hover:text-blue-700 transition-colors">
+                                {satir1}
+                              </div>
+                              {satir2 && (
+                                <div className="text-sm text-slate-600 leading-tight flex items-center gap-1.5">
+                                  <span className="text-blue-600 font-bold">•</span>
+                                  {satir2}
+                                </div>
+                              )}
                             </div>
-                            {satir2 && (
-                              <div className="text-sm text-slate-600 leading-tight flex items-center gap-1.5">
-                                <span className="text-blue-600 font-bold">•</span>
-                                {satir2}
+                            {siparis.not && (
+                              <div className="mt-2 p-3 bg-gradient-to-br from-blue-50 to-indigo-50 border-2 border-blue-300 rounded-xl shadow-sm">
+                                <div className="text-sm text-slate-800 whitespace-pre-wrap break-words leading-relaxed font-medium">
+                                  {siparis.not}
+                                </div>
                               </div>
                             )}
                           </div>

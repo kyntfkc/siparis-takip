@@ -1,7 +1,7 @@
 import { useEffect, useState, useMemo } from 'react';
 import { siparisAPI, fotoğrafAPI } from '../services/api';
 import { Siparis } from '../types';
-import { CheckCircle2, RefreshCw, Image, Package, User, ShoppingBag, Search, Filter, X, FileText, Edit2, RotateCw } from 'lucide-react';
+import { CheckCircle2, RefreshCw, Image, Package, User, ShoppingBag, Search, Filter, X, FileText, Edit2, RotateCw, CheckCircle, AlertCircle, Info, Plus } from 'lucide-react';
 import ConfirmModal from '../components/ConfirmModal';
 import { getImageUrl } from '../utils/imageHelper';
 
@@ -18,6 +18,22 @@ function OperasyonPaneli() {
     siparisId: number | null;
     not: string;
   }>({ isOpen: false, siparisId: null, not: '' });
+  const [toast, setToast] = useState<{
+    isOpen: boolean;
+    message: string;
+    type: 'success' | 'error' | 'info';
+  }>({ isOpen: false, message: '', type: 'info' });
+  const [yeniSiparisModal, setYeniSiparisModal] = useState(false);
+  const [yeniSiparisForm, setYeniSiparisForm] = useState({
+    musteri_adi: '',
+    musteri_telefon: '',
+    musteri_adres: '',
+    urun_adi: '',
+    urun_kodu: '',
+    miktar: 1,
+    fiyat: 0,
+    platform: 'Trendyol' as 'Trendyol' | 'Ikas',
+  });
 
   // Ürün adını 2 satıra ayırma fonksiyonu
   const formatUrunAdi = (urunAdi: string): { satir1: string; satir2: string } => {
@@ -49,6 +65,7 @@ function OperasyonPaneli() {
   const [filtreler, setFiltreler] = useState({
     musteri: '',
     urun: '',
+    platform: '',
   });
   const [siralama, setSiralama] = useState<{
     alan: 'siparis_tarihi' | 'musteri_adi' | 'urun_adi' | 'trendyol_siparis_no';
@@ -90,6 +107,11 @@ function OperasyonPaneli() {
       const urunLower = filtreler.urun.toLowerCase();
       filtered = filtered.filter(s =>
         s.urun_adi.toLowerCase().includes(urunLower)
+      );
+    }
+    if (filtreler.platform) {
+      filtered = filtered.filter(s =>
+        s.platform === filtreler.platform
       );
     }
 
@@ -174,9 +196,57 @@ function OperasyonPaneli() {
     }
   };
 
+  const showToast = (message: string, type: 'success' | 'error' | 'info' = 'info') => {
+    setToast({ isOpen: true, message, type });
+    setTimeout(() => {
+      setToast({ isOpen: false, message: '', type: 'info' });
+    }, 3000);
+  };
+
+  const handleYeniSiparisKaydet = async () => {
+    if (!yeniSiparisForm.musteri_adi || !yeniSiparisForm.urun_adi) {
+      showToast('Müşteri adı ve ürün adı zorunludur', 'error');
+      return;
+    }
+
+    try {
+      const siparisNo = `MAN-${Date.now()}`;
+      await siparisAPI.create({
+        trendyol_siparis_no: siparisNo,
+        siparis_tarihi: new Date().toISOString(),
+        musteri_adi: yeniSiparisForm.musteri_adi,
+        musteri_telefon: yeniSiparisForm.musteri_telefon || undefined,
+        musteri_adres: yeniSiparisForm.musteri_adres || undefined,
+        urun_adi: yeniSiparisForm.urun_adi,
+        urun_kodu: yeniSiparisForm.urun_kodu || undefined,
+        miktar: yeniSiparisForm.miktar,
+        fiyat: yeniSiparisForm.fiyat,
+        durum: 'Yeni',
+        platform: yeniSiparisForm.platform,
+      });
+      
+      await loadSiparisler();
+      setYeniSiparisModal(false);
+      setYeniSiparisForm({
+        musteri_adi: '',
+        musteri_telefon: '',
+        musteri_adres: '',
+        urun_adi: '',
+        urun_kodu: '',
+        miktar: 1,
+        fiyat: 0,
+        platform: 'Trendyol',
+      });
+      showToast('✅ Sipariş başarıyla eklendi!', 'success');
+    } catch (error: any) {
+      console.error('Sipariş ekleme hatası:', error);
+      showToast('❌ Sipariş eklenirken hata oluştu: ' + (error.message || 'Bilinmeyen hata'), 'error');
+    }
+  };
+
   const handleRefreshFoto = async (siparis: Siparis) => {
     if (!siparis.urun_kodu) {
-      alert('Ürün kodu bulunamadı');
+      showToast('Ürün kodu bulunamadı', 'error');
       return;
     }
     
@@ -186,13 +256,13 @@ function OperasyonPaneli() {
       const result = await fotoğrafAPI.refreshFotograf(siparis.id);
       if (result.success) {
         await loadSiparisler();
-        alert('Fotoğraf güncellendi!');
+        showToast('✅ Fotoğraf başarıyla güncellendi!', 'success');
       } else {
-        alert(`Fotoğraf bulunamadı: ${result.message || 'Supabase\'de fotoğraf yok'}`);
+        showToast(`⚠️ Fotoğraf bulunamadı: ${result.message || 'Supabase\'de fotoğraf yok'}`, 'error');
       }
     } catch (error: any) {
       console.error('Fotoğraf yenileme hatası:', error);
-      alert('Fotoğraf yenilenirken hata oluştu: ' + (error.message || 'Bilinmeyen hata'));
+      showToast('❌ Fotoğraf yenilenirken hata oluştu: ' + (error.message || 'Bilinmeyen hata'), 'error');
     } finally {
       setUpdating(null);
     }
@@ -211,20 +281,29 @@ function OperasyonPaneli() {
 
   return (
     <div>
-            <div className="flex justify-between items-center mb-5">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-5">
               <div>
                 <h2 className="text-2xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-blue-600 bg-clip-text text-transparent bg-[length:200%_auto]">
                   Yeni Sipariş
                 </h2>
                 <p className="text-slate-600 mt-1 font-medium text-sm">Yeni gelen siparişleri yönetin</p>
               </div>
-              <button
-                onClick={loadSiparisler}
-                className="flex items-center justify-center px-4 py-2.5 min-h-[40px] bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg hover:shadow-lg hover:scale-105 active:scale-95 transition-all font-semibold text-sm shadow-md touch-manipulation"
-              >
-                <RefreshCw className="w-4 h-4 mr-2" />
-                Yenile
-              </button>
+              <div className="flex gap-2">
+                <button
+                  onClick={() => setYeniSiparisModal(true)}
+                  className="flex items-center justify-center px-4 py-2.5 min-h-[40px] bg-gradient-to-r from-emerald-500 to-teal-600 text-white rounded-lg hover:shadow-lg hover:scale-105 active:scale-95 transition-all font-semibold text-sm shadow-md touch-manipulation"
+                >
+                  <Plus className="w-4 h-4 mr-2" />
+                  Yeni Sipariş
+                </button>
+                <button
+                  onClick={loadSiparisler}
+                  className="flex items-center justify-center px-4 py-2.5 min-h-[40px] bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg hover:shadow-lg hover:scale-105 active:scale-95 transition-all font-semibold text-sm shadow-md touch-manipulation"
+                >
+                  <RefreshCw className="w-4 h-4 mr-2" />
+                  Yenile
+                </button>
+              </div>
             </div>
 
       {/* Filtre ve Sıralama */}
@@ -233,7 +312,7 @@ function OperasyonPaneli() {
           <Filter className="w-3.5 h-3.5 text-blue-600" />
           <h3 className="text-sm font-bold text-slate-800">Filtre ve Sıralama</h3>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mb-3">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-2 mb-3">
           <div>
             <label className="flex items-center gap-1.5 text-xs font-semibold text-slate-700 mb-1">
               <User className="w-3 h-3 text-blue-600" />
@@ -266,6 +345,21 @@ function OperasyonPaneli() {
               />
             </div>
           </div>
+          <div>
+            <label className="flex items-center gap-1.5 text-xs font-semibold text-slate-700 mb-1">
+              <Package className="w-3 h-3 text-blue-600" />
+              Platform
+            </label>
+            <select
+              value={filtreler.platform}
+              onChange={(e) => setFiltreler({ ...filtreler, platform: e.target.value })}
+              className="w-full px-3 py-2 text-xs border-2 border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all bg-white text-slate-700 shadow-sm hover:border-blue-300 touch-manipulation"
+            >
+              <option value="">Tüm Platformlar</option>
+              <option value="Trendyol">Trendyol</option>
+              <option value="Ikas">Ikas</option>
+            </select>
+          </div>
         </div>
         <div className="flex items-center gap-2 flex-wrap pt-2.5 border-t border-slate-200/60">
           <div className="flex items-center gap-1.5">
@@ -296,9 +390,9 @@ function OperasyonPaneli() {
               {filteredSiparisler.length} / {siparisler.length} sipariş
             </span>
           </div>
-          {(filtreler.musteri || filtreler.urun) && (
+          {(filtreler.musteri || filtreler.urun || filtreler.platform) && (
             <button
-              onClick={() => setFiltreler({ musteri: '', urun: '' })}
+              onClick={() => setFiltreler({ musteri: '', urun: '', platform: '' })}
               className="flex items-center gap-1.5 px-3 py-2 min-h-[36px] text-xs text-red-600 hover:text-red-700 hover:bg-red-50 rounded-lg transition-all font-semibold border-2 border-red-200 hover:border-red-300 shadow-sm touch-manipulation active:scale-95"
             >
               <X className="w-3.5 h-3.5" />
@@ -327,26 +421,27 @@ function OperasyonPaneli() {
           <table className="min-w-full divide-y divide-slate-200/40">
             <thead className="bg-gradient-to-r from-blue-50 via-indigo-50 to-purple-50 border-b border-slate-200/60">
               <tr>
-                <th className="px-4 py-3 text-left text-xs font-bold text-slate-700 uppercase tracking-wider">
+                <th className="px-2 sm:px-4 py-3 text-left text-xs font-bold text-slate-700 uppercase tracking-wider hidden sm:table-cell">
                   <div className="flex items-center gap-2">
                     <Image className="w-4 h-4 text-blue-600" />
                     <span>Fotoğraf</span>
                   </div>
                 </th>
-                <th className="px-4 py-3 text-left text-xs font-bold text-slate-700 uppercase tracking-wider">
+                <th className="px-2 sm:px-4 py-3 text-left text-xs font-bold text-slate-700 uppercase tracking-wider">
                   <div className="flex items-center gap-2">
                     <User className="w-4 h-4 text-blue-600" />
-                    <span>Müşteri</span>
+                    <span className="hidden md:inline">Müşteri</span>
+                    <span className="md:hidden">Müş.</span>
                   </div>
                 </th>
-                <th className="px-4 py-3 text-left text-xs font-bold text-slate-700 uppercase tracking-wider">
+                <th className="px-2 sm:px-4 py-3 text-left text-xs font-bold text-slate-700 uppercase tracking-wider">
                   <div className="flex items-center gap-2">
                     <ShoppingBag className="w-4 h-4 text-blue-600" />
                     <span>Ürün</span>
                   </div>
                 </th>
-                <th className="px-4 py-3 text-left text-xs font-bold text-slate-700 uppercase tracking-wider">Ürün Kodu</th>
-                <th className="px-4 py-3 text-left text-xs font-bold text-slate-700 uppercase tracking-wider">İşlem</th>
+                <th className="px-2 sm:px-4 py-3 text-left text-xs font-bold text-slate-700 uppercase tracking-wider hidden sm:table-cell">Ürün Kodu</th>
+                <th className="px-2 sm:px-4 py-3 text-left text-xs font-bold text-slate-700 uppercase tracking-wider">İşlem</th>
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-slate-100">
@@ -395,7 +490,7 @@ function OperasyonPaneli() {
                           </button>
                         </div>
                       ) : (
-                        <div className="relative w-[173px] h-[173px] bg-gradient-to-br from-slate-100 to-slate-200 rounded-lg flex flex-col items-center justify-center text-xs text-slate-400 border-2 border-slate-200 shadow-sm">
+                        <div className="relative w-[120px] h-[120px] sm:w-[173px] sm:h-[173px] bg-gradient-to-br from-slate-100 to-slate-200 rounded-lg flex flex-col items-center justify-center text-xs text-slate-400 border-2 border-slate-200 shadow-sm">
                           <div className="mb-2">{siparis.urun_resmi ? 'Geçersiz URL' : 'Resim Yok'}</div>
                           {siparis.urun_kodu && (
                             <button
@@ -421,9 +516,9 @@ function OperasyonPaneli() {
                       )}
                     </div>
                   </td>
-                  <td className="px-4 py-3 whitespace-nowrap">
+                  <td className="px-2 sm:px-4 py-3 whitespace-nowrap">
                     <div className="space-y-1.5">
-                      <div className="text-sm text-slate-800 font-semibold leading-tight group-hover:text-blue-700 transition-colors">
+                      <div className="text-xs sm:text-sm text-slate-800 font-semibold leading-tight group-hover:text-blue-700 transition-colors">
                         {siparis.musteri_adi}
                       </div>
                       <div className="text-xs text-slate-500 mt-1 font-mono leading-tight bg-slate-50 px-2.5 py-1 rounded-md inline-block border border-slate-200">
@@ -442,14 +537,14 @@ function OperasyonPaneli() {
                       </div>
                     </div>
                   </td>
-                  <td className="px-4 py-3">
+                  <td className="px-2 sm:px-4 py-3">
                     <div className="flex-1 min-w-0">
                       {(() => {
                         const { satir1, satir2 } = formatUrunAdi(siparis.urun_adi);
                         return (
                           <div className="space-y-2">
                             <div className="space-y-1">
-                              <div className="text-sm text-slate-800 font-semibold leading-tight group-hover:text-blue-700 transition-colors">
+                              <div className="text-xs sm:text-sm text-slate-800 font-semibold leading-tight group-hover:text-blue-700 transition-colors">
                                 {satir1}
                               </div>
                               {satir2 && (
@@ -461,16 +556,8 @@ function OperasyonPaneli() {
                             </div>
                             {siparis.not && (
                               <div className="mt-2 p-3 bg-gradient-to-br from-blue-50 to-indigo-50 border-2 border-blue-300 rounded-xl shadow-sm">
-                                <div className="flex items-start gap-2">
-                                  <div className="p-1.5 bg-blue-100 rounded-lg">
-                                    <FileText className="w-4 h-4 text-blue-600 flex-shrink-0" />
-                                  </div>
-                                  <div className="flex-1 min-w-0">
-                                    <div className="text-xs font-bold text-blue-700 mb-1.5 uppercase tracking-wide">Sipariş Notu</div>
-                                    <div className="text-sm text-slate-800 whitespace-pre-wrap break-words leading-relaxed font-medium">
-                                      {siparis.not}
-                                    </div>
-                                  </div>
+                                <div className="text-sm text-slate-800 whitespace-pre-wrap break-words leading-relaxed font-medium">
+                                  {siparis.not}
                                 </div>
                               </div>
                             )}
@@ -479,12 +566,12 @@ function OperasyonPaneli() {
                       })()}
                     </div>
                   </td>
-                  <td className="px-4 py-3 whitespace-nowrap">
-                    <div className="flex items-center gap-2">
-                      <span className="text-sm font-bold text-blue-600 bg-blue-50 px-3 py-1.5 rounded-lg border border-blue-200">
+                  <td className="px-2 sm:px-4 py-3 whitespace-nowrap">
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center gap-1.5 sm:gap-2">
+                      <span className="text-xs sm:text-sm font-bold text-blue-600 bg-blue-50 px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg border border-blue-200">
                         {siparis.urun_kodu || '-'}
                       </span>
-                      <span className={`px-2.5 py-1.5 text-white text-xs font-bold rounded-lg whitespace-nowrap shadow-sm min-w-[40px] text-center ${
+                      <span className={`px-2 sm:px-2.5 py-1 sm:py-1.5 text-white text-xs font-bold rounded-lg whitespace-nowrap shadow-sm min-w-[35px] sm:min-w-[40px] text-center ${
                         siparis.miktar > 1 
                           ? 'bg-gradient-to-br from-red-500 to-rose-600 border border-red-400/30' 
                           : 'bg-gradient-to-br from-blue-500 to-indigo-600 border border-blue-400/30'
@@ -493,12 +580,12 @@ function OperasyonPaneli() {
                       </span>
                     </div>
                   </td>
-                  <td className="px-4 py-3 whitespace-nowrap">
-                    <div className="flex items-center gap-2">
+                  <td className="px-2 sm:px-4 py-3 whitespace-nowrap">
+                    <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-1.5 sm:gap-2">
                       <button
                         onClick={() => handleNotClick(siparis)}
                         disabled={updating === siparis.id}
-                        className={`flex items-center justify-center px-3 py-2 min-h-[40px] rounded-lg hover:shadow-md hover:scale-105 active:scale-95 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 text-sm font-semibold shadow-sm touch-manipulation ${
+                        className={`flex items-center justify-center px-2 sm:px-3 py-1.5 sm:py-2 min-h-[36px] sm:min-h-[40px] rounded-lg hover:shadow-md hover:scale-105 active:scale-95 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 text-xs sm:text-sm font-semibold shadow-sm touch-manipulation ${
                           siparis.not
                             ? 'bg-blue-50 text-blue-600 border border-blue-200 hover:bg-blue-100'
                             : 'bg-slate-50 text-slate-600 border border-slate-200 hover:bg-slate-100'
@@ -514,17 +601,19 @@ function OperasyonPaneli() {
                       <button
                         onClick={() => handleUretimeGonderClick(siparis.id)}
                         disabled={updating === siparis.id}
-                        className="flex items-center justify-center px-5 py-3 min-h-[40px] bg-gradient-to-r from-emerald-500 via-green-500 to-teal-500 text-white rounded-lg hover:shadow-lg hover:scale-105 active:scale-95 hover:from-emerald-600 hover:via-green-600 hover:to-teal-600 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 text-sm font-bold shadow-md touch-manipulation"
+                        className="flex items-center justify-center px-3 sm:px-5 py-2 sm:py-3 min-h-[36px] sm:min-h-[40px] bg-gradient-to-r from-emerald-500 via-green-500 to-teal-500 text-white rounded-lg hover:shadow-lg hover:scale-105 active:scale-95 hover:from-emerald-600 hover:via-green-600 hover:to-teal-600 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 text-xs sm:text-sm font-bold shadow-md touch-manipulation"
                       >
                         {updating === siparis.id ? (
                           <>
-                            <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
-                            <span>Gönderiliyor...</span>
+                            <RefreshCw className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2 animate-spin" />
+                            <span className="hidden sm:inline">Gönderiliyor...</span>
+                            <span className="sm:hidden">...</span>
                           </>
                         ) : (
                           <>
-                            <CheckCircle2 className="w-4 h-4 mr-2" />
-                            <span>Üretime Gönder</span>
+                            <CheckCircle2 className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
+                            <span className="hidden sm:inline">Üretime Gönder</span>
+                            <span className="sm:hidden">Gönder</span>
                           </>
                         )}
                       </button>
@@ -594,6 +683,153 @@ function OperasyonPaneli() {
               </button>
             </div>
           </div>
+        </div>
+      )}
+
+      {/* Yeni Sipariş Modal */}
+      {yeniSiparisModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="sticky top-0 bg-white border-b border-slate-200 px-6 py-4 flex items-center justify-between">
+              <h3 className="text-xl font-bold text-slate-800 flex items-center gap-2">
+                <Plus className="w-5 h-5 text-blue-600" />
+                Yeni Sipariş Ekle
+              </h3>
+              <button
+                onClick={() => setYeniSiparisModal(false)}
+                className="text-slate-400 hover:text-slate-600 transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            <div className="p-6 space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-semibold text-slate-700 mb-1.5">Müşteri Adı *</label>
+                  <input
+                    type="text"
+                    value={yeniSiparisForm.musteri_adi}
+                    onChange={(e) => setYeniSiparisForm({ ...yeniSiparisForm, musteri_adi: e.target.value })}
+                    className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-slate-700"
+                    placeholder="Müşteri adı..."
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-slate-700 mb-1.5">Müşteri Telefon</label>
+                  <input
+                    type="text"
+                    value={yeniSiparisForm.musteri_telefon}
+                    onChange={(e) => setYeniSiparisForm({ ...yeniSiparisForm, musteri_telefon: e.target.value })}
+                    className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-slate-700"
+                    placeholder="Telefon numarası..."
+                  />
+                </div>
+                <div className="md:col-span-2">
+                  <label className="block text-sm font-semibold text-slate-700 mb-1.5">Müşteri Adres</label>
+                  <textarea
+                    value={yeniSiparisForm.musteri_adres}
+                    onChange={(e) => setYeniSiparisForm({ ...yeniSiparisForm, musteri_adres: e.target.value })}
+                    className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-slate-700 resize-none"
+                    rows={2}
+                    placeholder="Adres..."
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-slate-700 mb-1.5">Ürün Adı *</label>
+                  <input
+                    type="text"
+                    value={yeniSiparisForm.urun_adi}
+                    onChange={(e) => setYeniSiparisForm({ ...yeniSiparisForm, urun_adi: e.target.value })}
+                    className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-slate-700"
+                    placeholder="Ürün adı..."
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-slate-700 mb-1.5">Ürün Kodu</label>
+                  <input
+                    type="text"
+                    value={yeniSiparisForm.urun_kodu}
+                    onChange={(e) => setYeniSiparisForm({ ...yeniSiparisForm, urun_kodu: e.target.value })}
+                    className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-slate-700"
+                    placeholder="Ürün kodu..."
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-slate-700 mb-1.5">Miktar</label>
+                  <input
+                    type="number"
+                    min="1"
+                    value={yeniSiparisForm.miktar}
+                    onChange={(e) => setYeniSiparisForm({ ...yeniSiparisForm, miktar: parseInt(e.target.value) || 1 })}
+                    className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-slate-700"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-slate-700 mb-1.5">Fiyat (₺)</label>
+                  <input
+                    type="number"
+                    min="0"
+                    step="0.01"
+                    value={yeniSiparisForm.fiyat}
+                    onChange={(e) => setYeniSiparisForm({ ...yeniSiparisForm, fiyat: parseFloat(e.target.value) || 0 })}
+                    className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-slate-700"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-slate-700 mb-1.5">Platform</label>
+                  <select
+                    value={yeniSiparisForm.platform}
+                    onChange={(e) => setYeniSiparisForm({ ...yeniSiparisForm, platform: e.target.value as 'Trendyol' | 'Ikas' })}
+                    className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-slate-700"
+                  >
+                    <option value="Trendyol">Trendyol</option>
+                    <option value="Ikas">Ikas</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div className="sticky bottom-0 bg-white border-t border-slate-200 px-6 py-4 flex items-center justify-end gap-3">
+              <button
+                onClick={() => setYeniSiparisModal(false)}
+                className="px-4 py-2 text-slate-600 hover:text-slate-800 transition-colors font-medium"
+              >
+                İptal
+              </button>
+              <button
+                onClick={handleYeniSiparisKaydet}
+                className="px-5 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-semibold flex items-center gap-2"
+              >
+                <Plus className="w-4 h-4" />
+                Sipariş Ekle
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Toast Notification */}
+      {toast.isOpen && (
+        <div className={`fixed top-4 right-4 left-4 sm:left-auto z-50 animate-slide-in-right ${
+          toast.type === 'success' ? 'bg-green-500' : 
+          toast.type === 'error' ? 'bg-red-500' : 
+          'bg-blue-500'
+        } text-white px-4 sm:px-6 py-3 sm:py-4 rounded-lg shadow-2xl flex items-center gap-2 sm:gap-3 min-w-[280px] sm:min-w-[300px] max-w-md`}>
+          <div className="flex-shrink-0">
+            {toast.type === 'success' ? (
+              <CheckCircle className="w-6 h-6" />
+            ) : toast.type === 'error' ? (
+              <AlertCircle className="w-6 h-6" />
+            ) : (
+              <Info className="w-6 h-6" />
+            )}
+          </div>
+          <div className="flex-1 font-medium text-sm">{toast.message}</div>
+          <button
+            onClick={() => setToast({ isOpen: false, message: '', type: 'info' })}
+            className="flex-shrink-0 text-white/80 hover:text-white transition-colors"
+          >
+            <X className="w-5 h-5" />
+          </button>
         </div>
       )}
     </div>
