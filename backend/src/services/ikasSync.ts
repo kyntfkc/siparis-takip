@@ -165,7 +165,6 @@ async function fetchIkasSiparisler(): Promise<any[]> {
               finalPrice
               options {
                 name
-                values
                 type
               }
               variant {
