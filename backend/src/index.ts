@@ -6,6 +6,7 @@ import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import { existsSync } from 'fs';
 import { initDatabase } from './database/db.js';
+import { initUsersDatabase } from './database/users.js';
 import { setupRoutes } from './routes/index.js';
 import { startTrendyolSync } from './services/trendyolSync.js';
 import { startIkasSync } from './services/ikasSync.js';
@@ -66,6 +67,14 @@ try {
   initDatabase();
 } catch (error: any) {
   console.error('❌ Database başlatılamadı:', error.message);
+  console.error(error.stack);
+}
+
+// Users database başlat
+try {
+  initUsersDatabase();
+} catch (error: any) {
+  console.error('❌ Users database başlatılamadı:', error.message);
   console.error(error.stack);
 }
 

@@ -120,8 +120,8 @@ function Dashboard() {
         {/* Header */}
         <div className="flex justify-between items-center mb-4">
           <div>
-            <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-blue-600 bg-clip-text text-transparent bg-[length:200%_auto]">Dashboard</h1>
-            <p className="text-slate-600 text-sm mt-1 font-medium">Sipariş takip sistemi genel bakış</p>
+            <h1 className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-blue-600 bg-clip-text text-transparent bg-[length:200%_auto]">Dashboard</h1>
+            <p className="text-slate-600 text-xs sm:text-sm mt-0.5 sm:mt-1 font-medium">Sipariş takip sistemi genel bakış</p>
           </div>
           <button
             onClick={loadDashboard}

@@ -1,6 +1,7 @@
 import { Express } from 'express';
 import siparisRoutes from './siparis.routes.js';
 import raporRoutes from './rapor.routes.js';
+import authRoutes from './auth.routes.js';
 
 export function setupRoutes(app: Express) {
   // Health check endpoint - Railway için kritik
@@ -81,6 +82,7 @@ export function setupRoutes(app: Express) {
     }
   });
 
+  app.use('/api/auth', authRoutes);
   app.use('/api/siparisler', siparisRoutes);
   app.use('/api/raporlar', raporRoutes);
 }

@@ -287,10 +287,10 @@ function AtolyePaneli() {
     <div>
       <div className="flex justify-between items-center mb-4">
         <div>
-          <h2 className="text-2xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-blue-600 bg-clip-text text-transparent bg-[length:200%_auto]">
+          <h2 className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-blue-600 bg-clip-text text-transparent bg-[length:200%_auto]">
             Atölye
           </h2>
-          <p className="text-slate-600 mt-1 font-medium text-sm">Üretim süreçlerini yönetin</p>
+          <p className="text-slate-600 mt-0.5 sm:mt-1 font-medium text-xs sm:text-sm">Üretim süreçlerini yönetin</p>
         </div>
         <button
           onClick={loadSiparisler}

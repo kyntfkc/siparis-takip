@@ -79,3 +79,83 @@ export const fotoğrafAPI = {
     return data;
   },
 };
+
+export interface LoginResponse {
+  success: boolean;
+  user?: {
+    id: string;
+    username: string;
+    role: 'operasyon' | 'atolye' | 'yonetici';
+  };
+  error?: string;
+}
+
+export interface User {
+  id: string;
+  username: string;
+  role: 'operasyon' | 'atolye' | 'yonetici';
+  created_at?: string;
+  updated_at?: string;
+}
+
+export interface UsersResponse {
+  success: boolean;
+  users?: User[];
+  error?: string;
+}
+
+export interface UserResponse {
+  success: boolean;
+  user?: User;
+  error?: string;
+}
+
+export const authAPI = {
+  login: async (username: string, password: string): Promise<LoginResponse> => {
+    const { data } = await api.post('/auth/login', { username, password });
+    return data;
+  },
+
+  getMe: async (): Promise<LoginResponse> => {
+    const userId = localStorage.getItem('user') 
+      ? JSON.parse(localStorage.getItem('user')!).id 
+      : null;
+    
+    if (!userId) {
+      return { success: false, error: 'Kullanıcı bulunamadı' };
+    }
+
+    const { data } = await api.get('/auth/me', {
+      headers: {
+        'x-user-id': userId,
+      },
+    });
+    return data;
+  },
+
+  logout: async (): Promise<{ success: boolean }> => {
+    const { data } = await api.post('/auth/logout');
+    return data;
+  },
+
+  // Kullanıcı yönetimi (sadece yönetici)
+  getUsers: async (): Promise<UsersResponse> => {
+    const { data } = await api.get('/auth/users');
+    return data;
+  },
+
+  createUser: async (username: string, password: string, role: 'operasyon' | 'atolye' | 'yonetici'): Promise<UserResponse> => {
+    const { data } = await api.post('/auth/users', { username, password, role });
+    return data;
+  },
+
+  updateUser: async (id: string, updates: { username?: string; password?: string; role?: 'operasyon' | 'atolye' | 'yonetici' }): Promise<UserResponse> => {
+    const { data } = await api.put(`/auth/users/${id}`, updates);
+    return data;
+  },
+
+  deleteUser: async (id: string): Promise<{ success: boolean; error?: string }> => {
+    const { data } = await api.delete(`/auth/users/${id}`);
+    return data;
+  },
+};

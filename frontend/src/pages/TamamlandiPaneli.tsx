@@ -184,10 +184,10 @@ function TamamlandiPaneli() {
     <div>
       <div className="flex justify-between items-center mb-4">
         <div>
-          <h2 className="text-2xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-blue-600 bg-clip-text text-transparent bg-[length:200%_auto]">
+          <h2 className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-blue-600 bg-clip-text text-transparent bg-[length:200%_auto]">
             Tamamlandı
           </h2>
-          <p className="text-slate-600 mt-1 font-medium text-sm">Tamamlanan siparişleri görüntüleyin</p>
+          <p className="text-slate-600 mt-0.5 sm:mt-1 font-medium text-xs sm:text-sm">Tamamlanan siparişleri görüntüleyin</p>
         </div>
         <button
           onClick={loadSiparisler}
@@ -325,33 +325,33 @@ function TamamlandiPaneli() {
             <table className="min-w-full divide-y divide-slate-200/40" style={{ minWidth: '1000px' }}>
             <thead className="bg-gradient-to-r from-blue-50 via-indigo-50 to-purple-50 border-b border-slate-200/60">
               <tr>
-                <th className="px-4 py-2 sm:py-3 text-left text-xs font-bold text-slate-700 uppercase tracking-wider">
+                <th className="px-2 sm:px-3 py-2 sm:py-3 text-left text-xs font-bold text-slate-700 uppercase tracking-wider">
                   <div className="flex items-center gap-1 sm:gap-2">
                     <Image className="w-3 h-3 sm:w-4 sm:h-4 text-blue-600" />
                     <span>Fotoğraf</span>
                   </div>
                 </th>
-                <th className="px-4 py-2 sm:py-3 text-left text-xs font-bold text-slate-700 uppercase tracking-wider">
+                <th className="px-2 sm:px-3 py-2 sm:py-3 text-left text-xs font-bold text-slate-700 uppercase tracking-wider">
                   <div className="flex items-center gap-1 sm:gap-2">
                     <User className="w-3 h-3 sm:w-4 sm:h-4 text-blue-600" />
                     <span>Müşteri</span>
                   </div>
                 </th>
-                <th className="px-4 py-2 sm:py-3 text-left text-xs font-bold text-slate-700 uppercase tracking-wider">
+                <th className="px-2 sm:px-3 py-2 sm:py-3 text-left text-xs font-bold text-slate-700 uppercase tracking-wider">
                   <div className="flex items-center gap-1 sm:gap-2">
                     <ShoppingBag className="w-3 h-3 sm:w-4 sm:h-4 text-blue-600" />
                     <span>Ürün</span>
                   </div>
                 </th>
-                <th className="px-4 py-2 sm:py-3 text-left text-xs font-bold text-slate-700 uppercase tracking-wider">Ürün Kodu</th>
-                <th className="px-4 py-2 sm:py-3 text-left text-xs font-bold text-slate-700 uppercase tracking-wider">Adres</th>
-                <th className="px-4 py-2 sm:py-3 text-left text-xs font-bold text-slate-700 uppercase tracking-wider">İşlem</th>
+                <th className="px-2 sm:px-3 py-2 sm:py-3 text-left text-xs font-bold text-slate-700 uppercase tracking-wider hidden sm:table-cell">Ürün Kodu</th>
+                <th className="px-2 sm:px-3 py-2 sm:py-3 text-left text-xs font-bold text-slate-700 uppercase tracking-wider hidden sm:table-cell">Adres</th>
+                <th className="px-2 sm:px-3 py-2 sm:py-3 text-left text-xs font-bold text-slate-700 uppercase tracking-wider">İşlem</th>
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-slate-100">
               {filteredSiparisler.map((siparis) => (
                 <tr key={siparis.id} className="hover:bg-gradient-to-r hover:from-blue-50/30 hover:to-indigo-50/30 transition-all duration-200 group active:bg-blue-100/50">
-                  <td className="px-4 py-2 sm:py-3 whitespace-nowrap">
+                  <td className="px-2 sm:px-3 py-1.5 sm:py-2 whitespace-nowrap">
                     {getImageUrl(siparis.urun_resmi) ? (
                       <div className="relative w-[100px] h-[100px] sm:w-[173px] sm:h-[173px] overflow-hidden rounded-lg border-2 border-slate-200 shadow-md hover:border-blue-300 transition-all duration-200 bg-gradient-to-br from-slate-50 to-slate-100">
                         <img 
@@ -382,7 +382,7 @@ function TamamlandiPaneli() {
                       </div>
                     )}
                   </td>
-                  <td className="px-4 py-2 sm:py-3 whitespace-nowrap">
+                  <td className="px-2 sm:px-3 py-1.5 sm:py-2 whitespace-nowrap">
                     <div className="space-y-1">
                       <div className="text-xs sm:text-sm text-slate-800 font-semibold leading-tight group-hover:text-blue-700 transition-colors">
                         {siparis.musteri_adi}
@@ -408,26 +408,26 @@ function TamamlandiPaneli() {
                       </div>
                     </div>
                   </td>
-                  <td className="px-5 py-4">
+                  <td className="px-2 sm:px-3 py-1.5 sm:py-2">
                       <div className="flex-1 min-w-0">
                         {(() => {
                           const { satir1, satir2 } = formatUrunAdi(siparis.urun_adi);
                           return (
-                          <div className="space-y-2">
-                            <div className="space-y-1">
-                              <div className="text-sm text-slate-800 font-semibold leading-tight group-hover:text-blue-700 transition-colors">
+                          <div className="space-y-0.5 sm:space-y-2">
+                            <div className="space-y-0.5 sm:space-y-1">
+                              <div className="text-xs sm:text-sm text-slate-800 font-semibold leading-tight group-hover:text-blue-700 transition-colors line-clamp-2">
                                 {satir1}
                               </div>
                               {satir2 && (
-                                <div className="text-sm text-slate-600 leading-tight flex items-center gap-1.5">
+                                <div className="text-xs sm:text-sm text-slate-600 leading-tight flex items-center gap-1.5 line-clamp-1">
                                   <span className="text-blue-600 font-bold">•</span>
                                   {satir2}
                                 </div>
                               )}
                             </div>
                             {siparis.not && (
-                              <div className="mt-2 p-3 bg-gradient-to-br from-blue-50 to-indigo-50 border-2 border-blue-300 rounded-xl shadow-sm">
-                                <div className="text-sm text-slate-800 whitespace-pre-wrap break-words leading-relaxed font-medium">
+                              <div className="mt-0.5 sm:mt-2 p-1.5 sm:p-3 bg-gradient-to-br from-blue-50 to-indigo-50 border-2 border-blue-300 rounded-lg sm:rounded-xl shadow-sm">
+                                <div className="text-xs sm:text-sm text-slate-800 whitespace-pre-wrap break-words leading-relaxed font-medium line-clamp-2 sm:line-clamp-none">
                                   {siparis.not}
                                 </div>
                                 </div>
@@ -437,12 +437,12 @@ function TamamlandiPaneli() {
                         })()}
                       </div>
                   </td>
-                  <td className="px-4 py-3 whitespace-nowrap">
-                    <div className="flex items-center gap-2">
-                      <span className="text-sm font-bold text-blue-600 bg-blue-50 px-3 py-1.5 rounded-lg border border-blue-200">
+                  <td className="px-2 sm:px-3 py-1.5 sm:py-2 whitespace-nowrap hidden sm:table-cell">
+                    <div className="flex items-center gap-1.5 sm:gap-2">
+                      <span className="text-xs sm:text-sm font-bold text-blue-600 bg-blue-50 px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg border border-blue-200">
                         {siparis.urun_kodu || '-'}
                       </span>
-                      <span className={`px-3 py-1.5 text-white text-sm font-bold rounded-lg whitespace-nowrap shadow-sm border min-w-[50px] text-center ${
+                      <span className={`px-2 sm:px-2.5 py-1 sm:py-1.5 text-white text-xs sm:text-sm font-bold rounded-lg whitespace-nowrap shadow-sm border min-w-[35px] sm:min-w-[40px] text-center ${
                         siparis.miktar > 1 
                           ? 'bg-gradient-to-br from-red-500 to-rose-600 border-red-400/30' 
                           : 'bg-gradient-to-br from-blue-500 to-indigo-600 border-blue-400/30'
@@ -451,12 +451,12 @@ function TamamlandiPaneli() {
                       </span>
                     </div>
                   </td>
-                    <td className="px-5 py-2 sm:py-3 text-xs sm:text-sm text-slate-600 max-w-xs">
-                    <div className="truncate">
+                    <td className="px-2 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-sm text-slate-600 max-w-xs hidden sm:table-cell">
+                    <div className="line-clamp-2">
                       {siparis.musteri_adres || '-'}
                     </div>
                   </td>
-                  <td className="px-4 py-2 sm:py-3 whitespace-nowrap text-xs sm:text-sm">
+                  <td className="px-2 sm:px-3 py-1.5 sm:py-2 whitespace-nowrap">
                     <button
                       onClick={() => handleNotClick(siparis)}
                       disabled={updating === siparis.id}
