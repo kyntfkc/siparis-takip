@@ -133,7 +133,7 @@ function Dashboard() {
         </div>
 
         {/* İkinci Satır İstatistikler */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-2 sm:gap-3 mb-3 sm:mb-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-2 mb-2 sm:mb-3">
           {/* Yeni Siparişler */}
           <div 
             onClick={() => navigate('/operasyon')}
@@ -181,7 +181,7 @@ function Dashboard() {
         </div>
 
         {/* Alt Bölüm */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-2 sm:gap-3 mb-3 sm:mb-4">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-2 mb-2 sm:mb-3">
           {/* Durum Dağılımı */}
           <div className="bg-white p-2 sm:p-3 rounded-lg shadow-sm border border-slate-200">
             <h3 className="text-sm sm:text-base font-bold text-slate-900 mb-2 sm:mb-3 flex items-center gap-1.5 sm:gap-2">
@@ -304,8 +304,8 @@ function Dashboard() {
               <p className="text-slate-600 text-sm">Sipariş bulunamadı</p>
             </div>
           ) : (
-            <div className="overflow-x-auto rounded-lg border border-slate-200">
-              <table className="min-w-full divide-y divide-slate-200">
+            <div className="overflow-x-auto rounded-lg border border-slate-200 -mx-2 sm:mx-0">
+              <table className="min-w-full divide-y divide-slate-200" style={{ minWidth: '800px' }}>
                 <thead className="bg-slate-50">
                   <tr>
                     <th className="px-4 py-2 text-left text-xs font-semibold text-slate-700 uppercase">Sipariş No</th>

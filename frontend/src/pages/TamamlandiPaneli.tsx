@@ -171,10 +171,10 @@ function TamamlandiPaneli() {
       </div>
 
       {/* Filtre ve Sıralama */}
-      <div className="bg-white/80 backdrop-blur-sm p-5 rounded-xl shadow-lg border border-slate-200/60 mb-5">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
+      <div className="bg-white/80 backdrop-blur-sm p-2 sm:p-3 rounded-lg sm:rounded-xl shadow-lg border border-slate-200/60 mb-3 sm:mb-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3 mb-2 sm:mb-3">
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1.5">
+            <label className="block text-xs sm:text-sm font-medium text-slate-700 mb-1">
               Müşteri Ara
             </label>
             <input
@@ -182,11 +182,11 @@ function TamamlandiPaneli() {
               value={filtreler.musteri}
               onChange={(e) => setFiltreler({ ...filtreler, musteri: e.target.value })}
               placeholder="Müşteri adı..."
-              className="w-full px-4 py-2.5 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all bg-white/50 text-slate-700 placeholder-slate-400"
+              className="w-full px-2 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-sm border border-slate-300 rounded-lg sm:rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all bg-white/50 text-slate-700 placeholder-slate-400"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1.5">
+            <label className="block text-xs sm:text-sm font-medium text-slate-700 mb-1">
               Ürün Ara
             </label>
             <input
@@ -194,39 +194,39 @@ function TamamlandiPaneli() {
               value={filtreler.urun}
               onChange={(e) => setFiltreler({ ...filtreler, urun: e.target.value })}
               placeholder="Ürün adı..."
-              className="w-full px-4 py-2.5 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all bg-white/50 text-slate-700 placeholder-slate-400"
+              className="w-full px-2 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-sm border border-slate-300 rounded-lg sm:rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all bg-white/50 text-slate-700 placeholder-slate-400"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1.5">
+            <label className="block text-xs sm:text-sm font-medium text-slate-700 mb-1">
               Başlangıç Tarihi
             </label>
             <input
               type="date"
               value={filtreler.tarihBaslangic}
               onChange={(e) => setFiltreler({ ...filtreler, tarihBaslangic: e.target.value })}
-              className="w-full px-4 py-2.5 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all bg-white/50 text-slate-700"
+              className="w-full px-2 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-sm border border-slate-300 rounded-lg sm:rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all bg-white/50 text-slate-700"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1.5">
+            <label className="block text-xs sm:text-sm font-medium text-slate-700 mb-1">
               Bitiş Tarihi
             </label>
             <input
               type="date"
               value={filtreler.tarihBitis}
               onChange={(e) => setFiltreler({ ...filtreler, tarihBitis: e.target.value })}
-              className="w-full px-4 py-2.5 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all bg-white/50 text-slate-700"
+              className="w-full px-2 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-sm border border-slate-300 rounded-lg sm:rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all bg-white/50 text-slate-700"
             />
           </div>
         </div>
-        <div className="flex items-center gap-4">
-          <div className="flex items-center gap-2">
-            <label className="text-sm font-medium text-slate-700">Sırala:</label>
+        <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
+          <div className="flex items-center gap-1.5 sm:gap-2">
+            <label className="text-xs sm:text-sm font-medium text-slate-700">Sırala:</label>
             <select
               value={siralama.alan}
               onChange={(e) => setSiralama({ ...siralama, alan: e.target.value as any })}
-              className="px-4 py-2 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all bg-white/50 text-slate-700 font-medium"
+              className="px-2 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-sm border border-slate-300 rounded-lg sm:rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all bg-white/50 text-slate-700 font-medium"
             >
               <option value="siparis_tarihi">Tarih</option>
               <option value="musteri_adi">Müşteri</option>
@@ -235,18 +235,18 @@ function TamamlandiPaneli() {
             </select>
             <button
               onClick={() => setSiralama({ ...siralama, yon: siralama.yon === 'asc' ? 'desc' : 'asc' })}
-              className="px-4 py-2 border border-slate-300 rounded-xl hover:bg-slate-50 transition-colors font-medium text-slate-700"
+              className="px-2 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-sm border border-slate-300 rounded-lg sm:rounded-xl hover:bg-slate-50 transition-colors font-medium text-slate-700"
             >
               {siralama.yon === 'asc' ? '↑' : '↓'}
             </button>
           </div>
-          <div className="text-sm text-slate-600 font-medium">
+          <div className="text-xs sm:text-sm text-slate-600 font-medium">
             {filteredSiparisler.length} / {siparisler.length} sipariş
           </div>
           {(filtreler.musteri || filtreler.urun || filtreler.tarihBaslangic || filtreler.tarihBitis) && (
             <button
               onClick={() => setFiltreler({ musteri: '', urun: '', tarihBaslangic: '', tarihBitis: '' })}
-              className="px-3 py-2 text-sm text-red-600 hover:text-red-700 hover:bg-red-50 rounded-xl transition-colors font-medium"
+              className="px-2 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-sm text-red-600 hover:text-red-700 hover:bg-red-50 rounded-lg sm:rounded-xl transition-colors font-medium"
             >
               Filtreleri Temizle
             </button>
@@ -269,8 +269,9 @@ function TamamlandiPaneli() {
           <p className="text-slate-600 font-medium">Filtrelere uygun sipariş bulunamadı</p>
         </div>
       ) : (
-        <div className="bg-white/90 backdrop-blur-sm rounded-xl shadow-xl border border-slate-200/80 overflow-hidden">
-          <table className="min-w-full divide-y divide-slate-200/40">
+        <div className="bg-white/90 backdrop-blur-sm rounded-xl shadow-xl border border-slate-200/80 overflow-hidden -mx-2 sm:mx-0">
+          <div className="overflow-x-auto">
+            <table className="min-w-full divide-y divide-slate-200/40" style={{ minWidth: '1000px' }}>
             <thead className="bg-gradient-to-r from-blue-50 via-indigo-50 to-purple-50 border-b border-slate-200/60">
               <tr>
                 <th className="px-4 py-3 text-left text-xs font-bold text-slate-700 uppercase tracking-wider">
@@ -407,6 +408,7 @@ function TamamlandiPaneli() {
               ))}
             </tbody>
           </table>
+          </div>
         </div>
       )}
     </div>

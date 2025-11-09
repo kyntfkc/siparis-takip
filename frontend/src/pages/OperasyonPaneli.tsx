@@ -437,8 +437,9 @@ function OperasyonPaneli() {
           <p className="text-slate-600 font-medium text-sm">Filtrelere uygun sipariş bulunamadı</p>
         </div>
       ) : (
-        <div className="bg-white/90 backdrop-blur-sm rounded-xl shadow-xl border border-slate-200/80 overflow-hidden">
-          <table className="min-w-full divide-y divide-slate-200/40">
+        <div className="bg-white/90 backdrop-blur-sm rounded-xl shadow-xl border border-slate-200/80 overflow-hidden -mx-2 sm:mx-0">
+          <div className="overflow-x-auto">
+            <table className="min-w-full divide-y divide-slate-200/40" style={{ minWidth: '1000px' }}>
             <thead className="bg-gradient-to-r from-blue-50 via-indigo-50 to-purple-50 border-b border-slate-200/60">
               <tr>
                 <th className="px-2 sm:px-4 py-3 text-left text-xs font-bold text-slate-700 uppercase tracking-wider hidden sm:table-cell">
@@ -643,6 +644,7 @@ function OperasyonPaneli() {
               ))}
             </tbody>
           </table>
+          </div>
         </div>
       )}
 
