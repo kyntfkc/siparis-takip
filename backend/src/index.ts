@@ -17,25 +17,18 @@ const __dirname = dirname(__filename);
 
 // Unhandled promise rejection ve exception handling
 process.on('unhandledRejection', (reason: any, promise: Promise<any>) => {
-  console.error('❌ Unhandled Rejection at:', promise);
-  console.error('❌ Reason:', reason);
+  console.error('❌ Unhandled Rejection at:', promise, 'reason:', reason);
+  // Crash'i önlemek için hata loglanıyor ama process devam ediyor
   if (reason instanceof Error) {
     console.error('❌ Error Stack:', reason.stack);
-    console.error('❌ Error Name:', reason.name);
   }
-  // Process'i kapatma, sadece logla (Railway otomatik restart eder)
 });
 
 process.on('uncaughtException', (error: Error) => {
   console.error('❌ Uncaught Exception:', error);
   console.error('❌ Error Stack:', error.stack);
-  console.error('❌ Error Name:', error.name);
   // Process'i kapatma, sadece logla (Railway otomatik restart eder)
-  // Ancak eğer kritik bir hata varsa, process'i kapatabiliriz
-  if (error.message.includes('EADDRINUSE') || error.message.includes('port')) {
-    console.error('❌ Port hatası - process kapatılıyor');
-    process.exit(1);
-  }
+  // Crash'i önlemek için process devam ediyor
 });
 
 // .env dosyasını backend dizininden yükle (varsa)

@@ -478,21 +478,29 @@ async function syncIkasSiparisler() {
 
 // Otomatik senkronizasyon başlat
 export function startIkasSync() {
-  console.log('🚀 Ikas senkronizasyon başlatılıyor...');
-  
-  // İlk senkronizasyon (async olarak, hata olsa bile devam et)
-  syncIkasSiparisler().catch((error: any) => {
-    console.error('❌ İlk Ikas senkronizasyon hatası:', error.message);
-    console.error('❌ Error Stack:', error.stack);
-  });
-  
-  // Her 30 dakikada bir senkronize et
-  setInterval(() => {
+  try {
+    console.log('🚀 Ikas senkronizasyon başlatılıyor...');
+    
+    // İlk senkronizasyon (async olarak, hata olsa bile devam et)
     syncIkasSiparisler().catch((error: any) => {
-      console.error('❌ Ikas periyodik senkronizasyon hatası:', error.message);
+      console.error('❌ İlk Ikas senkronizasyon hatası:', error.message);
       console.error('❌ Error Stack:', error.stack);
+      // Crash'i önlemek için hata yakalanıyor
     });
-  }, 30 * 60 * 1000);
+    
+    // Her 30 dakikada bir senkronize et
+    setInterval(() => {
+      syncIkasSiparisler().catch((error: any) => {
+        console.error('❌ Ikas periyodik senkronizasyon hatası:', error.message);
+        console.error('❌ Error Stack:', error.stack);
+        // Crash'i önlemek için hata yakalanıyor
+      });
+    }, 30 * 60 * 1000);
+  } catch (error: any) {
+    console.error('❌ Ikas sync başlatma hatası:', error.message);
+    console.error('❌ Error Stack:', error.stack);
+    // Crash'i önlemek için hata yakalanıyor
+  }
 }
 
 export { syncIkasSiparisler, fetchIkasSiparisler };
