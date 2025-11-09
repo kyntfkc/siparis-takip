@@ -359,23 +359,15 @@ async function syncIkasSiparisler() {
           urunAdi
         );
 
-        // Kişiselleştirme bilgileri
+        // Kişiselleştirme bilgileri (sadece options mevcut)
         const kisisellestirmeBilgileri: any = {};
-        if (line.attributes) {
-          kisisellestirmeBilgileri.attributes = line.attributes;
-          console.log(`📝 Ikas attributes bulundu (${siparisNo}):`, JSON.stringify(line.attributes).substring(0, 200));
-        }
-        if (line.customizations) {
-          kisisellestirmeBilgileri.customizations = line.customizations;
-          console.log(`📝 Ikas customizations bulundu (${siparisNo}):`, JSON.stringify(line.customizations).substring(0, 200));
-        }
-        if (line.options) {
+        if (line.options && Array.isArray(line.options) && line.options.length > 0) {
           kisisellestirmeBilgileri.options = line.options;
           console.log(`📝 Ikas options bulundu (${siparisNo}):`, JSON.stringify(line.options).substring(0, 200));
         }
         
         // Tüm line item'ı log'la (kişiselleştirme bilgilerini görmek için)
-        if (line.attributes || line.customizations || line.options) {
+        if (line.options && Array.isArray(line.options) && line.options.length > 0) {
           console.log(`📋 Ikas line item tam verisi (${siparisNo}):`, JSON.stringify(line).substring(0, 500));
         }
         
