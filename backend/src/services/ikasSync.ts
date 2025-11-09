@@ -166,10 +166,6 @@ async function fetchIkasSiparisler(): Promise<any[]> {
               options {
                 name
                 type
-                values {
-                  value
-                  name
-                }
               }
               variant {
                 id
@@ -401,6 +397,14 @@ async function syncIkasSiparisler() {
             console.log(`   - name: ${opt.name}`);
             console.log(`   - type: ${opt.type}`);
             console.log(`   - Tüm keys: ${Object.keys(opt).join(', ')}`);
+            
+            // Tüm key-value çiftlerini logla
+            Object.keys(opt).forEach((key) => {
+              const value = opt[key];
+              if (value !== undefined && value !== null) {
+                console.log(`   - ${key}:`, typeof value === 'object' ? JSON.stringify(value) : value);
+              }
+            });
           });
         }
         
