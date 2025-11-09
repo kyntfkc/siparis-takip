@@ -164,9 +164,8 @@ async function fetchIkasSiparisler(): Promise<any[]> {
               price
               finalPrice
               options {
-                id
                 name
-                value
+                values
                 type
               }
               variant {
@@ -386,12 +385,15 @@ async function syncIkasSiparisler() {
             if (kisisellestirmeObj.options) {
               if (Array.isArray(kisisellestirmeObj.options)) {
                 kisisellestirmeObj.options.forEach((opt: any) => {
-                  if (opt.name && opt.value) {
-                    notSatirlari.push(`⚙️ ${opt.name}: ${opt.value}`);
+                  const valuesStr = opt.values 
+                    ? (Array.isArray(opt.values) ? opt.values.join(', ') : opt.values)
+                    : null;
+                  if (opt.name && valuesStr) {
+                    notSatirlari.push(`⚙️ ${opt.name}: ${valuesStr}`);
                   } else if (opt.name) {
                     notSatirlari.push(`⚙️ ${opt.name}`);
-                  } else if (opt.value) {
-                    notSatirlari.push(`⚙️ ${opt.value}`);
+                  } else if (valuesStr) {
+                    notSatirlari.push(`⚙️ ${valuesStr}`);
                   } else if (typeof opt === 'string') {
                     notSatirlari.push(`⚙️ ${opt}`);
                   }
