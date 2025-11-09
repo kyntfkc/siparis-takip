@@ -166,9 +166,6 @@ async function fetchIkasSiparisler(): Promise<any[]> {
               options {
                 name
                 type
-                values {
-                  value
-                }
               }
               variant {
                 id
@@ -387,27 +384,10 @@ async function syncIkasSiparisler() {
             if (kisisellestirmeObj.options) {
               if (Array.isArray(kisisellestirmeObj.options)) {
                 kisisellestirmeObj.options.forEach((opt: any) => {
-                  // values artık bir array ve her elemanın value alanı var
-                  let valuesStr: string | null = null;
-                  if (opt.values && Array.isArray(opt.values)) {
-                    // values array'i içindeki value alanlarını al
-                    const valueArray = opt.values
-                      .map((v: any) => v?.value || v)
-                      .filter((v: any) => v != null);
-                    if (valueArray.length > 0) {
-                      valuesStr = valueArray.join(', ');
-                    }
-                  } else if (opt.values) {
-                    // Eğer direkt value varsa
-                    valuesStr = typeof opt.values === 'string' ? opt.values : String(opt.values);
-                  }
-                  
-                  if (opt.name && valuesStr) {
-                    notSatirlari.push(`⚙️ ${opt.name}: ${valuesStr}`);
-                  } else if (opt.name) {
-                    notSatirlari.push(`⚙️ ${opt.name}`);
-                  } else if (valuesStr) {
-                    notSatirlari.push(`⚙️ ${valuesStr}`);
+                  // Sadece name ve type alanları var (values GraphQL'den gelmiyor)
+                  if (opt.name) {
+                    const typeStr = opt.type ? ` (${opt.type})` : '';
+                    notSatirlari.push(`⚙️ ${opt.name}${typeStr}`);
                   } else if (typeof opt === 'string') {
                     notSatirlari.push(`⚙️ ${opt}`);
                   }
