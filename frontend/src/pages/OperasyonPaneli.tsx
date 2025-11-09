@@ -442,9 +442,9 @@ function OperasyonPaneli() {
             <table className="min-w-full divide-y divide-slate-200/40" style={{ minWidth: '1000px' }}>
             <thead className="bg-gradient-to-r from-blue-50 via-indigo-50 to-purple-50 border-b border-slate-200/60">
               <tr>
-                <th className="px-2 sm:px-3 py-3 text-left text-xs font-bold text-slate-700 uppercase tracking-wider hidden sm:table-cell">
-                  <div className="flex items-center gap-2">
-                    <Image className="w-4 h-4 text-blue-600" />
+                <th className="px-2 sm:px-3 py-2 sm:py-3 text-left text-xs font-bold text-slate-700 uppercase tracking-wider">
+                  <div className="flex items-center gap-1 sm:gap-2">
+                    <Image className="w-3 h-3 sm:w-4 sm:h-4 text-blue-600" />
                     <span>Fotoğraf</span>
                   </div>
                 </th>
@@ -461,8 +461,8 @@ function OperasyonPaneli() {
                     <span>Ürün</span>
                   </div>
                 </th>
-                <th className="px-2 sm:px-3 py-3 text-left text-xs font-bold text-slate-700 uppercase tracking-wider hidden sm:table-cell">Ürün Kodu</th>
-                <th className="px-2 sm:px-3 py-3 text-left text-xs font-bold text-slate-700 uppercase tracking-wider">İşlem</th>
+                <th className="px-2 sm:px-3 py-2 sm:py-3 text-left text-xs font-bold text-slate-700 uppercase tracking-wider hidden sm:table-cell">Ürün Kodu</th>
+                <th className="px-2 sm:px-3 py-2 sm:py-3 text-left text-xs font-bold text-slate-700 uppercase tracking-wider">İşlem</th>
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-slate-100">
