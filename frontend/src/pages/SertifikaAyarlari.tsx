@@ -719,27 +719,27 @@ function SertifikaAyarlari() {
                 <table className="min-w-full divide-y divide-slate-200/40" style={{ minWidth: '600px' }}>
                   <thead className="bg-gradient-to-r from-blue-50 via-indigo-50 to-purple-50 border-b border-slate-200/60">
                     <tr>
-                      <th className="px-3 py-2 sm:py-3 text-left text-xs font-bold text-slate-700 uppercase tracking-wider">Kullanıcı Adı</th>
-                      <th className="px-3 py-2 sm:py-3 text-left text-xs font-bold text-slate-700 uppercase tracking-wider">Rol</th>
-                      <th className="px-3 py-2 sm:py-3 text-left text-xs font-bold text-slate-700 uppercase tracking-wider hidden sm:table-cell">Oluşturulma</th>
-                      <th className="px-3 py-2 sm:py-3 text-left text-xs font-bold text-slate-700 uppercase tracking-wider">İşlemler</th>
+                      <th className="px-2 sm:px-3 py-2 sm:py-3 text-left text-xs font-bold text-slate-700 uppercase tracking-wider">Kullanıcı Adı</th>
+                      <th className="px-2 sm:px-3 py-2 sm:py-3 text-left text-xs font-bold text-slate-700 uppercase tracking-wider">Rol</th>
+                      <th className="px-2 sm:px-3 py-2 sm:py-3 text-left text-xs font-bold text-slate-700 uppercase tracking-wider hidden sm:table-cell">Oluşturulma</th>
+                      <th className="px-2 sm:px-3 py-2 sm:py-3 text-left text-xs font-bold text-slate-700 uppercase tracking-wider">İşlemler</th>
                     </tr>
                   </thead>
                   <tbody className="bg-white divide-y divide-slate-100">
                     {users.map((user) => (
                       <tr key={user.id} className="hover:bg-gradient-to-r hover:from-blue-50/30 hover:to-indigo-50/30 transition-all duration-200">
-                        <td className="px-3 py-2 sm:py-3 whitespace-nowrap">
+                        <td className="px-2 sm:px-3 py-1.5 sm:py-2 whitespace-nowrap">
                           <div className="text-sm font-semibold text-slate-800">{user.username}</div>
                         </td>
-                        <td className="px-3 py-2 sm:py-3 whitespace-nowrap">
+                        <td className="px-2 sm:px-3 py-1.5 sm:py-2 whitespace-nowrap">
                           <span className={`px-2 py-1 text-xs font-bold rounded-lg border ${getRoleColor(user.role)}`}>
                             {getRoleLabel(user.role)}
                           </span>
                         </td>
-                        <td className="px-3 py-2 sm:py-3 whitespace-nowrap text-xs text-slate-500 hidden sm:table-cell">
+                        <td className="px-2 sm:px-3 py-1.5 sm:py-2 whitespace-nowrap text-xs text-slate-500 hidden sm:table-cell">
                           {user.created_at ? new Date(user.created_at).toLocaleDateString('tr-TR') : '-'}
                         </td>
-                        <td className="px-3 py-2 sm:py-3 whitespace-nowrap">
+                        <td className="px-2 sm:px-3 py-1.5 sm:py-2 whitespace-nowrap">
                           <div className="flex items-center gap-1.5 sm:gap-2">
                             <button
                               onClick={() => handleEditUser(user)}

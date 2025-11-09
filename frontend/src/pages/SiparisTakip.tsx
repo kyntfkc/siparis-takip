@@ -288,22 +288,22 @@ function SiparisTakip() {
             <table className="min-w-full divide-y divide-slate-200/40" style={{ minWidth: '1000px' }}>
               <thead className="bg-gradient-to-r from-blue-50 via-indigo-50 to-purple-50 border-b border-slate-200/60">
                 <tr>
-                  <th className="px-4 py-3 text-left text-xs font-bold text-slate-700 uppercase tracking-wider">Sipariş No</th>
-                  <th className="px-4 py-3 text-left text-xs font-bold text-slate-700 uppercase tracking-wider">Tarih</th>
-                  <th className="px-4 py-3 text-left text-xs font-bold text-slate-700 uppercase tracking-wider">Müşteri</th>
-                  <th className="px-4 py-3 text-left text-xs font-bold text-slate-700 uppercase tracking-wider">Ürün</th>
-                  <th className="px-4 py-3 text-left text-xs font-bold text-slate-700 uppercase tracking-wider">Ürün Kodu</th>
-                  <th className="px-4 py-3 text-left text-xs font-bold text-slate-700 uppercase tracking-wider">Miktar</th>
-                  <th className="px-4 py-3 text-left text-xs font-bold text-slate-700 uppercase tracking-wider">Durum</th>
+                  <th className="px-2 sm:px-3 py-2 sm:py-3 text-left text-xs font-bold text-slate-700 uppercase tracking-wider">Sipariş No</th>
+                  <th className="px-2 sm:px-3 py-2 sm:py-3 text-left text-xs font-bold text-slate-700 uppercase tracking-wider">Tarih</th>
+                  <th className="px-2 sm:px-3 py-2 sm:py-3 text-left text-xs font-bold text-slate-700 uppercase tracking-wider">Müşteri</th>
+                  <th className="px-2 sm:px-3 py-2 sm:py-3 text-left text-xs font-bold text-slate-700 uppercase tracking-wider">Ürün</th>
+                  <th className="px-2 sm:px-3 py-2 sm:py-3 text-left text-xs font-bold text-slate-700 uppercase tracking-wider">Ürün Kodu</th>
+                  <th className="px-2 sm:px-3 py-2 sm:py-3 text-left text-xs font-bold text-slate-700 uppercase tracking-wider">Miktar</th>
+                  <th className="px-2 sm:px-3 py-2 sm:py-3 text-left text-xs font-bold text-slate-700 uppercase tracking-wider">Durum</th>
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-slate-100">
                 {filteredSiparisler.map((siparis) => (
                   <tr key={siparis.id} className="hover:bg-gradient-to-r hover:from-blue-50/30 hover:to-indigo-50/30 transition-all duration-200 group active:bg-blue-100/50">
-                    <td className="px-4 py-3 whitespace-nowrap text-sm font-semibold text-slate-900">
+                    <td className="px-2 sm:px-3 py-1.5 sm:py-2 whitespace-nowrap text-sm font-semibold text-slate-900">
                       {siparis.trendyol_siparis_no}
                     </td>
-                    <td className="px-4 py-3 whitespace-nowrap text-sm text-slate-600">
+                    <td className="px-2 sm:px-3 py-1.5 sm:py-2 whitespace-nowrap text-sm text-slate-600">
                       {(() => {
                         const tarih = typeof siparis.siparis_tarihi === 'string' 
                           ? new Date(parseInt(siparis.siparis_tarihi)) 
@@ -311,18 +311,18 @@ function SiparisTakip() {
                         return isNaN(tarih.getTime()) ? 'Geçersiz Tarih' : format(tarih, 'dd.MM.yyyy');
                       })()}
                     </td>
-                    <td className="px-4 py-3 whitespace-nowrap text-sm text-slate-700 font-medium">
+                    <td className="px-2 sm:px-3 py-1.5 sm:py-2 whitespace-nowrap text-sm text-slate-700 font-medium">
                       {siparis.musteri_adi}
                     </td>
-                    <td className="px-4 py-3 text-sm text-slate-600 max-w-xs truncate">
+                    <td className="px-2 sm:px-3 py-1.5 sm:py-2 text-sm text-slate-600 max-w-xs truncate">
                       {siparis.urun_adi}
                     </td>
-                    <td className="px-4 py-3 whitespace-nowrap">
+                    <td className="px-2 sm:px-3 py-1.5 sm:py-2 whitespace-nowrap">
                       <span className="text-sm font-bold text-blue-600 bg-blue-50 px-2 py-1 rounded-lg border border-blue-200">
                         {siparis.urun_kodu || '-'}
                       </span>
                     </td>
-                    <td className="px-4 py-3 whitespace-nowrap">
+                    <td className="px-2 sm:px-3 py-1.5 sm:py-2 whitespace-nowrap">
                       <span className={`px-2 py-1 text-white text-xs font-bold rounded-lg whitespace-nowrap shadow-sm min-w-[35px] text-center ${
                         siparis.miktar > 1 
                           ? 'bg-gradient-to-br from-red-500 to-rose-600 border border-red-400/30' 
@@ -331,7 +331,7 @@ function SiparisTakip() {
                         ×{siparis.miktar}
                       </span>
                     </td>
-                    <td className="px-4 py-3 whitespace-nowrap">
+                    <td className="px-2 sm:px-3 py-1.5 sm:py-2 whitespace-nowrap">
                       <span
                         className={`px-2 py-1 text-xs font-semibold rounded border ${
                           durumRenkleri[siparis.durum]

@@ -309,11 +309,11 @@ function Dashboard() {
                 <table className="min-w-full divide-y divide-slate-200/40" style={{ minWidth: '800px' }}>
                   <thead className="bg-gradient-to-r from-blue-50 via-indigo-50 to-purple-50 border-b border-slate-200/60">
                     <tr>
-                      <th className="px-4 py-3 text-left text-xs font-bold text-slate-700 uppercase tracking-wider">Sipariş No</th>
-                      <th className="px-4 py-3 text-left text-xs font-bold text-slate-700 uppercase tracking-wider">Tarih</th>
-                      <th className="px-4 py-3 text-left text-xs font-bold text-slate-700 uppercase tracking-wider">Müşteri</th>
-                      <th className="px-4 py-3 text-left text-xs font-bold text-slate-700 uppercase tracking-wider">Ürün</th>
-                      <th className="px-4 py-3 text-left text-xs font-bold text-slate-700 uppercase tracking-wider">Durum</th>
+                      <th className="px-2 sm:px-3 py-2 sm:py-3 text-left text-xs font-bold text-slate-700 uppercase tracking-wider">Sipariş No</th>
+                      <th className="px-2 sm:px-3 py-2 sm:py-3 text-left text-xs font-bold text-slate-700 uppercase tracking-wider">Tarih</th>
+                      <th className="px-2 sm:px-3 py-2 sm:py-3 text-left text-xs font-bold text-slate-700 uppercase tracking-wider">Müşteri</th>
+                      <th className="px-2 sm:px-3 py-2 sm:py-3 text-left text-xs font-bold text-slate-700 uppercase tracking-wider">Ürün</th>
+                      <th className="px-2 sm:px-3 py-2 sm:py-3 text-left text-xs font-bold text-slate-700 uppercase tracking-wider">Durum</th>
                     </tr>
                   </thead>
                   <tbody className="bg-white divide-y divide-slate-100">
@@ -327,19 +327,19 @@ function Dashboard() {
                           key={siparis.id}
                           className="hover:bg-gradient-to-r hover:from-blue-50/30 hover:to-indigo-50/30 transition-all duration-200 group active:bg-blue-100/50"
                         >
-                          <td className="px-4 py-3 whitespace-nowrap text-sm font-semibold text-slate-900">
+                          <td className="px-2 sm:px-3 py-1.5 sm:py-2 whitespace-nowrap text-sm font-semibold text-slate-900">
                             {siparis.trendyol_siparis_no}
                           </td>
-                          <td className="px-4 py-3 whitespace-nowrap text-sm text-slate-600">
+                          <td className="px-2 sm:px-3 py-1.5 sm:py-2 whitespace-nowrap text-sm text-slate-600">
                             {tarih.toLocaleDateString('tr-TR', { day: '2-digit', month: 'short', year: 'numeric' })}
                           </td>
-                          <td className="px-4 py-3 whitespace-nowrap text-sm text-slate-700 font-medium">
+                          <td className="px-2 sm:px-3 py-1.5 sm:py-2 whitespace-nowrap text-sm text-slate-700 font-medium">
                             {siparis.musteri_adi}
                           </td>
-                          <td className="px-4 py-3 text-sm text-slate-600 max-w-xs truncate">
+                          <td className="px-2 sm:px-3 py-1.5 sm:py-2 text-sm text-slate-600 max-w-xs truncate">
                             {siparis.urun_adi}
                           </td>
-                          <td className="px-4 py-3 whitespace-nowrap">
+                          <td className="px-2 sm:px-3 py-1.5 sm:py-2 whitespace-nowrap">
                             <span
                               className={`px-2 py-1 text-xs font-semibold rounded border ${
                                 durumRenkleri[siparis.durum]
