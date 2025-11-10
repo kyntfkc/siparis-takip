@@ -1,0 +1,22 @@
+# Backend Environment Variables
+# Bu dosyayı sunucunuzda /var/www/siparis-takip/backend/.env olarak kaydedin
+
+# Server Config
+PORT=3001
+NODE_ENV=production
+
+# Database (Volume path)
+DATABASE_PATH=/var/www/siparis-takip/data/database.json
+
+# Trendyol API Credentials
+TRENDYOL_SUPPLIER_ID=490931
+TRENDYOL_API_KEY=8Zo4QEhUIxRELgH80Gip
+TRENDYOL_API_SECRET=aWlScHJHRkFGcmdJWUtRT3d2c0NZSlRZ
+
+# Supabase (Opsiyonel - Fotoğraflar için)
+SUPABASE_URL=https://irqmqyoiwcfdxnvxrklr.supabase.co
+SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlycW1xeW9pd2NmZHhudnhya2xyIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTczMDIxMzk4OCwiZXhwIjoyMDQ1Nzg5OTg4fQ.4Yr6Ct91d6wIfY7TYIm0gk-lLPvkdCMKIVx2FoKx67o
+
+# CORS (Frontend URL'inizi girin)
+FRONTEND_URL=http://your-domain.com
+
