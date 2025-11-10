@@ -314,13 +314,15 @@ router.post('/update-fotograflar', async (req, res) => {
   }
 });
 
-// Eski siparişleri temizle (1 günden fazla olanlar)
+// Eski siparişleri temizle (varsayılan: 30 gün, query parametresi ile değiştirilebilir)
 router.delete('/cleanup/old', (req, res) => {
   try {
-    const deletedCount = deleteOldSiparisler();
+    const daysToKeep = req.query.days ? parseInt(req.query.days as string) : 30;
+    const deletedCount = deleteOldSiparisler(daysToKeep);
     res.json({ 
-      message: 'Eski siparişler temizlendi',
+      message: `Eski siparişler temizlendi (son ${daysToKeep} gün korundu)`,
       deletedCount,
+      daysToKeep,
       success: true
     });
   } catch (error: any) {

@@ -7,11 +7,17 @@ const api = axios.create({
 });
 
 export const siparisAPI = {
-  getAll: async (durum?: string): Promise<Siparis[]> => {
+  getAll: async (durum?: string, forceRefresh: boolean = false): Promise<Siparis[]> => {
     const cacheKey = `siparisler-${durum || 'all'}`;
-    const cached = getCached<Siparis[]>(cacheKey);
-    if (cached) {
-      return cached;
+    
+    // Force refresh ise cache'i temizle
+    if (forceRefresh) {
+      invalidateCache('siparisler');
+    } else {
+      const cached = getCached<Siparis[]>(cacheKey);
+      if (cached) {
+        return cached;
+      }
     }
     
     const { data } = await api.get('/siparisler', { params: { durum } });
@@ -55,11 +61,17 @@ export const siparisAPI = {
 };
 
 export const raporAPI = {
-  getRaporlar: async (baslangic?: string, bitis?: string) => {
+  getRaporlar: async (baslangic?: string, bitis?: string, forceRefresh: boolean = false) => {
     const cacheKey = `raporlar-${baslangic || 'all'}-${bitis || 'all'}`;
-    const cached = getCached(cacheKey);
-    if (cached) {
-      return cached;
+    
+    // Force refresh ise cache'i temizle
+    if (forceRefresh) {
+      invalidateCache('raporlar');
+    } else {
+      const cached = getCached(cacheKey);
+      if (cached) {
+        return cached;
+      }
     }
     
     const { data } = await api.get('/raporlar', { params: { baslangic, bitis } });

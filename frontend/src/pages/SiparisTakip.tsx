@@ -35,11 +35,12 @@ function SiparisTakip() {
     yon: 'asc',
   });
 
-  const loadData = useCallback(async () => {
+  const loadData = useCallback(async (forceRefresh: boolean = false) => {
     try {
+      setLoading(true);
       const [siparisData, raporData] = await Promise.all([
-        siparisAPI.getAll(durumFiltre !== 'Tümü' ? durumFiltre : undefined),
-        raporAPI.getRaporlar(baslangicTarih || undefined, bitisTarih || undefined),
+        siparisAPI.getAll(durumFiltre !== 'Tümü' ? durumFiltre : undefined, forceRefresh),
+        raporAPI.getRaporlar(baslangicTarih || undefined, bitisTarih || undefined, forceRefresh),
       ]);
       setSiparisler(siparisData);
       setRaporlar(raporData);
@@ -137,7 +138,7 @@ function SiparisTakip() {
           <p className="text-slate-600 mt-0.5 sm:mt-1 font-medium text-xs sm:text-sm">Tüm siparişleri görüntüleyin ve raporları inceleyin</p>
         </div>
         <button
-          onClick={loadData}
+          onClick={() => loadData(true)}
           className="flex items-center gap-2 px-4 py-2.5 min-h-[40px] bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg hover:shadow-lg hover:scale-105 active:scale-95 transition-all font-semibold text-sm shadow-md touch-manipulation"
         >
           <RefreshCw className="w-4 h-4" />
@@ -312,7 +313,7 @@ function SiparisTakip() {
                   <tr key={siparis.id} className="hover:bg-gradient-to-r hover:from-blue-50/30 hover:to-indigo-50/30 transition-all duration-200 group active:bg-blue-100/50">
                     <td className="px-2 sm:px-3 py-1.5 sm:py-2 whitespace-nowrap">
                       <div className="text-xs sm:text-sm font-mono leading-tight bg-slate-50 px-2 py-0.5 rounded-md inline-block border border-slate-200 font-semibold text-slate-900">
-                        {siparis.trendyol_siparis_no}
+                  {siparis.trendyol_siparis_no}
                       </div>
                 </td>
                     <td className="px-2 sm:px-3 py-1.5 sm:py-2 whitespace-nowrap text-xs sm:text-sm text-slate-600">
@@ -325,12 +326,12 @@ function SiparisTakip() {
                 </td>
                     <td className="px-2 sm:px-3 py-1.5 sm:py-2 whitespace-nowrap hidden sm:table-cell">
                       <div className="text-xs sm:text-sm text-slate-800 font-semibold leading-tight group-hover:text-blue-700 transition-colors">
-                        {siparis.musteri_adi}
+                  {siparis.musteri_adi}
                       </div>
                 </td>
                     <td className="px-2 sm:px-3 py-1.5 sm:py-2">
                       <div className="text-xs sm:text-sm text-slate-800 font-medium leading-tight group-hover:text-blue-700 transition-colors line-clamp-2">
-                        {siparis.urun_adi}
+                  {siparis.urun_adi}
                       </div>
                 </td>
                     <td className="px-2 sm:px-3 py-1.5 sm:py-2 whitespace-nowrap hidden sm:table-cell">

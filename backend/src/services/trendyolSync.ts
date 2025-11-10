@@ -166,7 +166,8 @@ export async function fetchTrendyolSiparisler(): Promise<TrendyolSiparis[]> {
       }
 
     // Trendyol API endpoint
-    const url = `${apiUrl}/${supplierId}/orders`;
+    // Trendyol API endpoint formatı: /sapigw/suppliers/{supplierId}/orders
+    const url = `${apiUrl}/sapigw/suppliers/${supplierId}/orders`;
     
     const auth = Buffer.from(`${apiKey}:${apiSecret}`).toString('base64');
 
@@ -209,7 +210,10 @@ export async function fetchTrendyolSiparisler(): Promise<TrendyolSiparis[]> {
     
     console.log(`📦 ${siparisler.length} sipariş bulundu`);
     
-    if (siparisler.length > 0) {
+    // Production'da detaylı log gösterme (log spam önleme)
+    const isProduction = process.env.NODE_ENV === 'production';
+    
+    if (siparisler.length > 0 && !isProduction) {
       console.log(`📝 İlk sipariş örneği (tam):`, JSON.stringify(siparisler[0], null, 2));
       // Lines içindeki fotoğraf ve model kod alanlarını kontrol et
       if (siparisler[0].lines && siparisler[0].lines.length > 0) {
@@ -282,6 +286,7 @@ export async function fetchTrendyolSiparisler(): Promise<TrendyolSiparis[]> {
 
 async function syncTrendyolSiparisler() {
   try {
+    const isProduction = process.env.NODE_ENV === 'production';
     console.log('🔄 Trendyol siparişleri senkronize ediliyor...');
     
     const trendyolSiparisler = await fetchTrendyolSiparisler();
@@ -393,7 +398,9 @@ async function syncTrendyolSiparisler() {
                              urunAdiLower.match(/14\s*k/i) !== null;
           
           if (!altin14Ayar) {
-            console.log(`⏭️  Sipariş atlandı (14 Ayar Altın değil): ${urunAdi.substring(0, 50)}`);
+            if (!isProduction) {
+              console.log(`⏭️  Sipariş atlandı (14 Ayar Altın değil): ${urunAdi.substring(0, 50)}`);
+            }
             continue; // Bu siparişi atla
           }
           
@@ -407,7 +414,9 @@ async function syncTrendyolSiparisler() {
           
           if (apiModelCode) {
             modelKodu = String(apiModelCode);
-            console.log(`🔢 API'den modelCode alındı: ${modelKodu}`);
+            if (!isProduction) {
+              console.log(`🔢 API'den modelCode alındı: ${modelKodu}`);
+            }
           }
           
           // 2. Eğer modelCode yoksa, ürün adından model kodunu çıkar (örn: "KPA38" -> "KPA38")
@@ -415,7 +424,9 @@ async function syncTrendyolSiparisler() {
             const modelCodeMatch = urunAdi.match(/\b([A-Z]{2,}[0-9]+)\b/i);
             if (modelCodeMatch) {
               modelKodu = modelCodeMatch[1].toUpperCase();
-              console.log(`🔢 Ürün adından model kodu çıkarıldı: ${modelKodu} (${urunAdi})`);
+              if (!isProduction) {
+                console.log(`🔢 Ürün adından model kodu çıkarıldı: ${modelKodu} (${urunAdi})`);
+              }
             }
           }
           
@@ -430,7 +441,9 @@ async function syncTrendyolSiparisler() {
                        undefined;
             if (modelKodu) {
               modelKodu = String(modelKodu);
-              console.log(`🔢 API'den diğer alanlardan model kodu alındı: ${modelKodu}`);
+              if (!isProduction) {
+                console.log(`🔢 API'den diğer alanlardan model kodu alındı: ${modelKodu}`);
+              }
             }
           }
           
@@ -461,7 +474,9 @@ async function syncTrendyolSiparisler() {
             }
           }
           
-          console.log(`📸 Ürün fotoğrafı: ${urunResmi || 'Yok'} - Ürün: ${urunAdi.substring(0, 50)} - Model Kodu: ${modelKodu || 'Yok'}`);
+          if (!isProduction) {
+            console.log(`📸 Ürün fotoğrafı: ${urunResmi || 'Yok'} - Ürün: ${urunAdi.substring(0, 50)} - Model Kodu: ${modelKodu || 'Yok'}`);
+          }
           
           createSiparis({
             trendyol_siparis_no: siparisNo,

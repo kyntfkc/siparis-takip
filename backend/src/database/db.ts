@@ -362,17 +362,17 @@ export function deleteAllSiparisler(): void {
   console.log('✅ Tüm siparişler silindi');
 }
 
-// 1 günden fazla olan siparişleri sil
-export function deleteOldSiparisler(): number {
+// 30 günden fazla olan siparişleri sil
+export function deleteOldSiparisler(daysToKeep: number = 30): number {
   try {
     loadDatabase();
     
     const now = new Date();
-    const oneDayAgo = new Date(now.getTime() - (1 * 24 * 60 * 60 * 1000)); // 1 gün önce
+    const cutoffDate = new Date(now.getTime() - (daysToKeep * 24 * 60 * 60 * 1000)); // N gün önce
     
     const initialCount = db.siparisler.length;
     
-    // Sipariş tarihini kontrol et ve 1 günden fazla olanları sil
+    // Sipariş tarihini kontrol et ve N günden fazla olanları sil
     db.siparisler = db.siparisler.filter(s => {
       if (!s || !s.siparis_tarihi) return true; // Tarihi olmayanları koru
       
@@ -393,8 +393,8 @@ export function deleteOldSiparisler(): number {
           return true; // Geçersiz tarih, koru
         }
         
-        // 1 günden fazla olan siparişleri sil
-        return siparisTarihi >= oneDayAgo;
+        // N günden fazla olan siparişleri sil
+        return siparisTarihi >= cutoffDate;
       } catch (error) {
         console.error('❌ Sipariş tarihi parse hatası:', error);
         return true; // Hata durumunda koru
@@ -405,9 +405,9 @@ export function deleteOldSiparisler(): number {
     
     if (deletedCount > 0) {
       saveDatabase();
-      console.log(`✅ ${deletedCount} eski sipariş silindi (1 günden fazla)`);
+      console.log(`✅ ${deletedCount} eski sipariş silindi (${daysToKeep} günden fazla)`);
     } else {
-      console.log('ℹ️  Silinecek eski sipariş bulunamadı');
+      console.log(`ℹ️  Silinecek eski sipariş bulunamadı (${daysToKeep} günden fazla)`);
     }
     
     return deletedCount;
