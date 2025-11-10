@@ -5,7 +5,9 @@ const router = Router();
 
 router.get('/', (req, res) => {
   try {
-    console.log('📊 GET /api/raporlar çağrıldı, query:', req.query);
+    if (process.env.NODE_ENV !== 'production') {
+      console.log('📊 GET /api/raporlar çağrıldı, query:', req.query);
+    }
     const { baslangic, bitis } = req.query;
     
     let raporlar: any[] = [];
@@ -20,7 +22,9 @@ router.get('/', (req, res) => {
         raporlar = [];
       }
       
-      console.log('✅ Raporlar getirildi:', raporlar.length);
+      if (process.env.NODE_ENV !== 'production') {
+        console.log('✅ Raporlar getirildi:', raporlar.length);
+      }
       res.json(raporlar);
     } catch (getRaporlarError: any) {
       console.error('❌ getRaporlar hatası:', getRaporlarError.message);

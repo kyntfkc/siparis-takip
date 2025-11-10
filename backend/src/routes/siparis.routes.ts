@@ -15,9 +15,11 @@ import {
 
 const router = Router();
 
-// Middleware: Her istek için log
+// Middleware: Her istek için log (sadece development)
 router.use((req, res, next) => {
-  console.log(`📥 ${req.method} ${req.path} - Query:`, req.query);
+  if (process.env.NODE_ENV !== 'production') {
+    console.log(`📥 ${req.method} ${req.path} - Query:`, req.query);
+  }
   next();
 });
 
@@ -25,12 +27,16 @@ router.use((req, res, next) => {
 router.get('/', (req, res) => {
   try {
     const { durum } = req.query;
-    console.log('📥 GET /api/siparisler çağrıldı, durum:', durum);
+    if (process.env.NODE_ENV !== 'production') {
+      console.log('📥 GET /api/siparisler çağrıldı, durum:', durum);
+    }
     
     let siparisler: any[] = [];
     try {
       siparisler = getAllSiparisler(durum as string | undefined);
-      console.log('✅ getAllSiparisler başarılı, sipariş sayısı:', siparisler?.length || 0);
+      if (process.env.NODE_ENV !== 'production') {
+        console.log('✅ getAllSiparisler başarılı, sipariş sayısı:', siparisler?.length || 0);
+      }
       
       // Siparişlerin geçerli olduğundan emin ol
       if (!Array.isArray(siparisler)) {
@@ -49,7 +55,9 @@ router.get('/', (req, res) => {
       siparisler = [];
     }
     
-    console.log('📊 Serialize işlemi başlıyor, sipariş sayısı:', siparisler.length);
+    if (process.env.NODE_ENV !== 'production') {
+      console.log('📊 Serialize işlemi başlıyor, sipariş sayısı:', siparisler.length);
+    }
     
     // Siparişleri optimize edilmiş şekilde serialize et (performans için)
     let safeSiparisler: any[] = [];
@@ -92,14 +100,18 @@ router.get('/', (req, res) => {
         })
         .filter((s: any) => s !== null);
       
-      console.log('✅ Serialize işlemi tamamlandı, güvenli sipariş sayısı:', safeSiparisler.length);
+      if (process.env.NODE_ENV !== 'production') {
+        console.log('✅ Serialize işlemi tamamlandı, güvenli sipariş sayısı:', safeSiparisler.length);
+      }
     } catch (serializeError: any) {
       console.error('❌ Serialize hatası:', serializeError.message);
       console.error('❌ Serialize stack:', serializeError.stack);
       safeSiparisler = [];
     }
     
-    console.log('📤 Response gönderiliyor, sipariş sayısı:', safeSiparisler.length);
+    if (process.env.NODE_ENV !== 'production') {
+      console.log('📤 Response gönderiliyor, sipariş sayısı:', safeSiparisler.length);
+    }
     res.json(safeSiparisler);
   } catch (error: any) {
     console.error('❌ Route handler hatası:', error?.message);

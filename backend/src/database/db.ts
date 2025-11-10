@@ -166,13 +166,17 @@ export function initDatabase() {
 
 export function getAllSiparisler(durum?: string): Siparis[] {
   try {
-    console.log('📂 getAllSiparisler çağrıldı, durum:', durum);
-    console.log('📂 Database path:', dbPath || 'undefined');
+    if (process.env.NODE_ENV !== 'production') {
+      console.log('📂 getAllSiparisler çağrıldı, durum:', durum);
+      console.log('📂 Database path:', dbPath || 'undefined');
+    }
     
     // Database'i yükle
     try {
       loadDatabase();
-      console.log('📂 Database yüklendi, sipariş sayısı:', db?.siparisler?.length || 0);
+      if (process.env.NODE_ENV !== 'production') {
+        console.log('📂 Database yüklendi, sipariş sayısı:', db?.siparisler?.length || 0);
+      }
     } catch (loadError: any) {
       console.error('❌ Database yükleme hatası:', loadError.message);
       console.error('❌ Load error stack:', loadError.stack);
@@ -195,7 +199,9 @@ export function getAllSiparisler(durum?: string): Siparis[] {
       return [];
     }
     
-    console.log('📂 Filtrelemeden önce sipariş sayısı:', siparisler.length);
+    if (process.env.NODE_ENV !== 'production') {
+      console.log('📂 Filtrelemeden önce sipariş sayısı:', siparisler.length);
+    }
     
     // Durum filtresi
     if (durum && typeof durum === 'string') {
@@ -211,7 +217,9 @@ export function getAllSiparisler(durum?: string): Siparis[] {
           }
         });
         siparisler = filtered;
-        console.log('📂 Durum filtresinden sonra sipariş sayısı:', siparisler.length);
+        if (process.env.NODE_ENV !== 'production') {
+          console.log('📂 Durum filtresinden sonra sipariş sayısı:', siparisler.length);
+        }
       } catch (durumFilterError: any) {
         console.error('❌ Durum filtreleme hatası:', durumFilterError.message);
         console.error('❌ Durum filter error stack:', durumFilterError.stack);
@@ -250,10 +258,12 @@ export function getAllSiparisler(durum?: string): Siparis[] {
       sorted = siparisler;
     }
     
-    console.log('✅ getAllSiparisler başarılı, dönen sipariş sayısı:', sorted.length);
-    if (sorted.length > 0) {
-      console.log('📸 İlk sipariş fotoğrafı:', sorted[0]?.urun_resmi || 'undefined');
-      console.log('📋 İlk sipariş keys:', Object.keys(sorted[0] || {}));
+    if (process.env.NODE_ENV !== 'production') {
+      console.log('✅ getAllSiparisler başarılı, dönen sipariş sayısı:', sorted.length);
+      if (sorted.length > 0) {
+        console.log('📸 İlk sipariş fotoğrafı:', sorted[0]?.urun_resmi || 'undefined');
+        console.log('📋 İlk sipariş keys:', Object.keys(sorted[0] || {}));
+      }
     }
     
     return sorted;
@@ -460,12 +470,16 @@ export function updateSiparisFotoğrafById(id: number, imageUrl: string): void {
 
 export function getRaporlar(baslangic?: string, bitis?: string): any[] {
   try {
-    console.log('📊 getRaporlar çağrıldı, baslangic:', baslangic, 'bitis:', bitis);
+    if (process.env.NODE_ENV !== 'production') {
+      console.log('📊 getRaporlar çağrıldı, baslangic:', baslangic, 'bitis:', bitis);
+    }
     
     // Database'i yükle
     try {
       loadDatabase();
-      console.log('📊 Database yüklendi, sipariş sayısı:', db?.siparisler?.length || 0);
+      if (process.env.NODE_ENV !== 'production') {
+        console.log('📊 Database yüklendi, sipariş sayısı:', db?.siparisler?.length || 0);
+      }
     } catch (loadError: any) {
       console.error('❌ Database yükleme hatası (getRaporlar):', loadError.message);
       return [];
@@ -548,7 +562,9 @@ export function getRaporlar(baslangic?: string, bitis?: string): any[] {
       console.error('❌ Rapor hesaplama hatası:', forEachError.message);
     }
     
-    console.log('✅ getRaporlar başarılı, rapor sayısı:', Object.values(raporlar).length);
+    if (process.env.NODE_ENV !== 'production') {
+      console.log('✅ getRaporlar başarılı, rapor sayısı:', Object.values(raporlar).length);
+    }
     return Object.values(raporlar);
   } catch (error: any) {
     console.error('❌ getRaporlar genel hatası:', error.message);
