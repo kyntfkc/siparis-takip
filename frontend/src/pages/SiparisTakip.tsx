@@ -1,7 +1,7 @@
 import { useEffect, useState, useMemo, useCallback } from 'react';
 import { siparisAPI, raporAPI } from '../services/api';
 import { Siparis, SiparisDurum } from '../types';
-import { RefreshCw, Filter, Package } from 'lucide-react';
+import { RefreshCw, Filter, Package, FileText } from 'lucide-react';
 import { format } from 'date-fns';
 
 const durumRenkleri: Record<SiparisDurum, string> = {
@@ -287,66 +287,82 @@ function SiparisTakip() {
           <div className="overflow-x-auto">
             <table className="min-w-full divide-y divide-slate-200/40" style={{ minWidth: '1000px' }}>
               <thead className="bg-gradient-to-r from-blue-50 via-indigo-50 to-purple-50 border-b border-slate-200/60">
-                <tr>
-                  <th className="px-2 sm:px-3 py-2 sm:py-3 text-left text-xs font-bold text-slate-700 uppercase tracking-wider">Sipariş No</th>
+            <tr>
+                  <th className="px-2 sm:px-3 py-2 sm:py-3 text-left text-xs font-bold text-slate-700 uppercase tracking-wider">
+                    <div className="flex items-center gap-1 sm:gap-2">
+                      <FileText className="w-3 h-3 sm:w-4 sm:h-4 text-blue-600" />
+                      <span>Sipariş No</span>
+                    </div>
+                  </th>
                   <th className="px-2 sm:px-3 py-2 sm:py-3 text-left text-xs font-bold text-slate-700 uppercase tracking-wider">Tarih</th>
-                  <th className="px-2 sm:px-3 py-2 sm:py-3 text-left text-xs font-bold text-slate-700 uppercase tracking-wider hidden sm:table-cell">Müşteri</th>
+                  <th className="px-2 sm:px-3 py-2 sm:py-3 text-left text-xs font-bold text-slate-700 uppercase tracking-wider hidden sm:table-cell">
+                    <div className="flex items-center gap-1 sm:gap-2">
+                      <Package className="w-3 h-3 sm:w-4 sm:h-4 text-blue-600" />
+                      <span>Müşteri</span>
+                    </div>
+                  </th>
                   <th className="px-2 sm:px-3 py-2 sm:py-3 text-left text-xs font-bold text-slate-700 uppercase tracking-wider">Ürün</th>
                   <th className="px-2 sm:px-3 py-2 sm:py-3 text-left text-xs font-bold text-slate-700 uppercase tracking-wider hidden sm:table-cell">Ürün Kodu</th>
                   <th className="px-2 sm:px-3 py-2 sm:py-3 text-left text-xs font-bold text-slate-700 uppercase tracking-wider">Miktar</th>
                   <th className="px-2 sm:px-3 py-2 sm:py-3 text-left text-xs font-bold text-slate-700 uppercase tracking-wider">Durum</th>
-                </tr>
-              </thead>
+            </tr>
+          </thead>
               <tbody className="bg-white divide-y divide-slate-100">
-                {filteredSiparisler.map((siparis) => (
+            {filteredSiparisler.map((siparis) => (
                   <tr key={siparis.id} className="hover:bg-gradient-to-r hover:from-blue-50/30 hover:to-indigo-50/30 transition-all duration-200 group active:bg-blue-100/50">
-                    <td className="px-2 sm:px-3 py-1.5 sm:py-2 whitespace-nowrap text-sm font-semibold text-slate-900">
-                      {siparis.trendyol_siparis_no}
-                    </td>
-                    <td className="px-2 sm:px-3 py-1.5 sm:py-2 whitespace-nowrap text-sm text-slate-600">
-                      {(() => {
-                        const tarih = typeof siparis.siparis_tarihi === 'string' 
-                          ? new Date(parseInt(siparis.siparis_tarihi)) 
-                          : new Date(siparis.siparis_tarihi);
-                        return isNaN(tarih.getTime()) ? 'Geçersiz Tarih' : format(tarih, 'dd.MM.yyyy');
-                      })()}
-                    </td>
-                    <td className="px-2 sm:px-3 py-1.5 sm:py-2 whitespace-nowrap text-sm text-slate-700 font-medium hidden sm:table-cell">
-                      {siparis.musteri_adi}
-                    </td>
-                    <td className="px-2 sm:px-3 py-1.5 sm:py-2 text-sm text-slate-600 max-w-xs truncate">
-                      {siparis.urun_adi}
-                    </td>
-                    <td className="px-2 sm:px-3 py-1.5 sm:py-2 whitespace-nowrap hidden sm:table-cell">
-                      <span className="text-sm font-bold text-blue-600 bg-blue-50 px-2 py-1 rounded-lg border border-blue-200">
-                        {siparis.urun_kodu || '-'}
-                      </span>
-                    </td>
                     <td className="px-2 sm:px-3 py-1.5 sm:py-2 whitespace-nowrap">
-                      <span className={`px-2 py-1 text-white text-xs font-bold rounded-lg whitespace-nowrap shadow-sm min-w-[35px] text-center ${
+                      <div className="text-xs sm:text-sm font-mono leading-tight bg-slate-50 px-2 py-0.5 rounded-md inline-block border border-slate-200 font-semibold text-slate-900">
+                        {siparis.trendyol_siparis_no}
+                      </div>
+                </td>
+                    <td className="px-2 sm:px-3 py-1.5 sm:py-2 whitespace-nowrap text-xs sm:text-sm text-slate-600">
+                  {(() => {
+                    const tarih = typeof siparis.siparis_tarihi === 'string' 
+                      ? new Date(parseInt(siparis.siparis_tarihi)) 
+                      : new Date(siparis.siparis_tarihi);
+                    return isNaN(tarih.getTime()) ? 'Geçersiz Tarih' : format(tarih, 'dd.MM.yyyy');
+                  })()}
+                </td>
+                    <td className="px-2 sm:px-3 py-1.5 sm:py-2 whitespace-nowrap hidden sm:table-cell">
+                      <div className="text-xs sm:text-sm text-slate-800 font-semibold leading-tight group-hover:text-blue-700 transition-colors">
+                        {siparis.musteri_adi}
+                      </div>
+                </td>
+                    <td className="px-2 sm:px-3 py-1.5 sm:py-2">
+                      <div className="text-xs sm:text-sm text-slate-800 font-medium leading-tight group-hover:text-blue-700 transition-colors line-clamp-2">
+                        {siparis.urun_adi}
+                      </div>
+                </td>
+                    <td className="px-2 sm:px-3 py-1.5 sm:py-2 whitespace-nowrap hidden sm:table-cell">
+                      <span className="text-xs sm:text-sm font-bold text-blue-600 bg-blue-50 px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg border border-blue-200">
+                  {siparis.urun_kodu || '-'}
+                      </span>
+                </td>
+                    <td className="px-2 sm:px-3 py-1.5 sm:py-2 whitespace-nowrap">
+                      <span className={`px-2 sm:px-2.5 py-1 sm:py-1.5 text-white text-xs sm:text-sm font-bold rounded-lg whitespace-nowrap shadow-sm border min-w-[35px] sm:min-w-[40px] text-center ${
                         siparis.miktar > 1 
-                          ? 'bg-gradient-to-br from-red-500 to-rose-600 border border-red-400/30' 
-                          : 'bg-gradient-to-br from-blue-500 to-indigo-600 border border-blue-400/30'
+                          ? 'bg-gradient-to-br from-red-500 to-rose-600 border-red-400/30' 
+                          : 'bg-gradient-to-br from-blue-500 to-indigo-600 border-blue-400/30'
                       }`}>
                         ×{siparis.miktar}
                       </span>
-                    </td>
+                </td>
                     <td className="px-2 sm:px-3 py-1.5 sm:py-2 whitespace-nowrap">
-                      <span
-                        className={`px-2 py-1 text-xs font-semibold rounded border ${
-                          durumRenkleri[siparis.durum]
-                        }`}
-                      >
-                        {siparis.durum}
-                      </span>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+                  <span
+                        className={`px-2 sm:px-3 py-1 sm:py-1.5 text-xs sm:text-sm font-semibold rounded-lg border-2 ${
+                      durumRenkleri[siparis.durum]
+                    }`}
+                  >
+                    {siparis.durum}
+                  </span>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
           </div>
         </div>
-      )}
+        )}
     </div>
   );
 }

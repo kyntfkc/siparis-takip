@@ -538,15 +538,15 @@ function OperasyonPaneli() {
                     </div>
                   </td>
                   <td className="px-2 sm:px-3 py-1.5 sm:py-2 whitespace-nowrap">
-                    <div className="space-y-0.5 sm:space-y-1">
+                    <div className="space-y-1">
                       <div className="text-xs sm:text-sm text-slate-800 font-semibold leading-tight group-hover:text-blue-700 transition-colors">
                         {siparis.musteri_adi}
                       </div>
-                      <div className="text-xs text-slate-500 font-mono leading-tight bg-slate-50 px-1.5 sm:px-2.5 py-0.5 sm:py-1 rounded-md inline-block border border-slate-200">
+                      <div className="text-xs text-slate-500 font-mono leading-tight bg-slate-50 px-2 py-0.5 rounded-md inline-block border border-slate-200">
                         {siparis.trendyol_siparis_no}
                       </div>
                       <div className="hidden sm:flex items-center gap-1.5 text-xs text-slate-400 mt-1 leading-tight">
-                        <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                         </svg>
                         {(() => {
@@ -563,21 +563,21 @@ function OperasyonPaneli() {
                       {(() => {
                         const { satir1, satir2 } = formatUrunAdi(siparis.urun_adi);
                         return (
-                          <div className="space-y-0.5 sm:space-y-2">
-                            <div className="space-y-0.5 sm:space-y-1">
-                              <div className="text-xs sm:text-sm text-slate-800 font-semibold leading-tight group-hover:text-blue-700 transition-colors line-clamp-2">
+                          <div className="space-y-2">
+                            <div className="space-y-1">
+                              <div className="text-base text-slate-800 font-semibold leading-tight group-hover:text-blue-700 transition-colors">
                                 {satir1}
                               </div>
                               {satir2 && (
-                                <div className="text-xs text-slate-600 leading-tight flex items-center gap-1.5 line-clamp-1">
+                                <div className="text-sm text-slate-600 leading-tight flex items-center gap-1.5">
                                   <span className="text-blue-600 font-bold">•</span>
                                   {satir2}
                                 </div>
                               )}
                             </div>
                             {siparis.not && (
-                              <div className="mt-0.5 sm:mt-2 p-1.5 sm:p-3 bg-gradient-to-br from-blue-50 to-indigo-50 border-2 border-blue-300 rounded-lg sm:rounded-xl shadow-sm">
-                                <div className="text-xs sm:text-sm text-slate-800 whitespace-pre-wrap break-words leading-relaxed font-medium line-clamp-2 sm:line-clamp-none">
+                              <div className="mt-2 p-3 bg-gradient-to-br from-blue-50 to-indigo-50 border-2 border-blue-300 rounded-xl shadow-sm">
+                                <div className="text-sm text-slate-800 whitespace-pre-wrap break-words leading-relaxed font-medium">
                                   {siparis.not}
                                 </div>
                                 </div>
@@ -588,14 +588,14 @@ function OperasyonPaneli() {
                       </div>
                   </td>
                   <td className="px-2 sm:px-3 py-1.5 sm:py-2 whitespace-nowrap hidden sm:table-cell">
-                    <div className="flex items-center gap-1.5 sm:gap-2">
-                      <span className="text-xs sm:text-sm font-bold text-blue-600 bg-blue-50 px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg border border-blue-200">
+                    <div className="flex items-center gap-2">
+                      <span className="text-base font-bold text-blue-600 bg-blue-50 px-3 py-2 rounded-lg border border-blue-200">
                         {siparis.urun_kodu || '-'}
                       </span>
-                      <span className={`px-2 sm:px-2.5 py-1 sm:py-1.5 text-white text-xs font-bold rounded-lg whitespace-nowrap shadow-sm min-w-[35px] sm:min-w-[40px] text-center ${
+                      <span className={`px-3 py-2 text-white text-sm font-bold rounded-lg whitespace-nowrap shadow-sm border min-w-[50px] text-center ${
                         siparis.miktar > 1 
-                          ? 'bg-gradient-to-br from-red-500 to-rose-600 border border-red-400/30' 
-                          : 'bg-gradient-to-br from-blue-500 to-indigo-600 border border-blue-400/30'
+                          ? 'bg-gradient-to-br from-red-500 to-rose-600 border-red-400/30' 
+                          : 'bg-gradient-to-br from-blue-500 to-indigo-600 border-blue-400/30'
                       }`}>
                         ×{siparis.miktar}
                       </span>

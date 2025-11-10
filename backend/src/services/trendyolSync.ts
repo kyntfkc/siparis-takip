@@ -139,112 +139,112 @@ export async function fetchTrendyolSiparisler(): Promise<TrendyolSiparis[]> {
   const RETRY_DELAY = 2000; // 2 saniye
 
   for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
-    try {
-      const supplierId = process.env.TRENDYOL_SUPPLIER_ID;
-      const apiKey = process.env.TRENDYOL_API_KEY;
-      const apiSecret = process.env.TRENDYOL_API_SECRET;
-      const apiUrl = process.env.TRENDYOL_API_URL;
+  try {
+    const supplierId = process.env.TRENDYOL_SUPPLIER_ID;
+    const apiKey = process.env.TRENDYOL_API_KEY;
+    const apiSecret = process.env.TRENDYOL_API_SECRET;
+    const apiUrl = process.env.TRENDYOL_API_URL;
 
-      if (!supplierId || !apiKey || !apiSecret) {
-        console.log('⚠️  Trendyol API credentials eksik. Lütfen .env dosyasını kontrol edin.');
-        return [];
-      }
+    if (!supplierId || !apiKey || !apiSecret) {
+      console.log('⚠️  Trendyol API credentials eksik. Lütfen .env dosyasını kontrol edin.');
+      return [];
+    }
 
-      // Son 7 günlük siparişler
-      const endDate = new Date();
-      const startDate = new Date();
-      startDate.setDate(startDate.getDate() - 7);
+    // Son 7 günlük siparişler
+    const endDate = new Date();
+    const startDate = new Date();
+    startDate.setDate(startDate.getDate() - 7);
 
-      // Trendyol API timestamp formatı (epoch milliseconds)
-      const startDateTimestamp = startDate.getTime();
-      const endDateTimestamp = endDate.getTime();
+    // Trendyol API timestamp formatı (epoch milliseconds)
+    const startDateTimestamp = startDate.getTime();
+    const endDateTimestamp = endDate.getTime();
 
       if (attempt === 1) {
-        console.log(`📅 Siparişler çekiliyor: ${startDate.toISOString()} - ${endDate.toISOString()}`);
+    console.log(`📅 Siparişler çekiliyor: ${startDate.toISOString()} - ${endDate.toISOString()}`);
       } else {
         console.log(`🔄 Trendyol API yeniden deneniyor (${attempt}/${MAX_RETRIES})...`);
       }
 
-      // Trendyol API endpoint
-      const url = `${apiUrl}/${supplierId}/orders`;
-      
-      const auth = Buffer.from(`${apiKey}:${apiSecret}`).toString('base64');
+    // Trendyol API endpoint
+    const url = `${apiUrl}/${supplierId}/orders`;
+    
+    const auth = Buffer.from(`${apiKey}:${apiSecret}`).toString('base64');
 
       if (attempt === 1) {
-        console.log(`🔗 API URL: ${url}`);
-        console.log(`📋 Parametreler:`, { startDate: startDateTimestamp, endDate: endDateTimestamp, page: 0, size: 200 });
+    console.log(`🔗 API URL: ${url}`);
+    console.log(`📋 Parametreler:`, { startDate: startDateTimestamp, endDate: endDateTimestamp, page: 0, size: 200 });
       }
 
-      const response = await axios.get(url, {
-        headers: {
-          'Authorization': `Basic ${auth}`,
-          'Content-Type': 'application/json',
-        },
-        params: {
-          startDate: startDateTimestamp,
-          endDate: endDateTimestamp,
-          page: 0,
-          size: 200, // Maksimum sayfa boyutu
-        },
-      });
+    const response = await axios.get(url, {
+      headers: {
+        'Authorization': `Basic ${auth}`,
+        'Content-Type': 'application/json',
+      },
+      params: {
+        startDate: startDateTimestamp,
+        endDate: endDateTimestamp,
+        page: 0,
+        size: 200, // Maksimum sayfa boyutu
+      },
+    });
 
-      console.log(`📥 API Response Status: ${response.status}`);
-      console.log(`📥 API Response Data Type:`, typeof response.data);
-      console.log(`📥 API Response Keys:`, Object.keys(response.data || {}));
-      
-      // Trendyol API response formatı: { content: [...] } veya direkt array
-      let siparisler: any[] = [];
-      
-      if (Array.isArray(response.data)) {
-        siparisler = response.data;
-      } else if (response.data?.content && Array.isArray(response.data.content)) {
-        siparisler = response.data.content;
-      } else if (response.data?.data && Array.isArray(response.data.data)) {
-        siparisler = response.data.data;
-      } else if (response.data?.orders && Array.isArray(response.data.orders)) {
-        siparisler = response.data.orders;
-      } else {
-        console.log('⚠️  Beklenmeyen response formatı:', JSON.stringify(response.data).substring(0, 500));
+    console.log(`📥 API Response Status: ${response.status}`);
+    console.log(`📥 API Response Data Type:`, typeof response.data);
+    console.log(`📥 API Response Keys:`, Object.keys(response.data || {}));
+    
+    // Trendyol API response formatı: { content: [...] } veya direkt array
+    let siparisler: any[] = [];
+    
+    if (Array.isArray(response.data)) {
+      siparisler = response.data;
+    } else if (response.data?.content && Array.isArray(response.data.content)) {
+      siparisler = response.data.content;
+    } else if (response.data?.data && Array.isArray(response.data.data)) {
+      siparisler = response.data.data;
+    } else if (response.data?.orders && Array.isArray(response.data.orders)) {
+      siparisler = response.data.orders;
+    } else {
+      console.log('⚠️  Beklenmeyen response formatı:', JSON.stringify(response.data).substring(0, 500));
+    }
+    
+    console.log(`📦 ${siparisler.length} sipariş bulundu`);
+    
+    if (siparisler.length > 0) {
+      console.log(`📝 İlk sipariş örneği (tam):`, JSON.stringify(siparisler[0], null, 2));
+      // Lines içindeki fotoğraf ve model kod alanlarını kontrol et
+      if (siparisler[0].lines && siparisler[0].lines.length > 0) {
+        console.log(`📸 İlk satır örneği (tam):`, JSON.stringify(siparisler[0].lines[0], null, 2));
+        // Fotoğraf alanlarını tek tek kontrol et
+        const firstLine = siparisler[0].lines[0];
+        console.log(`📸 Fotoğraf alanları:`);
+        console.log(`  - productImageUrl: ${firstLine.productImageUrl}`);
+        console.log(`  - productImage: ${firstLine.productImage}`);
+        console.log(`  - imageUrl: ${(firstLine as any).imageUrl}`);
+        console.log(`  - image: ${(firstLine as any).image}`);
+        console.log(`  - product: ${JSON.stringify((firstLine as any).product)}`);
+        // Model kod alanlarını kontrol et
+        console.log(`🔢 Model Kod Alanları:`);
+        console.log(`  - productCode: ${firstLine.productCode}`);
+        console.log(`  - barcode: ${firstLine.barcode}`);
+        console.log(`  - sku: ${(firstLine as any).sku}`);
+        console.log(`  - modelCode: ${(firstLine as any).modelCode}`);
+        console.log(`  - product.code: ${(firstLine as any).product?.code}`);
+        console.log(`  - product.barcode: ${(firstLine as any).product?.barcode}`);
+        console.log(`  - product.sku: ${(firstLine as any).product?.sku}`);
+        console.log(`  - product.modelCode: ${(firstLine as any).product?.modelCode}`);
       }
-      
-      console.log(`📦 ${siparisler.length} sipariş bulundu`);
-      
-      if (siparisler.length > 0) {
-        console.log(`📝 İlk sipariş örneği (tam):`, JSON.stringify(siparisler[0], null, 2));
-        // Lines içindeki fotoğraf ve model kod alanlarını kontrol et
-        if (siparisler[0].lines && siparisler[0].lines.length > 0) {
-          console.log(`📸 İlk satır örneği (tam):`, JSON.stringify(siparisler[0].lines[0], null, 2));
-          // Fotoğraf alanlarını tek tek kontrol et
-          const firstLine = siparisler[0].lines[0];
-          console.log(`📸 Fotoğraf alanları:`);
-          console.log(`  - productImageUrl: ${firstLine.productImageUrl}`);
-          console.log(`  - productImage: ${firstLine.productImage}`);
-          console.log(`  - imageUrl: ${(firstLine as any).imageUrl}`);
-          console.log(`  - image: ${(firstLine as any).image}`);
-          console.log(`  - product: ${JSON.stringify((firstLine as any).product)}`);
-          // Model kod alanlarını kontrol et
-          console.log(`🔢 Model Kod Alanları:`);
-          console.log(`  - productCode: ${firstLine.productCode}`);
-          console.log(`  - barcode: ${firstLine.barcode}`);
-          console.log(`  - sku: ${(firstLine as any).sku}`);
-          console.log(`  - modelCode: ${(firstLine as any).modelCode}`);
-          console.log(`  - product.code: ${(firstLine as any).product?.code}`);
-          console.log(`  - product.barcode: ${(firstLine as any).product?.barcode}`);
-          console.log(`  - product.sku: ${(firstLine as any).product?.sku}`);
-          console.log(`  - product.modelCode: ${(firstLine as any).product?.modelCode}`);
-        }
-      }
-      
-      return siparisler;
-    } catch (error: any) {
+    }
+    
+    return siparisler;
+  } catch (error: any) {
       const isRetryable = error.response?.status === 556 || // Service Unavailable
                          error.response?.status === 503 || // Service Unavailable
                          error.response?.status === 429 || // Too Many Requests
                          error.response?.status >= 500; // Server errors
 
-      if (error.response) {
+    if (error.response) {
         console.error(`❌ Trendyol API hatası (Deneme ${attempt}/${MAX_RETRIES}):`, error.response.status);
-        console.error('❌ Response Data:', JSON.stringify(error.response.data).substring(0, 500));
+      console.error('❌ Response Data:', JSON.stringify(error.response.data).substring(0, 500));
         
         if (isRetryable && attempt < MAX_RETRIES) {
           console.log(`⏳ ${RETRY_DELAY / 1000} saniye bekleniyor ve tekrar deneniyor...`);
@@ -252,28 +252,28 @@ export async function fetchTrendyolSiparisler(): Promise<TrendyolSiparis[]> {
           continue; // Retry
         } else if (!isRetryable) {
           // Retry edilemeyen hatalar (4xx gibi)
-          console.error('❌ Response Headers:', error.response.headers);
+      console.error('❌ Response Headers:', error.response.headers);
           return [];
         }
-      } else if (error.request) {
-        console.error('❌ Request yapılamadı:', error.message);
-        console.error('❌ Request URL:', error.config?.url);
+    } else if (error.request) {
+      console.error('❌ Request yapılamadı:', error.message);
+      console.error('❌ Request URL:', error.config?.url);
         
         if (attempt < MAX_RETRIES) {
           console.log(`⏳ ${RETRY_DELAY / 1000} saniye bekleniyor ve tekrar deneniyor...`);
           await new Promise(resolve => setTimeout(resolve, RETRY_DELAY));
           continue; // Retry
         }
-      } else {
-        console.error('❌ Trendyol API hatası:', error.message);
-        console.error('❌ Error Stack:', error.stack);
-      }
+    } else {
+      console.error('❌ Trendyol API hatası:', error.message);
+      console.error('❌ Error Stack:', error.stack);
+    }
 
       // Son denemede başarısız olursa boş array döndür
       if (attempt === MAX_RETRIES) {
         console.error('❌ Trendyol API tüm denemeler başarısız oldu. Boş array döndürülüyor.');
-        return [];
-      }
+    return [];
+  }
     }
   }
 

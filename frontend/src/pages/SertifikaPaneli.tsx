@@ -618,8 +618,8 @@ function SertifikaPaneli() {
                     )}
                   </td>
                   <td className="px-2 sm:px-3 py-1.5 sm:py-2 whitespace-nowrap">
-                    <div className="space-y-1">
-                      <div className="text-xs sm:text-sm text-slate-800 font-semibold leading-tight group-hover:text-blue-700 transition-colors">
+                    <div className="space-y-1.5">
+                      <div className="text-base text-slate-800 font-semibold leading-tight group-hover:text-blue-700 transition-colors">
                         {siparis.musteri_adi}
                       </div>
                       {siparis.musteri_telefon && (
@@ -640,19 +640,19 @@ function SertifikaPaneli() {
                           return (
                             <div className="space-y-2">
                             <div className="space-y-1">
-                              <div className="text-xs sm:text-sm text-slate-800 font-semibold leading-tight group-hover:text-blue-700 transition-colors">
+                              <div className="text-base text-slate-800 font-semibold leading-tight group-hover:text-blue-700 transition-colors">
                                 {satir1}
                               </div>
                               {satir2 && (
-                                <div className="text-xs sm:text-sm text-slate-600 leading-tight flex items-center gap-1.5">
+                                <div className="text-sm text-slate-600 leading-tight flex items-center gap-1.5">
                                   <span className="text-blue-600 font-bold">•</span>
                                   {satir2}
                                   </div>
                                 )}
                               </div>
                               {siparis.not && (
-                                <div className="mt-0.5 sm:mt-2 p-1.5 sm:p-3 bg-gradient-to-br from-blue-50 to-indigo-50 border-2 border-blue-300 rounded-lg sm:rounded-xl shadow-sm">
-                                  <div className="text-xs sm:text-sm text-slate-800 whitespace-pre-wrap break-words leading-relaxed font-medium">
+                                <div className="mt-2 p-3 bg-gradient-to-br from-blue-50 to-indigo-50 border-2 border-blue-300 rounded-xl shadow-sm">
+                                  <div className="text-sm text-slate-800 whitespace-pre-wrap break-words leading-relaxed font-medium">
                                     {siparis.not}
                                   </div>
                                 </div>
@@ -661,7 +661,7 @@ function SertifikaPaneli() {
                           );
                         })()}
                       </div>
-                      <span className={`px-2 sm:px-2.5 py-1 sm:py-1.5 text-white text-xs sm:text-sm font-bold rounded-lg whitespace-nowrap shadow-sm flex-shrink-0 border min-w-[35px] sm:min-w-[50px] text-center ${
+                      <span className={`px-3 py-2 text-white text-sm font-bold rounded-lg whitespace-nowrap shadow-sm flex-shrink-0 border min-w-[50px] text-center ${
                         siparis.miktar > 1 
                           ? 'bg-gradient-to-br from-red-500 to-rose-600 border-red-400/30' 
                           : 'bg-gradient-to-br from-blue-500 to-indigo-600 border-blue-400/30'
