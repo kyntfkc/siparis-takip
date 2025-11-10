@@ -1,33 +1,29 @@
 #!/bin/bash
+# Git Auto Pull Deployment Script
+# PM2 tarafından otomatik çalıştırılır
 
-# Sipariş Takip - FTP Deployment Script
-# Bu script'i sunucuda çalıştırın
+set -e
 
-echo "🚀 Sipariş Takip Deployment Başlıyor..."
-
-# Proje dizini
 PROJECT_DIR="/var/www/siparis-takip"
 
-# Backend build ve restart
+echo "🔄 Git pull başlıyor..."
+cd "$PROJECT_DIR"
+
+# Git pull
+git pull origin main || git pull origin master
+
 echo "📦 Backend build ediliyor..."
-cd $PROJECT_DIR/backend
-npm install --production
+cd backend
+npm install
 npm run build
 
-echo "🔄 Backend restart ediliyor..."
-pm2 restart siparis-backend || pm2 start dist/index.js --name siparis-backend
-
-# Frontend build
 echo "🎨 Frontend build ediliyor..."
-cd $PROJECT_DIR/frontend
-npm install --production
+cd ../frontend
+npm install
 npm run build
+
+echo "🚀 PM2 restart ediliyor..."
+cd "$PROJECT_DIR"
+pm2 restart siparis-backend
 
 echo "✅ Deployment tamamlandı!"
-echo "📊 PM2 Status:"
-pm2 status
-
-echo ""
-echo "📝 Logları görmek için: pm2 logs siparis-backend"
-echo "🌐 Sitenizi kontrol edin: http://$(curl -s ifconfig.me)"
-
